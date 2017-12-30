@@ -141,7 +141,7 @@ app.settings = {
         event.preventDefault();
 
         var email = null;
-        if (app.settings.editingEmail) {
+        if (this.editingEmail) {
             if (!app.settings.validateEmail()) {
                 return;
             }
@@ -149,14 +149,14 @@ app.settings = {
         }
 
         var password = null;
-        if (app.settings.editingPassword) {
+        if (this.editingPassword) {
             if (!app.settings.validatePassword()) {
                 return;
             }
             password = document.getElementById('password').value;
         }
 
-        if (!(app.settings.editingPassword || app.settings.editingEmail)) {
+        if (!(this.editingPassword || this.editingEmail)) {
             return;
         }
 
@@ -172,7 +172,7 @@ app.settings = {
         document.getElementById("saveChanges").disabled = true;
         document.getElementById('userData').removeEventListener('submit', app.settings.saveChanges.bind(app.settings));
 
-        Resources.Users.PUT(email, password, currentPassword, app.settings.saveChangesSuccess, app.settings.saveChangesFailure);
+        Resources.Users.PUT(email, password, currentPassword, this.saveChangesSuccess, this.saveChangesFailure);
     },
 
     populateUserFields: function(data) {
