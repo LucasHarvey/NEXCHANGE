@@ -9,8 +9,9 @@ app.user = {
     userId: null,
     loginSuccess: function(data) {
         
-        //Enable the login button
+        // Enable the form
         document.getElementById("button_login").disabled = false;
+        document.getElementById("loginData").addEventListener("submit", app.user.login);
         
         app.user.authToken = data.payload.token;
         app.user.loginId = data.payload.loginId;
@@ -24,7 +25,7 @@ app.user = {
                 "<tr align='right'><td align='left'>Confirm password</td><td><input type='password' id='confirmPassword' placeholder='Again'></td></tr></table><div id='modalErrorTray'></div>";
             let successBtn = {
                 text: "Change Password",
-                callback: function() {
+                callback: function(event) {
                     var curPass = document.getElementById("input_nexPassword").value;
                     var newPass = document.getElementById("newPassword").value;
                     var confPassword = document.getElementById("confirmPassword").value;
@@ -37,18 +38,29 @@ app.user = {
                         document.getElementById("modalErrorTray").innerHTML = "Password must be 9 characters or more.";
                         return;
                     }
+                    
+                    // Disable the "Change Password" button
+                    event.target.disabled = true;
+                    
                     document.getElementById("modalErrorTray").innerHTML = "";
+     
                     Resources.Users.PUT(null, newPass, curPass, function() {
                         window.location = data.payload.redirect.url;
                     }, function(d) {
-                        new Modal("Error", MessageCode["PasswordUpdateFailure"], null, {
+                        let successBtn = {
                             text: "Okay",
                             // Callback for the modal which tells the user that password update failed
                             callback: function() {
                                 window.location = "./settings.html";
                             }
-                        }).show();
+                        };
+                        
+                        // The modal has a confirm button which redirects the user to "Settings"
+                        new Modal("Error", MessageCode["PasswordUpdateFailure"], successBtn, false).show();
                     });
+                    
+                    // Hide the "Change Password" modal
+                    this.hide();
                 }
             };
             
@@ -64,8 +76,9 @@ app.user = {
         document.getElementById("errorTray").style.display = 'block';
         document.getElementById("errorTray").innerHTML = MessageCode[data.messageCode] + "<br>";
         
-        //Enable the login button
+        // Enable the form
         document.getElementById("button_login").disabled = false;
+        document.getElementById("loginData").addEventListener("submit", app.user.login);
     },
     logout: function(e, forced) {
         e.preventDefault();
@@ -117,7 +130,11 @@ app.user = {
             });
             return;
         }
+        
+        // Disable the form
         document.getElementById("button_login").disabled = true;
+        document.getElementById("loginData").removeEventListener("submit", app.user.login);
+        
         Resources.Auth.POST(studentId, password, app.user.loginSuccess, app.user.failure, { disableAuthResult: true });
     },
 
