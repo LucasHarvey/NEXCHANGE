@@ -26,6 +26,10 @@ app.useraccess = {
 
     userAccessSuccess: function(response) {
         
+        // Enable the form
+        document.getElementById("submitAccess").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest);
+        
         let courses = response.payload.courses;
         let previousAccess= response.payload.previousAccess;
 
@@ -68,6 +72,14 @@ app.useraccess = {
         new Modal("User Access Updated", modalContent, null, {
             text: "Okay"
         }).show();
+    },
+    
+    userAccessFailure: function(response){
+        // Enable the form
+        document.getElementById("submitAccess").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest);
+        
+        app.handleFailure(response);
     },
 
     submitUserAccessRequest: function(event) {
@@ -148,8 +160,12 @@ app.useraccess = {
         for (var i = 0; i < courses.length; i++) {
             coursesId.push(courses[i].id);
         }
+        
+        // Disable the form
+        document.getElementById("submitAccess").disabled = true;
+        document.getElementById('userData').removeEventListener('submit', app.useraccess.submitUserAccessRequest);
 
-        Resources.UserAccess.POST(studentId, coursesId, role, formattedExpiryDate, app.useraccess.userAccessSuccess);
+        Resources.UserAccess.POST(studentId, coursesId, role, formattedExpiryDate, app.useraccess.userAccessSuccess, app.useraccess.userAccessFailure);
     },
 
     verifyUserId: function(userId) {
