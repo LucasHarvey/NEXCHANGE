@@ -32,7 +32,7 @@ app.password = {
     submit: function(e){
         e.preventDefault();
     
-        if(!app.password.validatePassword())
+        if(!this.validatePassword())
             return;
         
         let password = document.getElementById('newPassword').value;
@@ -44,7 +44,7 @@ app.password = {
         document.getElementById("saveChanges").disabled = true;
         document.getElementById('userData').removeEventListener('submit', app.password.submit.bind(app.password));
         
-        Resources.Password.PUT(code, password, app.password.success, app.password.failure);
+        Resources.Password.PUT(code, password, this.success, this.failure);
     },
     
     validatePassword: function() {
