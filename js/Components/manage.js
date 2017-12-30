@@ -260,10 +260,10 @@ app.manage = {
             article.button2.onclick = function(e) {
                 var uid = this.id.split("_")[1];
                 var cid = this.id.split("_")[2];
-                var cb = function() {
+                var cb = function(event) {
                     
                     // Disable the confirm button (Modal -> Footer -> Confirm button)
-                    document.getElementById("MODAL").children[2].children[0].disabled = true;
+                    event.target.disabled = true;
                     
                     // Delete the user access
                     Resources.UserAccess.DELETE(uid, cid, function() {
