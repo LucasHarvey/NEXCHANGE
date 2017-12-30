@@ -18,8 +18,9 @@ app.addCourse = {
     
     submitCourseSuccess: function(data) {
         
-        // Enable the edit button
+        // Enable the form
         document.getElementById('submit').disabled = false;
+        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
 
         // Empty the course input fields: 
         document.getElementById('courseName').value = "";
@@ -35,7 +36,9 @@ app.addCourse = {
     },
     
     submitCourseFailure: function(data){
+        // Enable the form
         document.getElementById('submit').disabled = false;
+        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
         app.handleFailure(data);
     },
 
@@ -111,8 +114,9 @@ app.addCourse = {
         // Format the semester correctly
         formattedSemester = season + year;
         
-        // Disable the edit button
+        // Disable the form
         document.getElementById('submit').disabled = true;
+        document.getElementById('addCourse').removeEventListener('submit', app.addCourse.submitCourse);
         
 
         Resources.Courses.POST(teacherFullName, courseName, courseNumber, section, formattedSemester, app.addCourse.submitCourseSuccess, app.addCourse.submitCourseFailure);
