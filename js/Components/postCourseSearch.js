@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,disableForm,enableForm */
+/* global Resources,MessageCode,Modal */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -142,7 +142,9 @@ app.postCourseSearch = {
 
     courseSearchSuccess: function(data) {
         // Enable the form
-        enableForm(document.getElementById("courseSearch"));
+        document.getElementById("submit").disabled = false;
+        document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch);
+
         
         // Empty the previous search results
         app.postCourseSearch.emptySearchResults();
@@ -190,7 +192,8 @@ app.postCourseSearch = {
     
     courseSearchFailure: function(response){
         // Enable the form
-        enableForm(document.getElementById("courseSearch"));
+        document.getElementById("submit").disabled = false;
+        document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch);
         
         app.handleFailure(response);
     },
@@ -244,7 +247,8 @@ app.postCourseSearch = {
         }
         
         // Disable the form
-        disableForm(document.getElementById("courseSearch"));
+        document.getElementById("submit").disabled = true;
+        document.getElementById('courseSearch').removeEventListener('submit', app.postCourseSearch.submitCourseSearch);
 
         Resources.Courses.SEARCH(teacherFullName, courseName, courseNumber, section, formattedSemester, 0, app.postCourseSearch.courseSearchSuccess, app.postCourseSearch.courseSearchFailure);
     }
