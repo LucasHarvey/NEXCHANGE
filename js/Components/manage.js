@@ -262,7 +262,7 @@ app.manage = {
                 var cid = this.id.split("_")[2];
                 var cb = function(event) {
                     
-                    // Disable the confirm button (Modal -> Footer -> Confirm button)
+                    // Disable the confirm button 
                     event.target.disabled = true;
                     
                     // Delete the user access

@@ -17,13 +17,13 @@ app.settings = {
         document.getElementById("saveChanges").disabled = false;
         document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
 
-
-        new Modal("User Updated", MessageCode[data.payload.messageCode], null, {
+        // Do not allow the user to dismiss the modal
+        new Modal("User Updated", MessageCode[data.payload.messageCode], {
             text: "Okay",
             callback: function() {
                 window.location.reload();
             }
-        }).show();
+        }, false).show();
     },
 
     saveChangesFailure: function(data) {
