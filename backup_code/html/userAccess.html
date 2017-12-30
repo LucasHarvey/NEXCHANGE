@@ -1,0 +1,250 @@
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>User Access</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/app.css">
+    <link rel="stylesheet" type="text/css" href="../css/userAccess.css">
+    <link rel="stylesheet" type="text/css" href="../css/modal.css">
+
+    <script type="text/javascript" src="../js/MessageCode.js"></script>
+    <script type="text/javascript" src="../js/Resources.js"></script>
+    <script type="text/javascript" src="../js/app.js"></script>
+    <script type="text/javascript" src="../js/navbar.js"></script>
+    <script type="text/javascript" src="../js/Components/userAccess.js"></script>
+    <script type="text/javascript" src="../js/Components/postCourseSearch.js"></script>
+    <script type="text/javascript" src="../js/Components/user.js"></script>
+    <script type="text/javascript" src="../js/Components/modal.js"></script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <a class="logo" href="./signup.html"><img src="./img/jac_logo.png" alt="John Abbott Logo"></a>
+        <a class="logout" id="logout">LOG OUT</a>
+    </header>
+
+    <!-- Navigation Bar -->
+    <div class="navBar" id="navBar">
+
+    </div>
+
+    <!-- Wrapper used to align content under navigation bar -->
+    <div class="container3">
+        <div class="container2">
+            <div class="container1">
+                <!-- Container on left side -->
+                <div class="leftContainer">
+
+                </div>
+
+                <!-- Main container for notes -->
+                <div id="centerContainer" class="centerContainer">
+                    <div id="errorTray" class="errorTray" style="display: none"></div>
+                    <div id="successTray" class="successTray" style="display: none"></div>
+                    <div class="courseSearch">
+                        <h1>Course Search</h1>
+                        <!-- Course search form -->
+                        <form id="courseSearch">
+
+                            <table class="searchParams">
+                                <tr>
+                                    <td align="right">
+                                        <label for="teacherFullName">Teacher Full Name: </label>
+                                    </td>
+                                    <td colspan="2" align="left">
+                                        <input type="text" id="teacherFullName">
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <label for="courseName">Course Name: </label>
+                                    </td>
+                                    <td colspan="2" align="left">
+                                        <input type="text" id="courseName">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <label for="courseNumber">Course Code: </label>
+                                    </td>
+                                    <td colspan="2" align="left">
+                                        <input type="text" id="courseNumber">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <label for="section">Section: </label>
+                                    </td>
+                                    <td colspan="2" align="left">
+                                        <input type="text" id="section">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <label for="semester">Semester: </label>
+                                    </td>
+                                    <td align="left">
+                                        <!--<input type="text" id="semester" placeholder="e.g. F2017">-->
+                                        <select id="season">
+                                            <option value="">
+                                                All Semesters
+                                            </option>
+                                            <option value="F">
+                                                Fall
+                                            </option>
+                                            <option value="I">
+                                                Intersession
+                                            </option>
+                                            <option value="W">
+                                                Winter
+                                            </option>
+                                            <option value="S">
+                                                Summer
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <label for="year"></label>Year:
+                                    </td>
+                                    <td align="left">
+                                        <input type="text" id="year"></input>
+                                    </td>
+                                </tr>
+
+                            </table>
+                            <input type="submit" id="submitSearch" class="submitButton" value="Search For Course">
+                        </form>
+                    </div>
+
+
+                    <!-- Container for the search results -->
+                    <div id="resultsTray" class="resultsTray" style="display: none">
+                        <h1>Search Results</h1>
+                        <div id="noResults" class="noResults" style="display: none"></div>
+                        <div id="tableContainer" class="tableContainer" style="display: none">
+                            <table id="results">
+                                <thead>
+                                    <tr>
+
+                                        <th>
+                                            <div>
+                                                Course Name
+                                            </div>
+
+                                        </th>
+                                        <th>
+                                            <div>
+                                                Course Code
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div>
+                                                Section
+                                            </div>
+                                        </th>
+                                        <th>
+                                            <div>
+                                                Teacher
+                                            </div>
+
+                                        </th>
+                                        <th>
+                                            <div>
+                                                Semester
+                                            </div>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                        <button id="addCourses" class="submitButton" style="display:none;">Add Course(s)</button>
+
+                    </div>
+
+                    <div class="grantAccess">
+                        <h1>Grant User Access</h1>
+
+
+                        <form id="userData" class="userData">
+                            <table class="userFields">
+                                <tr>
+                                    <td align="right">
+                                        <label for="studentId">Student ID: </label>
+                                    </td>
+                                    <td align="left">
+                                        <input type="text" id="studentId" required>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td align="right">
+                                        <label for="role">Role: </label>
+                                    </td>
+                                    <td align="left">
+                                        <select id="role">
+                                            <option value="STUDENT" >Student in need of notes</option>
+                                            <option value="NOTETAKER">Notetaker</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="expirySelector">Access expires at the end of:</label>
+                                    </td>
+                                    <td align="left">
+                                        <!--<input type="text" id="semester" placeholder="e.g. F2017">-->
+                                        <select id="seasonExpiry">
+                                            <option value="F">
+                                                Fall
+                                            </option>
+                                            <option value="I">
+                                                Intersession
+                                            </option>
+                                            <option value="W">
+                                                Winter
+                                            </option>
+                                            <option value="S">
+                                                Summer
+                                            </option>
+                                        </select>
+                                    </td>
+                                    <td align="left">
+                                        <input type="text" id="yearExpiry" placeholder="Please enter a year"></input>
+                                    </td>
+                                </tr>
+                            </table>
+                            <p class="coursesHeader">Courses:</p>
+                            <div id="courseContainer" class="courseContainer">
+
+                            </div>
+
+                            <input type="submit" id="submitAccess" class="submitButton" value="Grant Access">
+
+                        </form>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="MODALWRAPPER"></div>
+</body>
+
+</html>

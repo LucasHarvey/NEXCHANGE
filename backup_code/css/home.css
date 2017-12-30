@@ -1,0 +1,203 @@
+.centerContainer article {
+    position: relative;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 20px;
+    padding: 10px;
+    border: solid 1px #bfbfbf;
+    -moz-box-shadow: 3px 3px 3px #ccc;
+    -webkit-box-shadow: 3px 3px 3px #ccc;
+    box-shadow: 3px 3px 3px #ccc;
+}
+
+.newnote {
+    border: 1px solid #ce4c4c!important;
+    outline: none;
+    -moz-box-shadow: 3px 3px 3px #ccc, 0px 0px 10px #ce4c4c!important;
+    -webkit-box-shadow: 3px 3px 3px #ccc, 0px 0px 10px #ce4c4c!important;
+    box-shadow: 3px 3px 3px #ccc, 0px 0px 10px #ce4c4c!important;
+}
+
+.centerContainer button {
+    min-width: 150px;
+    height: 30px;
+    position: relative;
+    border: none;
+    background-color: #3f5374;
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+    margin-left: 15px;
+}
+
+.centerContainer button:hover {
+    background-color: #364763;
+}
+
+#sortDrop {
+    position: relative;
+    width: 180px;
+}
+
+#sortDrop:focus {
+    outline: none;
+}
+
+#sortDrop>span,
+#sortDrop>img {
+    vertical-align: middle;
+}
+
+.dropdownIcon {
+    width: 30px;
+    height: 30px;
+    margin: auto;
+    vertical-align: middle;
+    float: right;
+}
+
+table {
+    position: relative;
+    border-collapse: separate;
+    border-spacing: 75px 0;
+    display: inline;
+    padding: 10px;
+}
+
+td {
+    padding: 5px 0;
+}
+
+#sortButton {
+    width: 75px;
+    height: 30px;
+    position: relative;
+    border: none;
+    background-color: #3f5374;
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+
+}
+
+#sortButton:hover {
+    background-color: #364763;
+}
+
+.course {
+    margin-top: 20px;
+}
+
+.courseHeader {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Non-prefixed version, currently
+    supported by Chrome and Opera */
+    color: #fff;
+    background-color: #3f5374;
+    padding: 5px 10px;
+    width: calc(100% - 20px);
+    height: 30px;
+    display: block;
+}
+
+.courseHeader>span {
+    color: #fff;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.courseHeader>img {
+    cursor: pointer;
+}
+
+.notificationWrapper {
+    height: 30px;
+    float: right;
+}
+
+.notificationSpan {
+    line-Height: 30px;
+    vertical-align: top;
+    margin-right: 5px;
+}
+
+.courseUploadButton {
+    position: relative;
+    width: 80%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 10px;
+}
+
+/* Nice toggle switch
+From: https://www.w3schools.com/howto/howto_css_switch.asp */
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 29px;
+}
+
+.switch input {
+    display: none;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 21px;
+    width: 21px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #002b80;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(20px);
+    -ms-transform: translateX(20px);
+    transform: translateX(20px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.rotate {
+    transform: rotate(-90deg);
+}

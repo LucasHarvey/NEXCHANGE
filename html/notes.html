@@ -1,0 +1,83 @@
+<html>
+
+<head>
+    <title>Note Search | NEXCHANGE</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <script src="../js/Polyfills/flexibility.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script async type="text/javascript" src="../js/MessageCode.js"></script>
+    <script async type="text/javascript" src="../js/Resources.js"></script>
+    <script async type="text/javascript" src="../js/app.js"></script>
+    <script async type="text/javascript" src="../js/navbar.js"></script>
+    <script async type="text/javascript" src="../js/Components/modal.js"></script>
+    <script async type="text/javascript" src="../js/Components/user.js"></script>
+
+    <script async type="text/javascript" src="../js/Components/notes.js"></script>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <a class="logo" href="./signup.html"><img src="./img/jac_logo.png" alt="John Abbott Logo"></a>
+        <nav>
+            <div id="navbar">
+                <aside></aside>
+                <div id="navmain">
+                    <a id="logout">LOG OUT</a>
+                </div>
+                <aside></aside>
+            </div>
+        </nav>
+    </header>
+
+    <div>
+        <aside class="aside1"></aside>
+        <div class="main">
+            <h1 id="notesSearchHeader"></h1>
+            
+            <div class="userform-wrapper">
+                <form id="userData" class="userform">
+                    <div class="userfield">
+                        <label for="sortDrop" class="sortByLabel">Sort By</label>
+                        <select id="sortDrop">
+                            <option name="sortMethod" value="newestUpload" selected>
+                                Newest by Upload Date
+                            </option>
+                            <option name="sortMethod" value="oldestUpload">
+                                Oldest by Upload Date
+                            </option>
+                            <option name="sortMethod" value="newestTakenOn">
+                                Newest by Taken On Date
+                            </option>
+                            <option name="sortMethod" value="oldestTakenOn">
+                                Oldest by Taken On Date
+                            </option>
+                            <option name="sortMethod" value="noteNameAscending">
+                                Note Name A-Z
+                            </option>
+                            <option name="sortMethod" value="noteNameDescending">
+                                Note Name Z-A
+                            </option>
+                            <option name="sortMethod" value="noteTakerAscending">
+                                Note Taker Last Name A-Z
+                            </option>
+                            <option name="sortMethod" value="noteTakerDescending">
+                                Note Taker Last Name Z-A
+                            </option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            
+            <div id="notesContainer"></div>
+            
+        </div>
+        <aside class="aside2"></aside>
+    </div>
+</body>
+
+</html>

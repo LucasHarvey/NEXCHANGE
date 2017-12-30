@@ -1,0 +1,52 @@
+.centerContainer h1 {
+    text-align: center;
+}
+
+.userData {
+    position: relative;
+    width: auto;
+    max-width: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 20px;
+    padding: 2%;
+    border: solid 1px #bfbfbf;
+    -moz-box-shadow: 3px 3px 3px #ccc;
+    -webkit-box-shadow: 3px 3px 3px #ccc;
+    box-shadow: 3px 3px 3px #ccc;
+}
+
+table {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    border-collapse: separate;
+    border-spacing: 10px 0;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 125px;
+}
+
+td {
+    padding: 5px 0;
+}
+
+.submitButton {
+    margin: auto;
+    width: 150px;
+    height: 30px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    border: none;
+    background-color: #3f5374;
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    background-color: #364763;
+}
