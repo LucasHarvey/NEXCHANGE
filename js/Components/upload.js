@@ -1,4 +1,4 @@
-/* global Resources, MessageCode, datePolyFillStart,disableForm,enableForm */
+/* global Resources, MessageCode, datePolyFillStart */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -76,7 +76,8 @@ app.postNotes = {
         app.postNotes.uploadInProgress = false;
         
         //Enable the form
-        enableForm(document.getElementById("noteData"));
+        document.getElementById("submit").disabled = app.postNotes.uploadInProgress;
+        document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles);
         
         let successes = response.payload.succeeded;
         let failures = response.payload.failed;
@@ -192,7 +193,8 @@ app.postNotes = {
         app.postNotes.uploadInProgress = true;
         
         //Disable the form
-        disableForm(document.getElementById("noteData"));
+        document.getElementById("submit").disabled = app.postNotes.uploadInProgress;
+        document.getElementById('noteData').removeEventListener('submit', app.postNotes.submitFiles);
  
         Resources.Notes.POST(name, description, courseId, dateToSubmit, files, app.postNotes.uploadNotesSuccess, app.postNotes.uploadNotesFailure, function(event) {
             if (event.lengthComputable === true) {
@@ -205,8 +207,10 @@ app.postNotes = {
     uploadNotesFailure: function(data) {
         app.postNotes.uploadInProgress = false;
         
-        //Enable the form
-        enableForm(document.getElementById("noteData"));
+        // Enable the form
+        document.getElementById("submit").disabled = app.postNotes.uploadInProgress;
+        document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles);
+        
         app.handleFailure(data);
     },
 
