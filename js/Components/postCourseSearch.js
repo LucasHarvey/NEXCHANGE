@@ -250,7 +250,7 @@ app.postCourseSearch = {
         document.getElementById("submit").disabled = true;
         document.getElementById('courseSearch').removeEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
 
-        Resources.Courses.SEARCH(teacherFullName, courseName, courseNumber, section, formattedSemester, 0, app.postCourseSearch.courseSearchSuccess, app.postCourseSearch.courseSearchFailure);
+        Resources.Courses.SEARCH(teacherFullName, courseName, courseNumber, section, formattedSemester, 0, this.courseSearchSuccess, this.courseSearchFailure);
     }
 
 
