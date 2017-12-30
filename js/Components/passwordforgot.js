@@ -39,7 +39,7 @@ app.passwordForgot = {
         document.getElementById("sendRequest").disabled = true;
         document.getElementById('userData').removeEventListener('submit', app.password.submit.bind(app.passwordForgot));
         
-        Resources.Password.POST(studentId, email, app.passwordForgot.success, app.passwordForgot.failure);
+        Resources.Password.POST(studentId, email, this.success, this.failure);
     }
 };
 
