@@ -125,7 +125,7 @@ app.startup.push(function addCourseStartup() {
     document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
     
     document.getElementById("year").value = new Date().getFullYear();
-    document.getElementById("season").selectedIndex = app.addCourse.getDefaultSeason()
+    document.getElementById("season").selectedIndex = app.addCourse.getDefaultSeason();
 
 });
 
