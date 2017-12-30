@@ -6,8 +6,10 @@ var app = app || {
 
 app.password = {
     success: function(response){
-        // Enable the submit button
+       // Enable the form
         document.getElementById("saveChanges").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.password.submit);
+        
         
         let logoutFunction = function() {
             window.location = "./login.html";
@@ -20,8 +22,9 @@ app.password = {
     },
     
     failure: function(response){
-        // Enable the submit button
+        // Enable the form
         document.getElementById("saveChanges").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.password.submit);
         
         app.handleFailure(response);
     },
@@ -37,8 +40,9 @@ app.password = {
         if(!code)
             return;
         
-        // Disable the submit button
+        // Disable the form
         document.getElementById("saveChanges").disabled = true;
+        document.getElementById('userData').removeEventListener('submit', app.password.submit);
         
         Resources.Password.PUT(code, password, app.password.success, app.password.failure);
     },
