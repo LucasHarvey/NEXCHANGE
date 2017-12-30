@@ -15,7 +15,7 @@ app.settings = {
         
         // Enable the form
         document.getElementById("saveChanges").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
+        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges.bind(app.settings));
 
         // Do not allow the user to dismiss the modal
         new Modal("User Updated", MessageCode[data.payload.messageCode], {
@@ -30,7 +30,7 @@ app.settings = {
         
         // Enable the form
         document.getElementById("saveChanges").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
+        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges.bind(app.settings));
 
 
         app.handleFailure(data);
@@ -170,7 +170,7 @@ app.settings = {
         
         // Disable the form
         document.getElementById("saveChanges").disabled = true;
-        document.getElementById('userData').removeEventListener('submit', app.settings.saveChanges);
+        document.getElementById('userData').removeEventListener('submit', app.settings.saveChanges.bind(app.settings));
 
         Resources.Users.PUT(email, password, currentPassword, app.settings.saveChangesSuccess, app.settings.saveChangesFailure);
     },
@@ -211,7 +211,7 @@ app.startup.push(function settingsStartup() {
     document.getElementById("logoutEverywhere").addEventListener('click', app.settings.logoutEverywhere);
     document.getElementById("modifyEmailButton").addEventListener('click', app.settings.modifyEmail);
     document.getElementById("modifyPasswordButton").addEventListener('click', app.settings.modifyPassword);
-    document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
+    document.getElementById('userData').addEventListener('submit', app.settings.saveChanges.bind(app.settings));
 
 });
 
