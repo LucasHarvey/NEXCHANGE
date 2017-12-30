@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,disableForm,enableForm */
+/* global Resources,MessageCode,Modal */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -14,7 +14,9 @@ app.settings = {
     saveChangesSuccess: function(data) {
         
         // Enable the form
-        enableForm(document.getElementById("userData"));
+        document.getElementById("saveChanges").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
+
 
         new Modal("User Updated", MessageCode[data.payload.messageCode], null, {
             text: "Okay",
@@ -27,7 +29,9 @@ app.settings = {
     saveChangesFailure: function(data) {
         
         // Enable the form
-        enableForm(document.getElementById("userData"));
+        document.getElementById("saveChanges").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
+
 
         app.handleFailure(data);
         return;
@@ -165,7 +169,8 @@ app.settings = {
         }
         
         // Disable the form
-        disableForm(document.getElementById("userData"));
+        document.getElementById("saveChanges").disabled = true;
+        document.getElementById('userData').removeEventListener('submit', app.settings.saveChanges);
 
         Resources.Users.PUT(email, password, currentPassword, app.settings.saveChangesSuccess, app.settings.saveChangesFailure);
     },
