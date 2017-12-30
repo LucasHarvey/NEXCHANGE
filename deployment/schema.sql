@@ -156,6 +156,4 @@ DELIMITER ;
 INSERT INTO users (login_id, privilege, first_name, last_name, passwordhash, last_login) 
     VALUES ("Admin01", "ADMIN", "Administrator", "Administrator", "$2y$10$O27XHDCMtLTGDebeNSG2M.LghLnAtlB1FKc4oEAipPJeEWORpX/S.", NOW());
     
-INSERT INTO courses (teacher_fullname, course_name, course_number, section, semester) 
-    VALUES ("Brian Larade", "Mechanics", "NYA-123-AB", 1, "F2017"),
-           ("Christopher von Roretz", "General Biology I", "101-NYA-05", 12, "W2016");
+source /home/ubuntu/workspace/deployment/upload_courses.sql
