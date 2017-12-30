@@ -10,7 +10,7 @@ app.signup = {
         
         // Enable the form
         document.getElementById("submit").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup);
+        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup.bind(app.signup));
         
         var modalContent = "User has been created successfully.\n<p><span>Login ID: </span>" + data.payload.loginId + "</p>";
         modalContent += "\n<p><span>Name: </span>" + data.payload.firstName + " " + data.payload.lastName + "</p>";
@@ -31,7 +31,7 @@ app.signup = {
     signupFailure: function(response){
         // Enable the form
         document.getElementById("submit").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup);
+        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup.bind(app.signup));
         
         app.handleFailure(response);
     },
@@ -41,7 +41,7 @@ app.signup = {
         
         // Disable the form
         document.getElementById("submit").disabled = true;
-        document.getElementById('userData').removeEventListener('submit', app.signup.submitSignup);
+        document.getElementById('userData').removeEventListener('submit', app.signup.submitSignup.bind(app.signup));
 
         let email = document.getElementById('email').value;
         let firstName = document.getElementById('firstName').value;
@@ -76,20 +76,20 @@ app.signup = {
             return;
         }
 
-        if (!app.signup.verifyUserId(studentId)) {
+        if (!this.verifyUserId(studentId)) {
             app.handleFailure({
                 messageCode: "UserIdNotValid"
             });
             return;
         }
-        if (!app.signup.verifyName(firstName + " " + lastName)) {
+        if (!this.verifyName(firstName + " " + lastName)) {
             app.handleFailure({
                 messageCode: "UserNameNotValid"
             });
             return;
         }
 
-        if (!app.signup.verifyEmail(email)) {
+        if (!this.verifyEmail(email)) {
             app.handleFailure({
                 messageCode: "EmailNotValid"
             });
@@ -97,7 +97,7 @@ app.signup = {
         }
         
 
-        Resources.Users.POST(firstName, lastName, studentId, email, app.signup.signupSuccess, app.signup.signupFailure);
+        Resources.Users.POST(firstName, lastName, studentId, email, this.signupSuccess, this.signupFailure);
     },
 
     verifyEmail: function(email) {
@@ -112,5 +112,5 @@ app.signup = {
 };
 
 app.startup.push(function signupStartup() {
-    document.getElementById('userData').addEventListener('submit', app.signup.submitSignup);
+    document.getElementById('userData').addEventListener('submit', app.signup.submitSignup.bind(app.signup));
 });
