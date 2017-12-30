@@ -8,7 +8,7 @@ app.password = {
     success: function(response){
        // Enable the form
         document.getElementById("saveChanges").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.password.submit);
+        document.getElementById('userData').addEventListener('submit', app.password.submit.bind(app.password));
         
         
         let logoutFunction = function() {
@@ -24,7 +24,7 @@ app.password = {
     failure: function(response){
         // Enable the form
         document.getElementById("saveChanges").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.password.submit);
+        document.getElementById('userData').addEventListener('submit', app.password.submit.bind(app.password));
         
         app.handleFailure(response);
     },
@@ -42,7 +42,7 @@ app.password = {
         
         // Disable the form
         document.getElementById("saveChanges").disabled = true;
-        document.getElementById('userData').removeEventListener('submit', app.password.submit);
+        document.getElementById('userData').removeEventListener('submit', app.password.submit.bind(app.password));
         
         Resources.Password.PUT(code, password, app.password.success, app.password.failure);
     },
@@ -81,5 +81,5 @@ app.password = {
 };
 
 app.startup.push(function passwordStartup() {
-    document.getElementById('userData').addEventListener('submit', app.password.submit);
+    document.getElementById('userData').addEventListener('submit', app.password.submit.bind(app.password));
 });
