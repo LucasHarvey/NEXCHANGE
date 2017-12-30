@@ -1,5 +1,6 @@
 #sudo ruby deployment/parse_courses.rb deployment/test.csv /var/lib/mysql-files/upload_courses.csv
 require 'csv'
+require 'date'
 
 class Course 
     attr_reader :teacher_name, :name, :number, :section
@@ -41,7 +42,8 @@ end
 #get the path from the command line argument.
 PATH = ARGV[0]
 UPLOADPATH = ARGV[1]
-raise "Commandline argument for path and upload path must be supplied." if PATH.nil? || UPLOADPATH.nil?
+SEMESTER_CMD = ARGV[2]
+raise "Commandline argument for path and upload path must be supplied. Optional semester" if PATH.nil? || UPLOADPATH.nil?
 
 courses = Array.new
 CSV.foreach(PATH, encoding: "CP1252") do |line|
@@ -51,7 +53,26 @@ CSV.foreach(PATH, encoding: "CP1252") do |line|
     end
 end
 
-SEMESTER = "F2017"
+semester = SEMESTER_CMD
+if(SEMESTER_CMD.nil?)
+    year = Date.today.year
+    month = Date.today.month - 1
+    today = Date.today.day
+    season = "F"
+    if (month >= 0 && month < 5)
+        season = "W"
+    end
+    if (month >= 11 || (month == 0 && today<15))
+        season = "I"
+    end
+    if (month >= 11)
+        year = year + 1
+    end
+    if (month >= 5 && month < 8)
+        season = "S"
+    end
+    semester = season + year.to_s
+end
 
 if(File.file?(UPLOADPATH))
     File.delete(UPLOADPATH)
@@ -69,10 +90,10 @@ courses.each do |course|
     file.write(";")
     file.write(course.section)
     file.write(";")
-    file.write("F2017")
+    file.write(semester)
     file.write("\n")
 end
 
 file.close();
 
-puts courses.length
+puts courses.length.to_s + " courses parsed."
