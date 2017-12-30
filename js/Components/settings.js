@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,disableForm,enableForm */
+/* global Resources,MessageCode,Modal */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -14,20 +14,24 @@ app.settings = {
     saveChangesSuccess: function(data) {
         
         // Enable the form
-        enableForm(document.getElementById("userData"));
+        document.getElementById("saveChanges").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges.bind(app.settings));
 
-        new Modal("User Updated", MessageCode[data.payload.messageCode], null, {
+        // Do not allow the user to dismiss the modal
+        new Modal("User Updated", MessageCode[data.payload.messageCode], {
             text: "Okay",
             callback: function() {
                 window.location.reload();
             }
-        }).show();
+        }, false).show();
     },
 
     saveChangesFailure: function(data) {
         
         // Enable the form
-        enableForm(document.getElementById("userData"));
+        document.getElementById("saveChanges").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges.bind(app.settings));
+
 
         app.handleFailure(data);
         return;
@@ -137,7 +141,7 @@ app.settings = {
         event.preventDefault();
 
         var email = null;
-        if (app.settings.editingEmail) {
+        if (this.editingEmail) {
             if (!app.settings.validateEmail()) {
                 return;
             }
@@ -145,14 +149,14 @@ app.settings = {
         }
 
         var password = null;
-        if (app.settings.editingPassword) {
+        if (this.editingPassword) {
             if (!app.settings.validatePassword()) {
                 return;
             }
             password = document.getElementById('password').value;
         }
 
-        if (!(app.settings.editingPassword || app.settings.editingEmail)) {
+        if (!(this.editingPassword || this.editingEmail)) {
             return;
         }
 
@@ -165,9 +169,10 @@ app.settings = {
         }
         
         // Disable the form
-        disableForm(document.getElementById("userData"));
+        document.getElementById("saveChanges").disabled = true;
+        document.getElementById('userData').removeEventListener('submit', app.settings.saveChanges.bind(app.settings));
 
-        Resources.Users.PUT(email, password, currentPassword, app.settings.saveChangesSuccess, app.settings.saveChangesFailure);
+        Resources.Users.PUT(email, password, currentPassword, this.saveChangesSuccess, this.saveChangesFailure);
     },
 
     populateUserFields: function(data) {
@@ -206,7 +211,7 @@ app.startup.push(function settingsStartup() {
     document.getElementById("logoutEverywhere").addEventListener('click', app.settings.logoutEverywhere);
     document.getElementById("modifyEmailButton").addEventListener('click', app.settings.modifyEmail);
     document.getElementById("modifyPasswordButton").addEventListener('click', app.settings.modifyPassword);
-    document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
+    document.getElementById('userData').addEventListener('submit', app.settings.saveChanges.bind(app.settings));
 
 });
 

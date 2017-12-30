@@ -1,4 +1,4 @@
-/* global Resources, MessageCode, datePolyFillStart,disableForm,enableForm */
+/* global Resources, MessageCode, datePolyFillStart */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -76,7 +76,8 @@ app.postNotes = {
         app.postNotes.uploadInProgress = false;
         
         //Enable the form
-        enableForm(document.getElementById("noteData"));
+        document.getElementById("submit").disabled = app.postNotes.uploadInProgress;
+        document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles.bind(app.postNotes));
         
         let successes = response.payload.succeeded;
         let failures = response.payload.failed;
@@ -116,7 +117,7 @@ app.postNotes = {
     },
 
     submitFiles: function(event) {
-        if (app.postNotes.uploadInProgress) {
+        if (this.uploadInProgress) {
             console.warn("Notes are already being uploaded...");
             return;
         }
@@ -142,7 +143,7 @@ app.postNotes = {
             return;
         }
 
-        if (!app.postNotes.validateName(name)) {
+        if (!this.validateName(name)) {
             app.handleFailure({
                 messageCode: "NoteNameNotValid",
                 status: 400
@@ -150,7 +151,7 @@ app.postNotes = {
             return;
         }
 
-        if (!app.postNotes.validateDescription(description)) {
+        if (!this.validateDescription(description)) {
             app.handleFailure({
                 messageCode: "DescriptionNotValid",
                 status: 400
@@ -189,12 +190,13 @@ app.postNotes = {
             return;
         }
 
-        app.postNotes.uploadInProgress = true;
+        this.uploadInProgress = true;
         
         //Disable the form
-        disableForm(document.getElementById("noteData"));
+        document.getElementById("submit").disabled = app.postNotes.uploadInProgress;
+        document.getElementById('noteData').removeEventListener('submit', app.postNotes.submitFiles.bind(app.postNotes));
  
-        Resources.Notes.POST(name, description, courseId, dateToSubmit, files, app.postNotes.uploadNotesSuccess, app.postNotes.uploadNotesFailure, function(event) {
+        Resources.Notes.POST(name, description, courseId, dateToSubmit, files, this.uploadNotesSuccess, this.uploadNotesFailure, function(event) {
             if (event.lengthComputable === true) {
                 let percent = Math.round((event.loaded / event.total) * 100);
                 app.postNotes.setProgress(percent);
@@ -205,8 +207,10 @@ app.postNotes = {
     uploadNotesFailure: function(data) {
         app.postNotes.uploadInProgress = false;
         
-        //Enable the form
-        enableForm(document.getElementById("noteData"));
+        // Enable the form
+        document.getElementById("submit").disabled = app.postNotes.uploadInProgress;
+        document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles.bind(app.postNotes));
+        
         app.handleFailure(data);
     },
 
@@ -258,7 +262,7 @@ app.startup.push(function postNotesStartup() {
 
     document.getElementById('file').addEventListener('click', app.postNotes.addFile);
     document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles);
-    document.getElementById('submit').addEventListener("click", app.postNotes.submitFiles);
+    document.getElementById('submit').addEventListener("click", app.postNotes.submitFiles.bind(app.postNotes));
 
     datePolyFillStart();
 

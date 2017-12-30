@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,disableForm,enableForm */
+/* global Resources,MessageCode,Modal */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -73,7 +73,8 @@ app.editNote = {
         app.editNote.uploadInProgress = true;
         
         // Disable the form
-        disableForm(document.getElementById('noteData'));
+        document.getElementById('noteData').removeEventListener('submit', app.editNote.submitNote.bind(app.editNote));
+        document.getElementById("submit").disable = true;
 
         if (changes != {}) {
             Resources.NotesEdit.POST(this.noteId, changes.name, changes.desc, changes.taken_on, files, this.successEdit, this.failureEdit, function(event) {
@@ -90,7 +91,8 @@ app.editNote = {
         app.editNote.uploadInProgress = false;
         
         // Enable the form
-        enableForm(document.getElementById('noteData'));
+        document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote.bind(app.editNote));
+        document.getElementById("submit").disable = false;
         
         // Update the original note
         let note = response.payload.note;
@@ -138,7 +140,8 @@ app.editNote = {
         app.editNote.uploadInProgress = false;
         
         // Enable the form
-        enableForm(document.getElementById('noteData'));
+        document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote.bind(app.editNote));
+        document.getElementById("submit").disable = false;
         
         app.handleFailure(data);
     },

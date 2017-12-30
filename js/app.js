@@ -353,24 +353,3 @@ function debounce(func, wait, immediate) {
 	};
 };
 
-// Function to disable forms
-function disableForm(form){
-    if(document.body.contains(form)){
-        for (var i = 0; i < form.children.length; i++) {
-			var formElement = form.children[i];
-			if(formElement.nodeName == "INPUT") formElement.disabled = true;
-        }
-			
-    }
-}
-
-// Function to enable forms
-function enableForm(form){
-    if(document.body.contains(form)){
-        for (var i = 0; i < form.children.length; i++) {
-			var formElement = form.children[i];
-			if(formElement.nodeName == "INPUT") formElement.disabled = false;
-        }
-			
-    }
-}

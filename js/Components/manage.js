@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,generateDeleteConfirmationModal,debounce,disableForm,enableForm */
+/* global Resources,MessageCode,Modal,generateDeleteConfirmationModal,debounce */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -260,10 +260,10 @@ app.manage = {
             article.button2.onclick = function(e) {
                 var uid = this.id.split("_")[1];
                 var cid = this.id.split("_")[2];
-                var cb = function() {
+                var cb = function(event) {
                     
-                    // Disable the confirm button (Modal -> Footer -> Confirm button)
-                    document.getElementById("MODAL").children[2].children[0].disabled = true;
+                    // Disable the confirm button 
+                    event.target.disabled = true;
                     
                     // Delete the user access
                     Resources.UserAccess.DELETE(uid, cid, function() {
@@ -326,7 +326,8 @@ app.manage = {
         }
         
         // Disable the search form
-        disableForm(document.getElementById("searchData"));
+        document.getElementById("searchButton").disabled = true;
+        document.getElementById("searchData").removeEventListener('submit', app.manage.search.bind(app.manage));
         
         Resources.Courses.SEARCH(teacherName, courseName, courseNumber, courseSection, formattedSemester, this.pagesLoaded, this.searchSuccess, this.searchFailure);
     },
@@ -345,7 +346,8 @@ app.manage = {
     },
     searchSuccess: function(data) {
         // Enable the search form
-        enableForm(document.getElementById("searchData"));
+        document.getElementById("searchButton").disabled = false;
+        document.getElementById("searchData").addEventListener('submit', app.manage.search.bind(app.manage));
         
         let container = document.getElementById("searchResultContainer");
         
@@ -371,7 +373,8 @@ app.manage = {
     
     searchFailure: function(response){
         // Enable the search form
-        enableForm(document.getElementById("searchData"));
+        document.getElementById("searchButton").disabled = false;
+        document.getElementById("searchData").addEventListener('submit', app.manage.search.bind(app.manage));
         
         app.handleFailure(response);
     },
@@ -458,10 +461,8 @@ app.manage = {
 };
 
 app.startup.push(function manageStartup() {
-    let searchBtn = document.getElementById("searchData");
-    if (searchBtn) {
-        searchBtn.addEventListener('submit', app.manage.search.bind(app.manage))
-    }
+    document.getElementById("searchData").addEventListener('submit', app.manage.search.bind(app.manage));
+    
     let searchWhat = document.getElementsByName("searchWhat");
     for (var i = 0; i < searchWhat.length; i++) {
         searchWhat[i].addEventListener('change', app.manage.toggleSearchFields);
