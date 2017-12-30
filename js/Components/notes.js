@@ -171,10 +171,10 @@ app.notes = {
     deleteNote: function(e) {
         let id = this.id;
         let that = this;
-        generateDeleteConfirmationModal("Are you sure you want to delete this note?", function(){
+        generateDeleteConfirmationModal("Are you sure you want to delete this note?", function(event){
             
-            // Disable the confirm button (Modal -> Footer -> Confirm button)
-            document.getElementById("MODAL").children[2].children[0].disabled = true;
+            // Disable the confirm button 
+            event.target.disabled = true;
             
             // Hide the confirmation modal
             this.hide();

@@ -26,6 +26,10 @@ app.useraccess = {
 
     userAccessSuccess: function(response) {
         
+        // Enable the form
+        document.getElementById("submitAccess").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest.bind(app.useraccess));
+        
         let courses = response.payload.courses;
         let previousAccess= response.payload.previousAccess;
 
@@ -69,12 +73,20 @@ app.useraccess = {
             text: "Okay"
         }).show();
     },
+    
+    userAccessFailure: function(response){
+        // Enable the form
+        document.getElementById("submitAccess").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest.bind(app.useraccess));
+        
+        app.handleFailure(response);
+    },
 
     submitUserAccessRequest: function(event) {
         event.preventDefault();
 
         let studentId = document.getElementById('studentId').value;
-        if (!app.useraccess.verifyUserId(studentId)) {
+        if (!this.verifyUserId(studentId)) {
             app.handleFailure({
                 messageCode: "UserIdNotValid"
             });
@@ -148,8 +160,12 @@ app.useraccess = {
         for (var i = 0; i < courses.length; i++) {
             coursesId.push(courses[i].id);
         }
+        
+        // Disable the form
+        document.getElementById("submitAccess").disabled = true;
+        document.getElementById('userData').removeEventListener('submit', app.useraccess.submitUserAccessRequest.bind(app.useraccess));
 
-        Resources.UserAccess.POST(studentId, coursesId, role, formattedExpiryDate, app.useraccess.userAccessSuccess);
+        Resources.UserAccess.POST(studentId, coursesId, role, formattedExpiryDate, this.userAccessSuccess, this.userAccessFailure);
     },
 
     verifyUserId: function(userId) {
@@ -169,7 +185,7 @@ app.useraccess = {
 };
 
 app.startup.push(function userAccessStartup() {
-    document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest);
+    document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest.bind(app.useraccess));
     document.getElementById("yearExpiry").value = new Date().getFullYear();
     document.getElementById("seasonExpiry").selectedIndex = app.useraccess.getDefaultSeason();
     let signupLoginId = app.getStore("userAccessLoginId");
