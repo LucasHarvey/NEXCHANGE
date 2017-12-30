@@ -1,3 +1,4 @@
+#sudo ruby deployment/parse_courses.rb deployment/test.csv /var/lib/mysql-files/upload_courses.csv
 require 'csv'
 
 class Course 
@@ -59,16 +60,19 @@ end
 file = File.new(UPLOADPATH,  "w+")
 
 courses.each do |course| 
-   file.write(course.teacher_name)
-   file.write(";")
-   file.write(course.name)
-   file.write(";")
-   file.write(course.number)
-   file.write(";")
-   file.write(course.section)
-   file.write(";")
-   file.write(SEMESTER)
-   file.write("\n")
+    file.write(";")
+    file.write(course.teacher_name)
+    file.write(";")
+    file.write(course.name)
+    file.write(";")
+    file.write(course.number)
+    file.write(";")
+    file.write(course.section)
+    file.write(";")
+    file.write("F2017")
+    file.write("\n")
 end
 
 file.close();
+
+puts courses.length
