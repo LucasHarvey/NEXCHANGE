@@ -20,7 +20,7 @@ app.addCourse = {
         
         // Enable the form
         document.getElementById('submit').disabled = false;
-        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
+        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCoursebind(app.addCourse));
 
         // Empty the course input fields: 
         document.getElementById('courseName').value = "";
@@ -38,7 +38,7 @@ app.addCourse = {
     submitCourseFailure: function(data){
         // Enable the form
         document.getElementById('submit').disabled = false;
-        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
+        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse.bind(app.addCourse));
         app.handleFailure(data);
     },
 
@@ -116,17 +116,17 @@ app.addCourse = {
         
         // Disable the form
         document.getElementById('submit').disabled = true;
-        document.getElementById('addCourse').removeEventListener('submit', app.addCourse.submitCourse);
+        document.getElementById('addCourse').removeEventListener('submit', app.addCourse.submitCourse.bind(app.addCourse));
         
 
-        Resources.Courses.POST(teacherFullName, courseName, courseNumber, section, formattedSemester, app.addCourse.submitCourseSuccess, app.addCourse.submitCourseFailure);
+        Resources.Courses.POST(teacherFullName, courseName, courseNumber, section, formattedSemester, this.submitCourseSuccess, this.submitCourseFailure);
     }
 
 
 };
 
 app.startup.push(function addCourseStartup() {
-    document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
+    document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse.bind(app.addCourse));
     
     document.getElementById("year").value = new Date().getFullYear();
     document.getElementById("season").selectedIndex = app.addCourse.getDefaultSeason();
