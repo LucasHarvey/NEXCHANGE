@@ -1,3 +1,5 @@
+--source /home/ubuntu/workspace/deployment/schema.sql
+
 use nexchange;
 
 -- DROP EVERYTHING
