@@ -7,6 +7,11 @@ var app = app || {
 app.signup = {
 
     signupSuccess: function(data) {
+        
+        // Enable the form
+        document.getElementById("submit").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup);
+        
         var modalContent = "User has been created successfully.\n<p><span>Login ID: </span>" + data.payload.loginId + "</p>";
         modalContent += "\n<p><span>Name: </span>" + data.payload.firstName + " " + data.payload.lastName + "</p>";
         modalContent += "\n<p><span>Temporary Password: </span>" + data.payload.password + "</p>";
@@ -22,9 +27,21 @@ app.signup = {
             text: "Okay"
         }).show();
     },
+    
+    signupFailure: function(response){
+        // Enable the form
+        document.getElementById("submit").disabled = false;
+        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup);
+        
+        app.handleFailure(response);
+    },
 
     submitSignup: function(event) {
         event.preventDefault();
+        
+        // Disable the form
+        document.getElementById("submit").disabled = true;
+        document.getElementById('userData').removeEventListener('submit', app.signup.submitSignup);
 
         let email = document.getElementById('email').value;
         let firstName = document.getElementById('firstName').value;
@@ -78,8 +95,9 @@ app.signup = {
             });
             return;
         }
+        
 
-        Resources.Users.POST(firstName, lastName, studentId, email, app.signup.signupSuccess);
+        Resources.Users.POST(firstName, lastName, studentId, email, app.signup.signupSuccess, app.signup.signupFailure);
     },
 
     verifyEmail: function(email) {
