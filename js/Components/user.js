@@ -11,7 +11,7 @@ app.user = {
         
         // Enable the form
         document.getElementById("button_login").disabled = false;
-        document.getElementById("loginData").addEventListener("submit", app.user.login);
+        document.getElementById("loginData").addEventListener("submit", app.user.login.bind(app.user));
         
         app.user.authToken = data.payload.token;
         app.user.loginId = data.payload.loginId;
@@ -78,7 +78,7 @@ app.user = {
         
         // Enable the form
         document.getElementById("button_login").disabled = false;
-        document.getElementById("loginData").addEventListener("submit", app.user.login);
+        document.getElementById("loginData").addEventListener("submit", app.user.login.bind(app.user));
     },
     logout: function(e, forced) {
         e.preventDefault();
@@ -117,14 +117,14 @@ app.user = {
             });
             return;
         }
-        if (!app.user.verifyUserPass(password)) {
+        if (!this.verifyUserPass(password)) {
             app.user.failure({
                 messageCode: "PasswordTooSmall"
             });
             return;
         }
 
-        if (!app.user.verifyUserId(studentId)) {
+        if (!this.verifyUserId(studentId)) {
             app.user.failure({
                 messageCode: "UserIdNotValid"
             });
@@ -133,9 +133,9 @@ app.user = {
         
         // Disable the form
         document.getElementById("button_login").disabled = true;
-        document.getElementById("loginData").removeEventListener("submit", app.user.login);
+        document.getElementById("loginData").removeEventListener("submit", app.user.login.bind(app.user));
         
-        Resources.Auth.POST(studentId, password, app.user.loginSuccess, app.user.failure, { disableAuthResult: true });
+        Resources.Auth.POST(studentId, password, this.loginSuccess, this.failure, { disableAuthResult: true });
     },
 
     verifyUserId: function(userId) {
@@ -155,7 +155,7 @@ app.startup.push(function userStartup() {
 
     let loginForm = document.getElementById("loginData");
     if (loginForm) {
-        loginForm.addEventListener("submit", app.user.login);
+        loginForm.addEventListener("submit", app.user.login.bind(app.user));
     }
 
     app.user.authToken = app.getStore("authToken");
