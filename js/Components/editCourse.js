@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,getQueryParameterByName,disableForm, enableForm */
+/* global Resources,MessageCode,Modal,getQueryParameterByName */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -43,7 +43,8 @@ app.editCourse = {
     successCourseEdit: function(data) {
         
         // Enable the form
-        enableForm(document.getElementById("editCourse"));
+        document.getElementById("submit").disabled = false;
+        document.getElementById("editCourse").addEventListener("submit", app.editCourse.submitCourseEdit.bind(app.editCourse));
         
         // Update the course data
         let course = data.payload;
@@ -87,7 +88,8 @@ app.editCourse = {
     failureCourseEdit: function(data){
         
         // Enable the form
-        enableForm(document.getElementById("editCourse"));
+        document.getElementById("submit").disabled = false;
+        document.getElementById("editCourse").addEventListener("submit", app.editCourse.submitCourseEdit.bind(app.editCourse));
         
         app.handleFailure(data);
     },
@@ -177,7 +179,8 @@ app.editCourse = {
             changes.semester = newFormattedSemester;
             
         // Disable the form
-        disableForm(document.getElementById("editCourse"));
+        document.getElementById("submit").disabled = true;
+        document.getElementById("editCourse").removeEventListener("submit", app.editCourse.submitCourseEdit.bind(app.editCourse));
 
         if (changes != {}) {
             Resources.Courses.PUT(app.editCourse.courseId, changes.teacherFullName, changes.courseName, changes.courseNumber, changes.section, changes.semester, this.successCourseEdit, this.failureCourseEdit);

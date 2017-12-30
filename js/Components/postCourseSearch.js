@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,disableForm,enableForm */
+/* global Resources,MessageCode,Modal */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -142,7 +142,9 @@ app.postCourseSearch = {
 
     courseSearchSuccess: function(data) {
         // Enable the form
-        enableForm(document.getElementById("courseSearch"));
+        document.getElementById("submit").disabled = false;
+        document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
+
         
         // Empty the previous search results
         app.postCourseSearch.emptySearchResults();
@@ -190,7 +192,8 @@ app.postCourseSearch = {
     
     courseSearchFailure: function(response){
         // Enable the form
-        enableForm(document.getElementById("courseSearch"));
+        document.getElementById("submit").disabled = false;
+        document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
         
         app.handleFailure(response);
     },
@@ -244,16 +247,17 @@ app.postCourseSearch = {
         }
         
         // Disable the form
-        disableForm(document.getElementById("courseSearch"));
+        document.getElementById("submit").disabled = true;
+        document.getElementById('courseSearch').removeEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
 
-        Resources.Courses.SEARCH(teacherFullName, courseName, courseNumber, section, formattedSemester, 0, app.postCourseSearch.courseSearchSuccess, app.postCourseSearch.courseSearchFailure);
+        Resources.Courses.SEARCH(teacherFullName, courseName, courseNumber, section, formattedSemester, 0, this.courseSearchSuccess, this.courseSearchFailure);
     }
 
 
 };
 
 app.startup.push(function postCourseSearchStartup() {
-    document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch);
+    document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
     document.getElementById('addCourses').addEventListener('click', app.postCourseSearch.addCourses);
     document.getElementById('results').addEventListener('click', app.postCourseSearch.updateAddButton);
 
