@@ -2,7 +2,7 @@
 
 function getNavbarItems($conn, $user_id){
 
-    if(getUserPrivilege($conn, $user_id) == "ADMIN"){
+    if(getUserPrivilege() == "ADMIN"){
         $signup = array(
             "content" => "SIGN UP NEW USER",
             "url" => "./signup.html"

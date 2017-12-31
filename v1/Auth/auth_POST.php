@@ -42,7 +42,7 @@ if(authenticate($conn)){
     if($user['privilege'] == "ADMIN") $isAdmin = true;
     
     $userid = $user["id"];
-    $token = generateAuthToken($conn, $userid, $isAdmin);
+    $token = generateAuthToken($userid, $isAdmin);
     
     include_once "./NavBar/navbar_GET.php";
     $navbar = getNavbarItems($conn, $userid);
