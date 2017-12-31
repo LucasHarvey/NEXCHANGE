@@ -8,7 +8,7 @@ function base64url_decode($data) {
   return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
 }
     
-function generateAuthToken($userid, $admin = false){
+function generateAuthToken($userid, $privilege){
     
     // TODO: generate a proper private key...
     $secret = "super_secure_private_key";
@@ -29,7 +29,7 @@ function generateAuthToken($userid, $admin = false){
         "sub" => $userid,
         "iat" => time(),
         "exp" => $expiry,
-        "admin" => $admin,
+        "privilege" => $privilege,
         "xsrfToken" => $xsrf
     ]));
 
@@ -47,7 +47,7 @@ function generateAuthToken($userid, $admin = false){
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrf", $xsrf, "/v1/", "https://ide.c9.io", true, false);
+    setcookie("xsrf", $xsrf, 0, "/v1/", "https://ide.c9.io", true, false);
 
 }
 
@@ -221,7 +221,7 @@ function refreshUserToken(){
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrf", $xsrf, "/v1/", "https://ide.c9.io", true, false);
+    setcookie("xsrf", $xsrf, 0, "/v1/", "https://ide.c9.io", true, false);
 }
 
 function getUserPrivilege(){
@@ -236,9 +236,9 @@ function getUserPrivilege(){
     
     $payload = $decTokenPieces[1];
     
-    $isAdmin = $payload["admin"];
+    $privilege = $payload["privilege"];
     
-    return $isAdmin;
+    return $privilege;
 }
 
 function decodeToken($token){
