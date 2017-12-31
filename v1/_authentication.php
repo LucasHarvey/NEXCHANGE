@@ -44,12 +44,11 @@ function generateAuthToken($userid, $admin = false){
 function getAuthToken(){
     $headers = apache_request_headers();
     
-    if(!in_array("Cookie", array_keys($headers))){
+    if(empty($_COOKIE))
         return null;
-    }
 
     // $token is the JWT
-    $token = $headers["Cookie"];
+    $token = $_COOKIE["token"];
     
     if(empty($token)){
         return null;
@@ -67,7 +66,7 @@ function authorized(){
     }
     
     $tokenPieces = $token.explode(".");
-    // Verify that the token is valid
+    
     $header = $tokenPieces[0];
     $payload = $tokenPieces[1];
     
@@ -84,13 +83,20 @@ function authorized(){
     $tokenPieces = array_map(function($x) {
         return base64url_decode($x);
     }, $tokenPieces);
+    
+    // $xsrf is the token used to protect against CSRF
+    $xsrf = $_COOKIE["xsrfToken"];
+    
+    // Check that $xsrf is the same as the xsrfToken inside the payload
+    if($xsrf !== $tokenPieces[1]["xsrfToken"])
+        return array(false, null);
         
     // Check that the token is not expired
     if($tokenPieces[1]["exp"] < time())
         return array(false, null);
     
     return array(
-        $result != null, $token
+       true, $token
     );
 }
 
