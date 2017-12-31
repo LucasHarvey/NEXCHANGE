@@ -21,28 +21,34 @@ function generateAuthToken($userid, $admin = false){
     // Create an expiry time
     $expiry = time() + (15*60);
     
+    // Create an xsrf token and encode it since it will be send as its own cookie
+    $xsrf = uniqid();
+    
     // The xsrfToken is used to prevent CSRF (Cross-Site Request Forgery)
     $payload = base64url_encode(json_encode([
         "sub" => $userid,
         "iat" => time(),
         "exp" => $expiry,
         "admin" => $admin,
-        "xsrfToken" => uniqid()
+        "xsrfToken" => $xsrf
     ]));
 
     $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
 
     $token = $header . "." . $payload . "." . $signature;
     
-    // Set the cookie in the response header
+    // Set the cookie for JWT
     // TODO: change the fourth and fifth parameters once uploaded to server
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
     setcookie("token", $token, $expiry, "/v1/", "https://ide.c9.io", true, true);
+    
+    // Set the cookie for xsrf token
+    // HTTPOnly must be false to access the token on the client side
+    setcookie("xsrf", $xsrf, "/v1/", "https://ide.c9.io", true, false);
 
 }
 
 function getAuthToken(){
-    $headers = apache_request_headers();
     
     if(!isset($_COOKIE["token"]))
         return null;
@@ -84,11 +90,15 @@ function authorized(){
         return base64url_decode($x);
     }, $tokenPieces);
     
-    if(!isset($_COOKIE["xsrfToken"]))
+    /* Defend against CSRF */
+    
+    // Get the xsrf token from the headers
+    $headers = apache_request_headers();
+    
+    if(!in_array("X-CSRFToken", array_keys($headers)))
         return array(false, null);
-        
-    // $xsrf is the token used to protect against CSRF
-    $xsrf = $_COOKIE["xsrfToken"];
+    
+    $xsrf = $headers["X-CSRFToken"];
     
     // Check that $xsrf is the same as the xsrfToken inside the payload
     if($xsrf !== $tokenPieces[1]["xsrfToken"])
