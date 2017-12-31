@@ -38,18 +38,17 @@ if(authenticate($conn)){
     }
     
     // Determine if the user is an admin
-    $isAdmin = false;
-    if($user['privilege'] == "ADMIN") $isAdmin = true;
+    $privilege = "USER";
+    if($user['privilege'] == "ADMIN") $privilege = "ADMIN";
     
     $userid = $user["id"];
-    $token = generateAuthToken($userid, $isAdmin);
+    generateAuthToken($userid, $privilege);
     
     include_once "./NavBar/navbar_GET.php";
     $navbar = getNavbarItems($conn, $userid);
 
     echoSuccess($conn, array(
         "redirect" => $navbar[0],
-        "token" => $token,
         "userId" => $userid,
         "loginId" => $user["login_id"],
         "mustChangePass" => $user["changepass"],
