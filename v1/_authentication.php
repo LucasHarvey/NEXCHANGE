@@ -21,7 +21,7 @@ function generateAuthToken($userid, $admin = false){
     // Create an expiry time
     $expiry = time() + (15*60);
     
-    // Create an xsrf token and encode it since it will be send as its own cookie
+    // Create an xsrf token
     $xsrf = uniqid();
     
     // The xsrfToken is used to prevent CSRF (Cross-Site Request Forgery)
@@ -39,8 +39,11 @@ function generateAuthToken($userid, $admin = false){
     
     // Set the cookie for JWT
     // TODO: change the fourth and fifth parameters once uploaded to server
+    // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
-    setcookie("token", $token, $expiry, "/v1/", "https://ide.c9.io", true, true);
+    // setrawcookie() because the token pieces are already url encoded
+
+    setrawcookie("token", $token, 0, "/v1/", "https://ide.c9.io", true, true);
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
@@ -84,11 +87,9 @@ function authorized(){
     // Check if the token signature and the new signature are the same
     if($tokenPieces[2] !== $signature)
         return array(false, null);
-        
-    // Decode the pieces 
-    $tokenPieces = array_map(function($x) {
-        return base64url_decode($x);
-    }, $tokenPieces);
+    
+    // Decode the token
+    $decTokenPieces = decodeToken($token);
     
     /* Defend against CSRF */
     
@@ -101,12 +102,12 @@ function authorized(){
     $xsrf = $headers["X-CSRFToken"];
     
     // Check that $xsrf is the same as the xsrfToken inside the payload
-    if($xsrf !== $tokenPieces[1]["xsrfToken"])
+    if($xsrf !== $decTokenPieces[1]["xsrfToken"])
         return array(false, null);
         
     // Check that the token is not expired
-    if($tokenPieces[1]["exp"] < time())
-        return array(false, null);
+    if($decTokenPieces[1]["exp"] < time())
+        return array(false, $token);
     
     return array(
        true, $token
@@ -146,15 +147,10 @@ function getUserFromToken($conn){
         return null;
     }
     
-    $tokenPieces = $token.explode(".");
-    
-    // Decode the pieces 
-    $tokenPieces = array_map(function($x) {
-        return base64url_decode($x);
-    }, $tokenPieces);
+    $decTokenPieces = decodeToken($token);
     
     // Verify that the token is valid
-    $payload = $tokenPieces[1];
+    $payload = $decTokenPieces[1];
     
     $userId = $payload["sub"];
     
@@ -170,14 +166,9 @@ function isTokenExpired($token){
         return true;
     }
     
-    $tokenPieces = $token.explode(".");
+    $decTokenPieces = decodeToken($token);
     
-    // Decode the pieces 
-    $tokenPieces = array_map(function($x) {
-        return base64url_decode($x);
-    }, $tokenPieces);
-    
-    $payload = $tokenPieces[1];
+    $payload = $decTokenPieces[1];
     
      // Check that the token is not expired
     if($payload["exp"] < time())
@@ -194,22 +185,25 @@ function refreshUserToken(){
         return false;
     }
     
-    // Decode the pieces 
-    $tokenPieces = array_map(function($x) {
-        return base64url_decode($x);
-    }, $tokenPieces);
+    $decTokenPieces = decodeToken($token);
     
-    $payload = $tokenPieces[1];
+    $header = $decTokenPieces[0];
+    $payload = $decTokenPieces[1];
     
     // Change the expiry date by adding 15 minutes
     $payload["exp"] = time() + (15*60);
+    
+    // Create a new xsrf token
+    $xsrf = uniqid();
+    
+    $payload["xsrfToken"] = $xsrf;
     
     /* Reconstruct the token with the new expiry date */
     
     // TODO: generate a proper private key...
     $secret = "super_secure_private_key";
 
-    $header = base64url_encode($tokenPieces[0]);
+    $header = base64url_encode(json_encode($header));
     
     $payload = base64url_encode(json_encode($payload));
     
@@ -217,10 +211,17 @@ function refreshUserToken(){
 
     $token = $header . "." . $payload . "." . $signature;
     
-    // Set the cookie in the response header
+    // Set the cookie for JWT
     // TODO: change the fourth and fifth parameters once uploaded to server
+    // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
-    setcookie("token", $token, $expiry, "/v1/", "https://ide.c9.io", true, true);
+    // setrawcookie() because the token pieces are already url encoded
+
+    setrawcookie("token", $token, 0, "/v1/", "https://ide.c9.io", true, true);
+    
+    // Set the cookie for xsrf token
+    // HTTPOnly must be false to access the token on the client side
+    setcookie("xsrf", $xsrf, "/v1/", "https://ide.c9.io", true, false);
 }
 
 function getUserPrivilege(){
@@ -231,16 +232,34 @@ function getUserPrivilege(){
         return false;
     }
     
-    // Decode the pieces 
-    $tokenPieces = array_map(function($x) {
-        return base64url_decode($x);
-    }, $tokenPieces);
+    $decTokenPieces = decodeToken($token);
     
-    $payload = $tokenPieces[1];
+    $payload = $decTokenPieces[1];
     
     $isAdmin = $payload["admin"];
     
     return $isAdmin;
+}
+
+function decodeToken($token){
+    // Explode the token into its three components
+    $encTokenPieces = $token.explode(".");
+    
+    // Get the signature
+    $signature = $encTokenPieces[2];
+    
+    // Slice the signature off
+    $encHeadPay = array_slice($encTokenPieces, 0, 2);
+    
+    // base64url_decode and json_decode the header and payload
+    $decHeadPay = array_map(function($x){
+        base64url_decode(json_decode(($x)));
+    }, $encHeadPay);
+    
+    // Add the signature to the end of the decoded token pieces
+    $decTokenPieces = array_push($decHeadPay, $signature);
+    
+    return $decTokenPieces;
 }
 
 ?>
