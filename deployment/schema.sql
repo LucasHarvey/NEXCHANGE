@@ -29,13 +29,6 @@ CREATE TABLE users (
     PRIMARY KEY (id)
 );
 
-CREATE TABLE auth_tokens (
-    user_id CHAR(36) NOT NULL,
-    token CHAR(32) NOT NULL UNIQUE,
-    expires_on TIMESTAMP NOT NULL DEFAULT 0,
-    
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
 
 CREATE TABLE courses (
     id CHAR(36) NOT NULL,
