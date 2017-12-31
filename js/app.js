@@ -65,7 +65,7 @@ app.getStore = function(key) {
                 c = c.substring(1);
             }
             if (c.indexOf(name) == 0) {
-                return JSON.parse(c.substring(name.length, c.length));
+                return c.substring(name.length, c.length);
             }
         }
         return null;
@@ -76,7 +76,7 @@ app.getStore = function(key) {
 };
 
 app.getCookie = function(key) {
-    //Store cookies instead
+    
     var name = key + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
@@ -86,10 +86,12 @@ app.getCookie = function(key) {
             c = c.substring(1);
         }
         if (c.indexOf(name) == 0) {
-            return JSON.parse(c.substring(name.length, c.length));
+            return c.substring(name.length, c.length);
         }
     }
     return null;
+
+
 }
 
 app.handleFailure = function(response) {

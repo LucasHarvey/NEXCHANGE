@@ -1,19 +1,11 @@
 <?php
-
-function base64url_encode($data) {
-    return rtrim(strtr(base64_encode($data), "+/", "-_"), "=");
-}
-
-function base64url_decode($data) { 
-  return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
-}
     
 function generateAuthToken($userid, $privilege){
     
     // TODO: generate a proper private key...
     $secret = "super_secure_private_key";
 
-    $header = base64url_encode(json_encode([
+    $header = base64_encode(json_encode([
         "alg" => "HS256",
         "typ" => "JWT"
     ]));
@@ -25,7 +17,7 @@ function generateAuthToken($userid, $privilege){
     $xsrf = uniqid();
     
     // The xsrfToken is used to prevent CSRF (Cross-Site Request Forgery)
-    $payload = base64url_encode(json_encode([
+    $payload = base64_encode(json_encode([
         "sub" => $userid,
         "iat" => time(),
         "exp" => $expiry,
@@ -33,7 +25,7 @@ function generateAuthToken($userid, $privilege){
         "xsrfToken" => $xsrf
     ]));
 
-    $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
 
     $token = $header . "." . $payload . "." . $signature;
     
@@ -41,13 +33,13 @@ function generateAuthToken($userid, $privilege){
     // TODO: change the fourth and fifth parameters once uploaded to server
     // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
-    // setrawcookie() because the token pieces are already url encoded
 
-    setrawcookie("authToken", $token, 0, "/v1/", "https://ide.c9.io", true, true);
+    setcookie("authToken", $token, 0, "/", "", true, true);
+    
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrfToken", $xsrf, 0, "/v1/", "https://ide.c9.io", true, false);
+    setcookie("xsrfToken", $xsrf, 0, "/", "", true, false);
 
 }
 
@@ -70,45 +62,51 @@ function getAuthToken(){
 function authorized(){
     $token = getAuthToken();
     
+    
     if($token == null){
         return array(false, null);
     }
     
-    $tokenPieces = $token.explode(".");
+    $encTokenPieces = explode(".", $token);
     
-    $header = $tokenPieces[0];
-    $payload = $tokenPieces[1];
+    $header = $encTokenPieces[0];
+    $payload = $encTokenPieces[1];
     
     // TODO: generate a proper private key...
     $secret = "super_secure_private_key";
     
-    $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
     
     // Check if the token signature and the new signature are the same
-    if($tokenPieces[2] !== $signature)
+    if($encTokenPieces[2] !== $signature)
         return array(false, null);
     
     // Decode the token
     $decTokenPieces = decodeToken($token);
+    
     
     /* Defend against CSRF */
     
     // Get the xsrf token from the headers
     $headers = apache_request_headers();
     
-    if(!in_array("X-CSRFToken", array_keys($headers)))
+    if(!in_array("x-csrftoken", array_keys(apache_request_headers())))
         return array(false, null);
     
-    $xsrf = $headers["X-CSRFToken"];
+    
+    $xsrf = $headers["x-csrftoken"];
     
     // Check that $xsrf is the same as the xsrfToken inside the payload
     if($xsrf !== $decTokenPieces[1]["xsrfToken"])
         return array(false, null);
+    
+    
         
     // Check that the token is not expired
     if($decTokenPieces[1]["exp"] < time())
         return array(false, $token);
     
+
     return array(
        true, $token
     );
@@ -128,7 +126,7 @@ function tokenForUser($userId){
     
     // Decode the pieces 
     $tokenPieces = array_map(function($x) {
-            return base64url_decode($x);
+            return base64_decode($x);
         }, $tokenPieces);
     
     
@@ -203,11 +201,11 @@ function refreshUserToken(){
     // TODO: generate a proper private key...
     $secret = "super_secure_private_key";
 
-    $header = base64url_encode(json_encode($header));
+    $header = base64_encode(json_encode($header));
     
-    $payload = base64url_encode(json_encode($payload));
+    $payload = base64_encode(json_encode($payload));
     
-    $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
 
     $token = $header . "." . $payload . "." . $signature;
     
@@ -215,9 +213,8 @@ function refreshUserToken(){
     // TODO: change the fourth and fifth parameters once uploaded to server
     // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
-    // setrawcookie() because the token pieces are already url encoded
 
-    setrawcookie("authToken", $token, 0, "/v1/", "https://ide.c9.io", true, true);
+    setcookie("authToken", $token, 0, "/v1/", "https://ide.c9.io", true, true);
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
@@ -243,7 +240,7 @@ function getUserPrivilege(){
 
 function decodeToken($token){
     // Explode the token into its three components
-    $encTokenPieces = $token.explode(".");
+    $encTokenPieces = explode(".", $token);
     
     // Get the signature
     $signature = $encTokenPieces[2];
@@ -251,14 +248,15 @@ function decodeToken($token){
     // Slice the signature off
     $encHeadPay = array_slice($encTokenPieces, 0, 2);
     
-    // base64url_decode and json_decode the header and payload
-    $decHeadPay = array_map(function($x){
-        base64url_decode(json_decode(($x)));
-    }, $encHeadPay);
+    $decHead = base64_decode($encHeadPay[0]);
+    $decHead = json_decode($decHead, true);
     
-    // Add the signature to the end of the decoded token pieces
-    $decTokenPieces = array_push($decHeadPay, $signature);
-    
+    $decPay = base64_decode($encHeadPay[1]);
+    $decPay = json_decode($decPay, true);
+
+    // Created the decoded token array
+    $decTokenPieces = array($decHead, $decPay, $signature);
+
     return $decTokenPieces;
 }
 
