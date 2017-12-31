@@ -32,13 +32,17 @@ if(authenticate($conn)){
     }
     $loginId = $creds[0];
     
-    $user = database_get_row($conn, "SELECT id, login_id, last_login IS NULL as 'changepass' FROM users WHERE login_id=?", "s", $loginId);
+    $user = database_get_row($conn, "SELECT id, login_id, last_login IS NULL as 'changepass', privilege FROM users WHERE login_id=?", "s", $loginId);
     if($user == null){
         echoError($conn, 404, "UserNotFound");
     }
     
+    // Determine if the user is an admin
+    $isAdmin = false;
+    if($user['privilege'] == "ADMIN") $isAdmin = true;
+    
     $userid = $user["id"];
-    $token = generateAuthToken($conn, $userid);
+    $token = generateAuthToken($conn, $userid, $isAdmin);
     
     include_once "./NavBar/navbar_GET.php";
     $navbar = getNavbarItems($conn, $userid);
