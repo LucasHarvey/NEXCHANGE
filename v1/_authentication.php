@@ -1,15 +1,36 @@
 <?php
 
+function base64url_encode($data) {
+    return rtrim(strtr(base64_encode($data), "+/", "-_"), "=");
+}
+
+function base64url_decode($data) { 
+  return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
+}
+    
 function generateAuthToken($conn, $userid){
-    $length = 16;
-    $true = true;
-    $token = bin2hex(openssl_random_pseudo_bytes($length, $true));
     
-    database_insert($conn, 
-        "INSERT INTO auth_tokens (user_id, token) VALUES (?,?)", "ss", array($userid, $token)
-    );
+    // generate a proper private key...
+    $secret = "super_secure_private_key";
+
+    $header = base64url_encode(json_encode([
+        "alg" => "HS256",
+        "typ" => "JWT"
+    ]));
+
+    $payload = base64url_encode(json_encode([
+        "sub" => $userid,
+        "iat" => time(),
+        "exp" => time() + (15*60)
+        // Add code for admin ex: $payload["admin"] = true;
+    ]));
+
+    $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
+
+    $token = $header . "." . $payload . "." . $signature;
     
-    return "Basic ".base64_encode($token);
+    return $token;
+
 }
 
 function getAuthToken(){
@@ -25,6 +46,8 @@ function getAuthToken(){
     }
     
     return base64_decode(substr($base, 6));
+    
+    // Change the substring
 }
 
 function authorized($conn){
@@ -33,7 +56,7 @@ function authorized($conn){
         return array(false, null);
     }
     
-    $queryStr = "SELECT * FROM auth_tokens WHERE token=? AND expires_on >= NOW()";
+    // Verify that the token is valid
     $result = database_get_row($conn, $queryStr, "s", array($token));
     return array(
         $result != null, $token
@@ -46,6 +69,7 @@ function tokenForUser($conn, $userId){
         return false;
     }
     
+    // cannot be used anymore
     $queryStr = "SELECT * FROM auth_tokens WHERE token=? AND expires_on >= NOW() AND user_id=?";
     $result = database_get_row($conn, $queryStr, "ss", array($token, $userId));
     return ($result != null);
@@ -57,7 +81,7 @@ function getUserFromToken($conn){
         return null;
     }
     
-    
+    // Get the user info from inside the token
     $queryStr = "SELECT user_id FROM auth_tokens WHERE token=? AND expires_on >= NOW()";
     $result = database_get_row($conn, $queryStr, "s", array($token));
 
@@ -68,6 +92,8 @@ function getUserFromToken($conn){
 }
 
 function isTokenExpired($conn, $token){
+    
+    // Check in the JWT if it is expired
     if($token == null){
         return true;
     }
@@ -77,6 +103,8 @@ function isTokenExpired($conn, $token){
 }
 
 function refreshUserToken($conn){
+    
+    //update the JWT and send it back in each response
     $token = getAuthToken();
     if($token == null){
         return false;
