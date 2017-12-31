@@ -75,15 +75,6 @@ app.getStore = function(key) {
     }
 };
 
-app.storeCookie = function(key, data) {
-    //Store cookies instead
-        if (data === null) {
-            document.cookie = key + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT";
-            return;
-        }
-        document.cookie = key + "=" + JSON.stringify(data) + "; path=/";
-}
-
 app.getCookie = function(key) {
     //Store cookies instead
     var name = key + "=";
