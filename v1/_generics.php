@@ -25,7 +25,7 @@ include_once "_authentication.php";
 
 if(!isset($NO_AUTH_CHECKS) || $NO_AUTH_CHECKS !== true){
     $conn = database_connect();
-    $authed = authorized($conn);
+    $authed = authorized();
     if($authed[0] === true){ //Is authorized??
         refreshUserToken($conn);
         $conn->close();
