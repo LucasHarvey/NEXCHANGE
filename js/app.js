@@ -75,6 +75,32 @@ app.getStore = function(key) {
     }
 };
 
+app.storeCookie = function(key, data) {
+    //Store cookies instead
+        if (data === null) {
+            document.cookie = key + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT";
+            return;
+        }
+        document.cookie = key + "=" + JSON.stringify(data) + "; path=/";
+}
+
+app.getCookie = function(key) {
+    //Store cookies instead
+    var name = key + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return JSON.parse(c.substring(name.length, c.length));
+        }
+    }
+    return null;
+}
+
 app.handleFailure = function(response) {
     console.warn(response, MessageCode[response.messageCode]);
     if (typeof Modal === "undefined") {
@@ -92,8 +118,6 @@ app.handleAuthError = function(response) {
     console.warn(MessageCode[response.messageCode]);
     let logoutFunction = function() {
         var f = function() {
-            // Delete the token in the user's local storage
-            app.store("authToken", null);
             // Only save the last location if the token expired
             if(response.messageCode == "AuthenticationExpired"){
                 // Store the current location as the next location after login
@@ -104,7 +128,7 @@ app.handleAuthError = function(response) {
             // Redirect the user to the login page
             window.location = "./login.html";
         };
-        // Delete the user's auth token
+        // Delete the user's JWT and xsrf token (this is necessary because of HTTPOnly)
         Resources.Auth.DELETE(f, f, true);
     };
     if (response.messageCode == "AuthorizationFailed") {
@@ -131,7 +155,9 @@ app.handleAuthError = function(response) {
 app.post = function(resource, data, success, failure) {
     let request = this._generateRequest(success, failure);
     request.open("POST", resource.location);
-    request.setRequestHeader("Authorization", app.user.authToken);
+    // Set the xsrf token in header
+    var xsrfToken = app.user.xsrfToken;
+    request.setRequestHeader("X-CSRFToken", xsrfToken);
     request.setRequestHeader("content-type", "application/json");
     request.send(JSON.stringify(data || {}));
     return request;
@@ -140,7 +166,9 @@ app.post = function(resource, data, success, failure) {
 app.put = function(resource, data, success, failure, options) {
     let request = this._generateRequest(success, failure, options);
     request.open("PUT", resource.location);
-    request.setRequestHeader("Authorization", app.user.authToken);
+    // Set the xsrf token in header
+    var xsrfToken = app.user.xsrfToken;
+    request.setRequestHeader("X-CSRFToken", xsrfToken);
     request.setRequestHeader("content-type", "application/json");
     request.send(this._generateRequestBody(data));
     return request;
@@ -155,7 +183,9 @@ app.delete = function(resource, data, success, failure, options) {
         })
         .join('&');
     request.open("DELETE", resource.location + (requestParams.length > 0 ? "?" : "") + requestParams);
-    request.setRequestHeader("Authorization", app.user.authToken);
+    // Set the xsrf token in header
+    var xsrfToken = app.user.xsrfToken;
+    request.setRequestHeader("X-CSRFToken", xsrfToken);
     request.setRequestHeader("content-type", "application/json");
     request.send();
     return request;
@@ -174,7 +204,9 @@ app.get = function(resource, data, success, failure, options) {
     for (var opt in options) {
         request[opt] = options[opt];
     }
-    request.setRequestHeader("Authorization", app.user.authToken);
+    // Set the xsrf token in header
+    var xsrfToken = app.user.xsrfToken;;
+    request.setRequestHeader("X-CSRFToken", xsrfToken);
     request.send();
     return request;
 };

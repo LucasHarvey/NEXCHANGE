@@ -43,21 +43,21 @@ function generateAuthToken($userid, $privilege){
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
     // setrawcookie() because the token pieces are already url encoded
 
-    setrawcookie("token", $token, 0, "/v1/", "https://ide.c9.io", true, true);
+    setrawcookie("authToken", $token, 0, "/v1/", "https://ide.c9.io", true, true);
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrf", $xsrf, 0, "/v1/", "https://ide.c9.io", true, false);
+    setcookie("xsrfToken", $xsrf, 0, "/v1/", "https://ide.c9.io", true, false);
 
 }
 
 function getAuthToken(){
     
-    if(!isset($_COOKIE["token"]))
+    if(!isset($_COOKIE["authToken"]))
         return null;
 
     // $token is the JWT
-    $token = $_COOKIE["token"];
+    $token = $_COOKIE["authToken"];
     
     if(empty($token)){
         return null;
@@ -217,11 +217,11 @@ function refreshUserToken(){
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
     // setrawcookie() because the token pieces are already url encoded
 
-    setrawcookie("token", $token, 0, "/v1/", "https://ide.c9.io", true, true);
+    setrawcookie("authToken", $token, 0, "/v1/", "https://ide.c9.io", true, true);
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrf", $xsrf, 0, "/v1/", "https://ide.c9.io", true, false);
+    setcookie("xsrfToken", $xsrf, 0, "/v1/", "https://ide.c9.io", true, false);
 }
 
 function getUserPrivilege(){
