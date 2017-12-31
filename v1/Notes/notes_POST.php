@@ -8,7 +8,7 @@ $allowed = ['pdf','docx', 'doc', 'pptx', 'ppt', 'xlsx', 'jpeg', 'jpg', 'png', 't
 $MAX_SINGLE_FILE_SIZE = 5 * 1024 * 1024; //2 mb
 
 $user_id = getUserFromToken($conn);
-if(getUserPrivilege($conn, $user_id) == "ADMIN"){
+if(getUserPrivilege() == "ADMIN"){
     echoError($conn, 403, "AuthorizationFailed");
 }
 

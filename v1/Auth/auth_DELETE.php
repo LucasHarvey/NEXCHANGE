@@ -1,8 +1,8 @@
 <?php
 $conn = database_connect();
-$token = getAuthToken($conn);
 
-database_delete($conn, "DELETE FROM auth_tokens WHERE token=?", "s", array($token));
+// Set the cookie to null
+setcookie("token", null, 0, "/v1/", "https://ide.c9.io", true, true);
 
 echoSuccess($conn, array(
     "messageCode" => "UserUnauthenticated"
