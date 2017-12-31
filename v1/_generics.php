@@ -27,11 +27,11 @@ if(!isset($NO_AUTH_CHECKS) || $NO_AUTH_CHECKS !== true){
     $conn = database_connect();
     $authed = authorized();
     if($authed[0] === true){ //Is authorized??
-        refreshUserToken($conn);
+        refreshUserToken();
         $conn->close();
         return;
     }
-    if($authed[1] != null && isTokenExpired($conn, $authed[1])){ //was the token once valid
+    if($authed[1] != null && isTokenExpired($authed[1])){ //was the token once valid
         echoError($conn, 401, "AuthenticationExpired");
     }
     echoError($conn, 401, "AuthorizationFailed");
