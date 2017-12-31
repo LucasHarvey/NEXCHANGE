@@ -8,66 +8,109 @@ function base64url_decode($data) {
   return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
 }
     
-function generateAuthToken($conn, $userid){
+function generateAuthToken($userid, $admin = false){
     
-    // generate a proper private key...
+    // TODO: generate a proper private key...
     $secret = "super_secure_private_key";
 
     $header = base64url_encode(json_encode([
         "alg" => "HS256",
         "typ" => "JWT"
     ]));
-
+    
+    // Create an expiry time
+    $expiry = time() + (15*60);
+    
+    // The xsrfToken is used to prevent CSRF (Cross-Site Request Forgery)
     $payload = base64url_encode(json_encode([
         "sub" => $userid,
         "iat" => time(),
-        "exp" => time() + (15*60)
-        // Add code for admin ex: $payload["admin"] = true;
+        "exp" => $expiry,
+        "admin" => $admin,
+        "xsrfToken" => uniqid()
     ]));
 
     $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
 
     $token = $header . "." . $payload . "." . $signature;
     
-    return $token;
+    // Set the cookie in the response header
+    // TODO: change the fourth and fifth parameters once uploaded to server
+    // Arguments 6 and 7 are Secure and HTTPOnly respectively
+    setcookie("token", $token, $expiry, "/v1/", "https://ide.c9.io", true, true);
 
 }
 
 function getAuthToken(){
     $headers = apache_request_headers();
     
-    if(!in_array("authorization", array_keys($headers))){
+    if(!in_array("Cookie", array_keys($headers))){
         return null;
     }
 
-    $base = $headers["authorization"];
-    if(empty($base)){
+    // $token is the JWT
+    $token = $headers["Cookie"];
+    
+    if(empty($token)){
         return null;
     }
     
-    return base64_decode(substr($base, 6));
+    return $token;
     
-    // Change the substring
 }
 
-function authorized($conn){
+function authorized(){
     $token = getAuthToken();
+    
     if($token == null){
         return array(false, null);
     }
     
+    $tokenPieces = $token.explode(".");
     // Verify that the token is valid
-    $result = database_get_row($conn, $queryStr, "s", array($token));
+    $header = $tokenPieces[0];
+    $payload = $tokenPieces[1];
+    
+    // TODO: generate a proper private key...
+    $secret = "super_secure_private_key";
+    
+    $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
+    
+    // Check if the token signature and the new signature are the same
+    if($tokenPieces[2] !== $signature)
+        return array(false, null);
+        
+    // Decode the pieces 
+    $tokenPieces = array_map(function($x) {
+        return base64url_decode($x);
+    }, $tokenPieces);
+        
+    // Check that the token is not expired
+    if($tokenPieces[1]["exp"] < time())
+        return array(false, null);
+    
     return array(
         $result != null, $token
     );
 }
 
-function tokenForUser($conn, $userId){
+/* Is this function used anywhere...? becomes obsolete with JWT
+
+function tokenForUser($userId){
     $token = getAuthToken();
+    
     if($token == null){
         return false;
     }
+    
+    // Explode the token into: header, payload and signature
+    $tokenPieces = $base.explode(".");
+    
+    // Decode the pieces 
+    $tokenPieces = array_map(function($x) {
+            return base64url_decode($x);
+        }, $tokenPieces);
+    
     
     // cannot be used anymore
     $queryStr = "SELECT * FROM auth_tokens WHERE token=? AND expires_on >= NOW() AND user_id=?";
@@ -75,53 +118,110 @@ function tokenForUser($conn, $userId){
     return ($result != null);
 }
 
+*/
+
 function getUserFromToken($conn){
     $token = getAuthToken();
+    
     if($token == null){
         return null;
     }
     
-    // Get the user info from inside the token
-    $queryStr = "SELECT user_id FROM auth_tokens WHERE token=? AND expires_on >= NOW()";
-    $result = database_get_row($conn, $queryStr, "s", array($token));
-
-    if($result != null){
-        return $result["user_id"];
-    }
-    return null;
+    $tokenPieces = $token.explode(".");
+    
+    // Decode the pieces 
+    $tokenPieces = array_map(function($x) {
+        return base64url_decode($x);
+    }, $tokenPieces);
+    
+    // Verify that the token is valid
+    $payload = $tokenPieces[1];
+    
+    $userId = $payload["sub"];
+    
+    // Get the id of the user
+    $id = database_get_row($conn, "SELECT id FROM users WHERE login_id=?", "s", $userId);
+    
+    return $id;
 }
 
-function isTokenExpired($conn, $token){
+function isTokenExpired($token){
     
-    // Check in the JWT if it is expired
     if($token == null){
         return true;
     }
-    $queryStr = "SELECT expires_on <= NOW() FROM auth_tokens WHERE token=?";
-    $result = database_get_row($conn, $queryStr, "s", array($token));
-    return ($result != null);
+    
+    $tokenPieces = $token.explode(".");
+    
+    // Decode the pieces 
+    $tokenPieces = array_map(function($x) {
+        return base64url_decode($x);
+    }, $tokenPieces);
+    
+    $payload = $tokenPieces[1];
+    
+     // Check that the token is not expired
+    if($payload["exp"] < time())
+        return true;
+    
+    return false;
 }
 
-function refreshUserToken($conn){
+function refreshUserToken(){
     
-    //update the JWT and send it back in each response
     $token = getAuthToken();
+    
     if($token == null){
         return false;
     }
     
-    $queryStr = "UPDATE auth_tokens SET expires_on = DATE_ADD(NOW(), INTERVAL 15 MINUTE) WHERE token=?";
-    return database_update($conn, $queryStr, "s", array($token));
+    // Decode the pieces 
+    $tokenPieces = array_map(function($x) {
+        return base64url_decode($x);
+    }, $tokenPieces);
+    
+    $payload = $tokenPieces[1];
+    
+    // Change the expiry date by adding 15 minutes
+    $payload["exp"] = time() + (15*60);
+    
+    /* Reconstruct the token with the new expiry date */
+    
+    // TODO: generate a proper private key...
+    $secret = "super_secure_private_key";
+
+    $header = base64url_encode($tokenPieces[0]);
+    
+    $payload = base64url_encode(json_encode($payload));
+    
+    $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
+
+    $token = $header . "." . $payload . "." . $signature;
+    
+    // Set the cookie in the response header
+    // TODO: change the fourth and fifth parameters once uploaded to server
+    // Arguments 6 and 7 are Secure and HTTPOnly respectively
+    setcookie("token", $token, $expiry, "/v1/", "https://ide.c9.io", true, true);
 }
 
-function getUserPrivilege($conn, $userId){
-    if($userId == null) return null;
+function getUserPrivilege(){
     
-    $queryStr = "SELECT privilege FROM users WHERE id=? LIMIT 1";
-    $row = database_get_row($conn, $queryStr, "s", array($userId));
-    if($row != null){
-        return $row["privilege"];
+    $token = getAuthToken();
+    
+    if($token == null){
+        return false;
     }
-    return null;
+    
+    // Decode the pieces 
+    $tokenPieces = array_map(function($x) {
+        return base64url_decode($x);
+    }, $tokenPieces);
+    
+    $payload = $tokenPieces[1];
+    
+    $isAdmin = $payload["admin"];
+    
+    return $isAdmin;
 }
+
 ?>
