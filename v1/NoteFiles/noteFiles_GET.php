@@ -33,7 +33,7 @@ if(!$note){
 }
 
 // Ensure that the user has access to the notes
-if(getUserPrivilege($conn, $user_id) != "ADMIN"){
+if(getUserPrivilege() != "ADMIN"){
     $userAccess = database_get_row($conn, "SELECT user_id FROM user_access WHERE user_id=? AND course_id=?", "ss", array($user_id, $note["course_id"]));
     if(!$userAccess){
         echoError($conn, 403, "UserDownloadNotesDenied");
