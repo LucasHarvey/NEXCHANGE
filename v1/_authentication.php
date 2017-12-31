@@ -44,7 +44,7 @@ function generateAuthToken($userid, $admin = false){
 function getAuthToken(){
     $headers = apache_request_headers();
     
-    if(empty($_COOKIE))
+    if(!isset($_COOKIE["token"]))
         return null;
 
     // $token is the JWT
@@ -84,6 +84,9 @@ function authorized(){
         return base64url_decode($x);
     }, $tokenPieces);
     
+    if(!isset($_COOKIE["xsrfToken"]))
+        return array(false, null);
+        
     // $xsrf is the token used to protect against CSRF
     $xsrf = $_COOKIE["xsrfToken"];
     
