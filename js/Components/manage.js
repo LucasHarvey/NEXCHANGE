@@ -327,7 +327,7 @@ app.manage = {
         
         // Disable the search form
         document.getElementById("searchButton").disabled = true;
-        document.getElementById("searchData").removeEventListener('submit', app.manage.search.bind(app.manage));
+        document.getElementById("searchData").removeEventListener('submit', app.manage.search);
         
         Resources.Courses.SEARCH(teacherName, courseName, courseNumber, courseSection, formattedSemester, this.pagesLoaded, this.searchSuccess, this.searchFailure);
     },
@@ -347,7 +347,7 @@ app.manage = {
     searchSuccess: function(data) {
         // Enable the search form
         document.getElementById("searchButton").disabled = false;
-        document.getElementById("searchData").addEventListener('submit', app.manage.search.bind(app.manage));
+        document.getElementById("searchData").addEventListener('submit', app.manage.search);
         
         let container = document.getElementById("searchResultContainer");
         
@@ -374,7 +374,7 @@ app.manage = {
     searchFailure: function(response){
         // Enable the search form
         document.getElementById("searchButton").disabled = false;
-        document.getElementById("searchData").addEventListener('submit', app.manage.search.bind(app.manage));
+        document.getElementById("searchData").addEventListener('submit', app.manage.search);
         
         app.handleFailure(response);
     },
@@ -461,7 +461,9 @@ app.manage = {
 };
 
 app.startup.push(function manageStartup() {
-    document.getElementById("searchData").addEventListener('submit', app.manage.search.bind(app.manage));
+    app.manage.search = app.manage.search.bind(app.manage);
+    
+    document.getElementById("searchData").addEventListener('submit', app.manage.search);
     
     let searchWhat = document.getElementsByName("searchWhat");
     for (var i = 0; i < searchWhat.length; i++) {
