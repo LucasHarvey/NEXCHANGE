@@ -143,7 +143,7 @@ app.post = function(resource, data, success, failure) {
     let request = this._generateRequest(success, failure);
     request.open("POST", resource.location);
     // Set the xsrf token in header
-    request.setRequestHeader("x-csrftoken", app.user.xsrfToken);
+    request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.setRequestHeader("content-type", "application/json");
     request.send(JSON.stringify(data || {}));
     return request;
@@ -153,7 +153,7 @@ app.put = function(resource, data, success, failure, options) {
     let request = this._generateRequest(success, failure, options);
     request.open("PUT", resource.location);
     // Set the xsrf token in header
-    request.setRequestHeader("x-csrftoken", app.user.xsrfToken);
+    request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.setRequestHeader("content-type", "application/json");
     request.send(this._generateRequestBody(data));
     return request;
@@ -169,7 +169,7 @@ app.delete = function(resource, data, success, failure, options) {
         .join('&');
     request.open("DELETE", resource.location + (requestParams.length > 0 ? "?" : "") + requestParams);
     // Set the xsrf token in header
-    request.setRequestHeader("x-csrftoken", app.user.xsrfToken);
+    request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.setRequestHeader("content-type", "application/json");
     request.send();
     return request;
@@ -189,7 +189,7 @@ app.get = function(resource, data, success, failure, options) {
         request[opt] = options[opt];
     }
     // Set the xsrf token in header
-    request.setRequestHeader("x-csrftoken", app.user.xsrfToken);
+    request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.send();
     return request;
 };
