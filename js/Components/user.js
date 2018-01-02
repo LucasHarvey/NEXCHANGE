@@ -11,7 +11,7 @@ app.user = {
         
         // Enable the form
         document.getElementById("button_login").disabled = false;
-        document.getElementById("loginData").addEventListener("submit", app.user.login.bind(app.user));
+        document.getElementById("loginData").addEventListener("submit", app.user.login);
         
         // Note: The JWT is stored in Cookie and only accessible through HTTP
         // The xsrfToken is retrieved from Cookie and store in app.user.xsrfToken
@@ -84,7 +84,7 @@ app.user = {
         
         // Enable the form
         document.getElementById("button_login").disabled = false;
-        document.getElementById("loginData").addEventListener("submit", app.user.login.bind(app.user));
+        document.getElementById("loginData").addEventListener("submit", app.user.login);
     },
     logout: function(e, forced) {
         e.preventDefault();
@@ -137,7 +137,7 @@ app.user = {
         
         // Disable the form
         document.getElementById("button_login").disabled = true;
-        document.getElementById("loginData").removeEventListener("submit", app.user.login.bind(app.user));
+        document.getElementById("loginData").removeEventListener("submit", app.user.login);
         
         Resources.Auth.POST(studentId, password, this.loginSuccess, this.failure, { disableAuthResult: true });
     },
@@ -152,6 +152,8 @@ app.user = {
 };
 
 app.startup.push(function userStartup() {
+    app.user.login = app.user.login.bind(app.user);
+    
     let logout = document.getElementById('logout');
     if (logout) {
         logout.addEventListener('click', app.user.logout);
@@ -159,7 +161,7 @@ app.startup.push(function userStartup() {
 
     let loginForm = document.getElementById("loginData");
     if (loginForm) {
-        loginForm.addEventListener("submit", app.user.login.bind(app.user));
+        loginForm.addEventListener("submit", app.user.login);
     }
 
     app.user.xsrfToken = app.getCookie("xsrfToken");

@@ -9,8 +9,7 @@ app.DEFAULTS = {
 };
 
 app.start = function() {
-    //flexibility(document.documentElement); //Make everything a flexbox (Polyfill.)
-    
+    flexibility(document.body); //Make everything a flexbox (Polyfill.)
     console.log("NEXCHANGE Started.");
     for (var i = 0; i < app.startup.length; i++) {
         try {
@@ -95,11 +94,8 @@ app.getCookie = function(key) {
 }
 
 app.handleFailure = function(response) {
-    console.warn(response, MessageCode[response.messageCode]);
+    console.warn(response.status, response.messageCode);
     if (typeof Modal === "undefined") {
-        console.log("NO MODAL...", response);
-        (document.getElementById("errorTray") || {}).innerHTML = MessageCode[response.messageCode];
-        (document.getElementById("errorTray") || { style: {} }).style.display = "block";
         return;
     }
     new Modal("Error", MessageCode[response.messageCode], null, {
@@ -108,7 +104,7 @@ app.handleFailure = function(response) {
 };
 
 app.handleAuthError = function(response) {
-    console.warn(MessageCode[response.messageCode]);
+    console.warn(response.status, response.messageCode);
     let logoutFunction = function() {
         var f = function() {
             // Only save the last location if the token expired
@@ -124,18 +120,16 @@ app.handleAuthError = function(response) {
         // Delete the user's JWT and xsrf token (this is necessary because of HTTPOnly)
         Resources.Auth.DELETE(f, f, true);
     };
+    if (typeof Modal === "undefined") {
+        logoutFunction();
+        return;
+    }
     if (response.messageCode == "AuthorizationFailed") {
         let successData = {
             text: MessageCode[response.messageCode + "Button"],
             callback: logoutFunction
         };
         new Modal("Not Authorized", MessageCode[response.messageCode], successData, false).show();
-        return;
-    }
-
-    if (typeof Modal === "undefined") {
-        (document.getElementById("errorTray") || {}).innerHTML = MessageCode[response.messageCode];
-        (document.getElementById("errorTray") || { style: {} }).style.display = "block";
         return;
     }
     let successData = {
@@ -262,7 +256,6 @@ app._getResponse = function(responseBody) {
     try {
         return JSON.parse(responseBody);
     } catch (e) {
-        console.log("Tried parsing: ", responseBody);
         app.handleFailure({
             status: 500,
             messageCode: "JSONParseException"
