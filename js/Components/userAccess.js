@@ -28,7 +28,7 @@ app.useraccess = {
         
         // Enable the form
         document.getElementById("submitAccess").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest.bind(app.useraccess));
+        document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest);
         
         let courses = response.payload.courses;
         let previousAccess= response.payload.previousAccess;
@@ -77,7 +77,7 @@ app.useraccess = {
     userAccessFailure: function(response){
         // Enable the form
         document.getElementById("submitAccess").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest.bind(app.useraccess));
+        document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest);
         
         app.handleFailure(response);
     },
@@ -163,7 +163,7 @@ app.useraccess = {
         
         // Disable the form
         document.getElementById("submitAccess").disabled = true;
-        document.getElementById('userData').removeEventListener('submit', app.useraccess.submitUserAccessRequest.bind(app.useraccess));
+        document.getElementById('userData').removeEventListener('submit', app.useraccess.submitUserAccessRequest);
 
         Resources.UserAccess.POST(studentId, coursesId, role, formattedExpiryDate, this.userAccessSuccess, this.userAccessFailure);
     },
@@ -185,7 +185,9 @@ app.useraccess = {
 };
 
 app.startup.push(function userAccessStartup() {
-    document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest.bind(app.useraccess));
+    app.useraccess.submitUserAccessRequest = app.useraccess.submitUserAccessRequest.bind(app.useraccess);
+    
+    document.getElementById('userData').addEventListener('submit', app.useraccess.submitUserAccessRequest);
     document.getElementById("yearExpiry").value = new Date().getFullYear();
     document.getElementById("seasonExpiry").selectedIndex = app.useraccess.getDefaultSeason();
     let signupLoginId = app.getStore("userAccessLoginId");
