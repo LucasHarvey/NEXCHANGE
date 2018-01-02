@@ -135,10 +135,7 @@ function database_handle_error($queryHandle){
 
 function database_start_transaction($dbh, $readOnly = false){
     $GLOBALS['NEXCHANGE_TRANSACTION'] = true;
-    if($readOnly){
-        return $dbh->begin_transaction(MYSQLI_TRANS_START_READ_ONLY);
-    }
-    return $dbh->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
+    return $dbh->begin_transaction();
 }
 
 function database_commit($dbh){
