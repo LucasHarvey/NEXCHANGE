@@ -33,7 +33,11 @@ if(!isset($NO_AUTH_CHECKS) || $NO_AUTH_CHECKS !== true){
     $authed = authorized();
     if($authed[0] === true){ //Is authorized??
         // Generate a new JWT and xsrfToken
-        generateAuthToken();
+        $newTokens = generateAuthToken();
+        // Override the JWT and xsrfToken in the request
+        $_COOKIE["authToken"] = $newTokens[0];
+        header('x-csrftoken: '.$newTokens[1]);
+        
         $conn->close();
         return;
     }
