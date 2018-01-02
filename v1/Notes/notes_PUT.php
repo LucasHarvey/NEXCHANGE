@@ -46,7 +46,7 @@ if(empty($changes) && empty($_FILES['file'])){ //No legal changes can be made
 }
 
 if(!database_start_transaction($conn)){
-	echoError($conn, 500, "DatabaseInsertError", "Could not start transaction.");
+	echoError($conn, 500, "DatabaseUpdateError", "Could not start transaction.");
 }
 
 if(!empty($changes)){
@@ -79,7 +79,7 @@ $succeeded = array();
 // Determine if the user wants to upload a new file
 if(!empty($_FILES['file'])){
     // Verify all note extensions are allowed and file size is appropriate
-    validateUploadedFiles($allowed, $MAX_SINGLE_FILE_SIZE);
+    validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
 
     // Check if there is only one file
     if(count($_FILES['file']['name']) == 1){
@@ -281,7 +281,7 @@ function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fil
 
 }
 
-function validateUploadedFiles($allowed, $MAX_SINGLE_FILE_SIZE){
+function validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE){
     foreach($_FILES["file"]["name"] as $key => $name){
         if($_FILES['file']['error'][$key] == 0) {
             $fileDotSeparated = explode('.', $name); //MUST be on 2 lines.
