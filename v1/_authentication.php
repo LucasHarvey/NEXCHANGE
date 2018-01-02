@@ -25,7 +25,7 @@ function generateAuthToken($userid, $privilege){
         "xsrfToken" => $xsrf
     ]));
 
-    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['SECRET'], true));
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
 
     $token = $header . "." . $payload . "." . $signature;
     
@@ -64,7 +64,6 @@ function getAuthToken(){
 function authorized(){
     $token = getAuthToken();
     
-    
     if($token == null){
         return array(false, null);
     }
@@ -74,7 +73,7 @@ function authorized(){
     $header = $encTokenPieces[0];
     $payload = $encTokenPieces[1];
     
-    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['SECRET'], true));
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
     
     // Check if the token signature and the new signature are the same
     if($encTokenPieces[2] !== $signature)
