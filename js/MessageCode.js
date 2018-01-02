@@ -1,5 +1,5 @@
 let MessageCode = {
-    UnknownResourceMethod: "The request method doesn't exist on the server. Contact ITS if this problem persists.";
+    UnknownResourceMethod: "The request method doesn't exist on the server. Contact ITS if this problem persists.",
     UnknownServerError: "A server error occured. Please contact ITS if this problem persists.",
     JSONParseException: "Unable to parse a response from the server. Please contact ITS if this problem persists.",
     MalformedBody: "The request body was not formed properly. Contact ITS if this problem persists.",
