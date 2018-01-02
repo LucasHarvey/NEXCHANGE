@@ -77,7 +77,7 @@ app.postNotes = {
         
         //Enable the form
         document.getElementById("submit").disabled = app.postNotes.uploadInProgress;
-        document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles.bind(app.postNotes));
+        document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles);
         
         let successes = response.payload.succeeded;
         let failures = response.payload.failed;
@@ -194,7 +194,7 @@ app.postNotes = {
         
         //Disable the form
         document.getElementById("submit").disabled = app.postNotes.uploadInProgress;
-        document.getElementById('noteData').removeEventListener('submit', app.postNotes.submitFiles.bind(app.postNotes));
+        document.getElementById('noteData').removeEventListener('submit', app.postNotes.submitFiles);
  
         Resources.Notes.POST(name, description, courseId, dateToSubmit, files, this.uploadNotesSuccess, this.uploadNotesFailure, function(event) {
             if (event.lengthComputable === true) {
@@ -209,7 +209,7 @@ app.postNotes = {
         
         // Enable the form
         document.getElementById("submit").disabled = app.postNotes.uploadInProgress;
-        document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles.bind(app.postNotes));
+        document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles);
         
         app.handleFailure(data);
     },
@@ -259,10 +259,11 @@ app.postNotes = {
 };
 
 app.startup.push(function postNotesStartup() {
+    app.postNotes.submitFiles = app.postNotes.submitFiles.bind(app.postNotes);
 
     document.getElementById('file').addEventListener('click', app.postNotes.addFile);
     document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles);
-    document.getElementById('submit').addEventListener("click", app.postNotes.submitFiles.bind(app.postNotes));
+    document.getElementById('submit').addEventListener("click", app.postNotes.submitFiles);
 
     datePolyFillStart();
 
