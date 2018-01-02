@@ -40,6 +40,8 @@ function generateAuthToken($userid, $privilege){
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
     setcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
+    
+    return array($token, $xsrf);
 
 }
 
