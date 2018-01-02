@@ -73,7 +73,7 @@ app.editNote = {
         app.editNote.uploadInProgress = true;
         
         // Disable the form
-        document.getElementById('noteData').removeEventListener('submit', app.editNote.submitNote.bind(app.editNote));
+        document.getElementById('noteData').removeEventListener('submit', app.editNote.submitNote);
         document.getElementById("submit").disable = true;
 
         if (changes != {}) {
@@ -91,7 +91,7 @@ app.editNote = {
         app.editNote.uploadInProgress = false;
         
         // Enable the form
-        document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote.bind(app.editNote));
+        document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote);
         document.getElementById("submit").disable = false;
         
         // Update the original note
@@ -140,7 +140,7 @@ app.editNote = {
         app.editNote.uploadInProgress = false;
         
         // Enable the form
-        document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote.bind(app.editNote));
+        document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote);
         document.getElementById("submit").disable = false;
         
         app.handleFailure(data);
@@ -217,8 +217,10 @@ app.editNote = {
 };
 
 app.startup.push(function editNoteStartup() {
-    document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote.bind(app.editNote));
-    document.getElementById('deleteNote').addEventListener('click', app.editNote.deleteNote.bind(app.editNote));
+    app.editNote.submitNote = app.editNote.submitNote.bind(app.editNote);
+    
+    document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote);
+    document.getElementById('deleteNote').addEventListener('click', app.editNote.deleteNote);
     
     document.getElementById('file').addEventListener('click', app.editNote.addFile);
     
