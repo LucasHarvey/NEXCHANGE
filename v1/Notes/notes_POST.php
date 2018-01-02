@@ -31,7 +31,7 @@ if(is_null($row)){
 }
 
 //Verify all note extensions are allowed and file size is appropriate
-validateUploadedFiles($allowed, $MAX_SINGLE_FILE_SIZE);
+validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
 
 if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseInsertError", "Could not start transaction.");
@@ -236,7 +236,7 @@ function insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fil
 		$insertTypes, $insertValues, false);
 }
 
-function validateUploadedFiles($allowed, $MAX_SINGLE_FILE_SIZE){
+function validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE){
     foreach($_FILES["file"]["name"] as $key => $name){
         if($_FILES['file']['error'][$key] == 0) {
             $fileDotSeparated = explode('.', $name); //MUST be on 2 lines.
