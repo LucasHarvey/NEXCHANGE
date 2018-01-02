@@ -2,8 +2,6 @@
     
 function generateAuthToken($userid, $privilege){
     
-    // TODO: generate a proper private key...
-    $secret = "super_secure_private_key";
 
     $header = base64_encode(json_encode([
         "alg" => "HS256",
@@ -11,7 +9,7 @@ function generateAuthToken($userid, $privilege){
     ]));
     
     // Create an expiry time
-    $expiry = time() + (15*60);
+    $expiry = time() + $GLOBALS['NEXCHANGE_TOKEN_EXPIRY']*60;
     
     // Create an xsrf token
     $xsrf = uniqid();
@@ -25,7 +23,7 @@ function generateAuthToken($userid, $privilege){
         "xsrfToken" => $xsrf
     ]));
 
-    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['SECRET'], true));
 
     $token = $header . "." . $payload . "." . $signature;
     
@@ -192,7 +190,9 @@ function refreshUserToken(){
     $payload["exp"] = time() + (15*60);
     
     // Create a new xsrf token
-    $xsrf = uniqid();
+    $length = 16; 
+    $true = true; 
+    $xsrf = bin2hex(openssl_random_pseudo_bytes($length, $true));
     
     $payload["xsrfToken"] = $xsrf;
     
@@ -214,11 +214,11 @@ function refreshUserToken(){
     // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
 
-    setcookie("authToken", $token, 0, "/v1/", "https://ide.c9.io", true, true);
+    setcookie("authToken", $token, 0, "/v1/", $GLOBALS['NEXCHANGE_domain'], true, true);
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrfToken", $xsrf, 0, "/v1/", "https://ide.c9.io", true, false);
+    setcookie("xsrfToken", $xsrf, 0, "/v1/", $GLOBALS['NEXCHANGE_domain'], true, false);
 }
 
 function getUserPrivilege(){

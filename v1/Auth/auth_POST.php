@@ -37,9 +37,8 @@ if(authenticate($conn)){
         echoError($conn, 404, "UserNotFound");
     }
     
-    // Determine if the user is an admin
-    $privilege = "USER";
-    if($user['privilege'] == "ADMIN") $privilege = "ADMIN";
+    // Get the user's privilege
+    $privilege = $user["privilege"];
     
     $userid = $user["id"];
     generateAuthToken($userid, $privilege);

@@ -149,8 +149,7 @@ app.post = function(resource, data, success, failure) {
     let request = this._generateRequest(success, failure);
     request.open("POST", resource.location);
     // Set the xsrf token in header
-    var xsrfToken = app.user.xsrfToken;
-    request.setRequestHeader("X-CSRFToken", xsrfToken);
+    request.setRequestHeader("X-CSRFToken", app.user.xsrfToken);
     request.setRequestHeader("content-type", "application/json");
     request.send(JSON.stringify(data || {}));
     return request;
