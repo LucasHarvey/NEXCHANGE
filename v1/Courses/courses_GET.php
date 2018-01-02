@@ -40,7 +40,7 @@ $selectQuery = $selectQuery. " LIMIT ".$GLOBALS['PAGE_SIZES']." OFFSET ". ($offs
 $courses = database_get_all($conn, $selectQuery, $insertTypes, $insertVals);
 
 if(in_array("id", array_keys($whereStmt[1]))){
-    if(count($courses == 0)){
+    if(count($courses) == 0){
         echoError($conn, 404, "CourseNotFound");
     }else{
         echoSuccess($conn, array("course" => $courses[0]));
