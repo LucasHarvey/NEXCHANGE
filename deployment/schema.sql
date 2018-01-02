@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS notes;
 DROP TABLE IF EXISTS notefiles;
 DROP TABLE IF EXISTS user_access;
 DROP TABLE IF EXISTS courses;
-DROP TABLE IF EXISTS auth_tokens;
 DROP TABLE IF EXISTS notefile_downloads;
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -108,15 +107,6 @@ CREATE TRIGGER before_insert_on_courses_id
     BEFORE INSERT ON courses 
     FOR EACH ROW SET new.id = uuid();
 
-DELIMITER $$
-CREATE TRIGGER before_insert_on_authtokens
-    BEFORE INSERT ON auth_tokens
-    FOR EACH ROW 
-    BEGIN
-        SET new.expires_on = DATE_ADD(NOW(), INTERVAL 15 MINUTE);
-        UPDATE users SET last_login=NOW() WHERE id=new.user_id;
-    END$$
-DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER before_insert_on_user_access
