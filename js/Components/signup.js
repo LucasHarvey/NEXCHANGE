@@ -38,10 +38,6 @@ app.signup = {
 
     submitSignup: function(event) {
         event.preventDefault();
-        
-        // Disable the form
-        document.getElementById("submit").disabled = true;
-        document.getElementById('userData').removeEventListener('submit', app.signup.submitSignup);
 
         let email = document.getElementById('email').value;
         let firstName = document.getElementById('firstName').value;
@@ -96,6 +92,9 @@ app.signup = {
             return;
         }
         
+        // Disable the form
+        document.getElementById("submit").disabled = true;
+        document.getElementById('userData').removeEventListener('submit', app.signup.submitSignup);
 
         Resources.Users.POST(firstName, lastName, studentId, email, this.signupSuccess, this.signupFailure);
     },
