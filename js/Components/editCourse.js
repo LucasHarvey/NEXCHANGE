@@ -44,7 +44,7 @@ app.editCourse = {
         
         // Enable the form
         document.getElementById("submit").disabled = false;
-        document.getElementById("editCourse").addEventListener("submit", app.editCourse.submitCourseEdit.bind(app.editCourse));
+        document.getElementById("editCourse").addEventListener("submit", app.editCourse.submitCourseEdit);
         
         // Update the course data
         let course = data.payload;
@@ -89,7 +89,7 @@ app.editCourse = {
         
         // Enable the form
         document.getElementById("submit").disabled = false;
-        document.getElementById("editCourse").addEventListener("submit", app.editCourse.submitCourseEdit.bind(app.editCourse));
+        document.getElementById("editCourse").addEventListener("submit", app.editCourse.submitCourseEdit);
         
         app.handleFailure(data);
     },
@@ -180,7 +180,7 @@ app.editCourse = {
             
         // Disable the form
         document.getElementById("submit").disabled = true;
-        document.getElementById("editCourse").removeEventListener("submit", app.editCourse.submitCourseEdit.bind(app.editCourse));
+        document.getElementById("editCourse").removeEventListener("submit", app.editCourse.submitCourseEdit);
 
         if (changes != {}) {
             Resources.Courses.PUT(app.editCourse.courseId, changes.teacherFullName, changes.courseName, changes.courseNumber, changes.section, changes.semester, this.successCourseEdit, this.failureCourseEdit);
@@ -193,7 +193,9 @@ app.editCourse = {
 };
 
 app.startup.push(function editCourseStartup(){
-    document.getElementById("editCourse").addEventListener("submit", app.editCourse.submitCourseEdit.bind(app.editCourse));
+    app.editCourse.submitCourseEdit = app.editCourse.submitCourseEdit.bind(app.editCourse);
+    
+    document.getElementById("editCourse").addEventListener("submit", app.editCourse.submitCourseEdit);
 });
 
 app.afterStartup.push(function editCourseAfterStartup() {
