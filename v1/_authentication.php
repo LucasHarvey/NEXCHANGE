@@ -188,4 +188,14 @@ function decodeToken($token){
     return $decTokenPieces;
 }
 
+function retrieveUserInfo(){
+    $token = getAuthToken();
+    $decTokenPieces = decodeToken($token);
+    $payload = $decTokenPieces[1];
+    return array(
+        "user_id" => $payload["sub"],
+        "privilege" => $payload["privilege"]
+        );
+}
+
 ?>
