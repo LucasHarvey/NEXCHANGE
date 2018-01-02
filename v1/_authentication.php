@@ -9,10 +9,12 @@ function generateAuthToken($userid, $privilege){
     ]));
     
     // Create an expiry time
-    $expiry = time() + $GLOBALS['NEXCHANGE_TOKEN_EXPIRY']*60;
+    $expiry = time() + $GLOBALS['NEXCHANGE_TOKEN_EXPIRY_MINUTES']*60;
     
-    // Create an xsrf token
-    $xsrf = uniqid();
+     // Create a new xsrf token
+    $length = 16; 
+    $true = true; 
+    $xsrf = bin2hex(openssl_random_pseudo_bytes($length, $true));
     
     // The xsrfToken is used to prevent CSRF (Cross-Site Request Forgery)
     $payload = base64_encode(json_encode([
@@ -32,12 +34,12 @@ function generateAuthToken($userid, $privilege){
     // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
 
-    setcookie("authToken", $token, 0, "/", "", true, true);
+    setcookie("authToken", $token, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, true);
     
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrfToken", $xsrf, 0, "/", "", true, false);
+    setcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
 
 }
 
@@ -70,10 +72,7 @@ function authorized(){
     $header = $encTokenPieces[0];
     $payload = $encTokenPieces[1];
     
-    // TODO: generate a proper private key...
-    $secret = "super_secure_private_key";
-    
-    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['SECRET'], true));
     
     // Check if the token signature and the new signature are the same
     if($encTokenPieces[2] !== $signature)
@@ -101,7 +100,7 @@ function authorized(){
     
         
     // Check that the token is not expired
-    if($decTokenPieces[1]["exp"] < time())
+    if(intval($decTokenPieces[1]["exp"]) < time())
         return array(false, $token);
     
 
@@ -110,31 +109,6 @@ function authorized(){
     );
 }
 
-/* Is this function used anywhere...? becomes obsolete with JWT
-
-function tokenForUser($userId){
-    $token = getAuthToken();
-    
-    if($token == null){
-        return false;
-    }
-    
-    // Explode the token into: header, payload and signature
-    $tokenPieces = $base.explode(".");
-    
-    // Decode the pieces 
-    $tokenPieces = array_map(function($x) {
-            return base64_decode($x);
-        }, $tokenPieces);
-    
-    
-    // cannot be used anymore
-    $queryStr = "SELECT * FROM auth_tokens WHERE token=? AND expires_on >= NOW() AND user_id=?";
-    $result = database_get_row($conn, $queryStr, "ss", array($token, $userId));
-    return ($result != null);
-}
-
-*/
 
 function getUserFromToken($conn){
     $token = getAuthToken();
@@ -167,58 +141,10 @@ function isTokenExpired($token){
     $payload = $decTokenPieces[1];
     
      // Check that the token is not expired
-    if($payload["exp"] < time())
+    if(intval($payload["exp"]) < time())
         return true;
     
     return false;
-}
-
-function refreshUserToken(){
-    
-    $token = getAuthToken();
-    
-    if($token == null){
-        return false;
-    }
-    
-    $decTokenPieces = decodeToken($token);
-    
-    $header = $decTokenPieces[0];
-    $payload = $decTokenPieces[1];
-    
-    // Change the expiry date by adding 15 minutes
-    $payload["exp"] = time() + (15*60);
-    
-    // Create a new xsrf token
-    $length = 16; 
-    $true = true; 
-    $xsrf = bin2hex(openssl_random_pseudo_bytes($length, $true));
-    
-    $payload["xsrfToken"] = $xsrf;
-    
-    /* Reconstruct the token with the new expiry date */
-    
-    // TODO: generate a proper private key...
-    $secret = "super_secure_private_key";
-
-    $header = base64_encode(json_encode($header));
-    
-    $payload = base64_encode(json_encode($payload));
-    
-    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $secret, true));
-
-    $token = $header . "." . $payload . "." . $signature;
-    
-    // Set the cookie for JWT
-    // TODO: change the fourth and fifth parameters once uploaded to server
-    // Argument 3: The cookie will expire when the web browser closes
-    // Arguments 6 and 7 are Secure and HTTPOnly respectively
-
-    setcookie("authToken", $token, 0, "/v1/", $GLOBALS['NEXCHANGE_domain'], true, true);
-    
-    // Set the cookie for xsrf token
-    // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrfToken", $xsrf, 0, "/v1/", $GLOBALS['NEXCHANGE_domain'], true, false);
 }
 
 function getUserPrivilege(){
