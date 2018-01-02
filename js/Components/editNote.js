@@ -121,7 +121,7 @@ app.editNote = {
         if (successes.length > 0) {
             modalText += '<p>Uploaded file'.pluralize(successes.length) + ':</p><ul>';
             for (var x = 0; x < successes.length; x++) {
-                modalText += "<li><span>" + successes[x].name; /*+ " - MD5: " + successes[x].md5;*/ + "</span></li>"
+                modalText += "<li><span>" + successes[x].name + "</span></li>";
             }
             modalText += "</ul>";
         }
