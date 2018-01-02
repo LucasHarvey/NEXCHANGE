@@ -1,10 +1,13 @@
-/* global Resources,MessageCode,Modal */
+/* global Resources,MessageCode,Modal,debounce */
 var app = app || {
     startup: [],
     afterStartup: []
 };
 
 app.postCourseSearch = {
+    
+    pagesLoaded: 0,
+    paginationEnd: false,
 
     highlightRow: function(row) {
         row.originalColor = row.style.backgroundColor;
@@ -143,17 +146,16 @@ app.postCourseSearch = {
     courseSearchSuccess: function(data) {
         // Enable the form
         document.getElementById("submit").disabled = false;
-        document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
+        document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch);
 
-        
-        // Empty the previous search results
-        app.postCourseSearch.emptySearchResults();
+        app.postCourseSearch.pagesLoaded++;
 
         var courses = data.payload.courses;
         if (courses.length == 0) {
+            app.postCourseSearch.paginationEnd = true;
             document.getElementById('resultsTray').style.display = 'block';
             document.getElementById("noResults").style.display = "block";
-            document.getElementById("noResults").innerHTML = "No Results";
+            document.getElementById("noResults").innerHTML = "No " + app.postCourseSearch.pagesLoaded == 1 ? "" : "more" + " Results";
             return;
         }
 
@@ -193,7 +195,7 @@ app.postCourseSearch = {
     courseSearchFailure: function(response){
         // Enable the form
         document.getElementById("submit").disabled = false;
-        document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
+        document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch);
         
         app.handleFailure(response);
     },
@@ -246,21 +248,48 @@ app.postCourseSearch = {
             formattedSemester = season + year;
         }
         
+        app.postCourseSearch.searchData = {
+            tname: teacherFullName,
+            cname: courseName,
+            cnumber: courseNumber,
+            sec: section,
+            sem: formattedSemester
+        };
+        
         // Disable the form
         document.getElementById("submit").disabled = true;
-        document.getElementById('courseSearch').removeEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
+        document.getElementById('courseSearch').removeEventListener('submit', app.postCourseSearch.submitCourseSearch);
 
-        Resources.Courses.SEARCH(teacherFullName, courseName, courseNumber, section, formattedSemester, 0, this.courseSearchSuccess, this.courseSearchFailure);
+        this.paginationEnd = false;
+        this.pagesLoaded = 0;
+        app.postCourseSearch.emptySearchResults();
+        Resources.Courses.SEARCH(teacherFullName, courseName, courseNumber, section, formattedSemester, this.pagesLoaded, this.courseSearchSuccess, this.courseSearchFailure);
+    },
+    
+    scrollCourses: function(event){
+        let elem = document.getElementById("tableResults");
+        let scrollPosition = elem.scrollTop / ((elem.scrollHeight - elem.clientHeight) || 1) ;
+        if(scrollPosition > 0.9 && !app.postCourseSearch.paginationEnd){
+            app.postCourseSearch.searchCourses(app.postCourseSearch.searchData);
+        }
+    },
+    
+    searchCourses: function(data){
+        Resources.Courses.SEARCH(data.tname, data.cname, data.cnumber, data.sec, data.sem, this.pagesLoaded, this.courseSearchSuccess, this.courseSearchFailure);
     }
-
 
 };
 
 app.startup.push(function postCourseSearchStartup() {
-    document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
+    app.postCourseSearch.submitCourseSearch = app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch);
+    
+    document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch);
+    
     document.getElementById('addCourses').addEventListener('click', app.postCourseSearch.addCourses);
+    
     document.getElementById('results').addEventListener('click', app.postCourseSearch.updateAddButton);
-
+    document.getElementById('tableResults').onscroll = debounce(app.postCourseSearch.scrollCourses, 250);
+    
     document.getElementById("season").addEventListener("change", app.postCourseSearch.updateYearInput);
     app.postCourseSearch.updateYearInput();
 });
