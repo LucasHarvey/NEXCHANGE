@@ -20,7 +20,7 @@ app.addCourse = {
         
         // Enable the form
         document.getElementById('submit').disabled = false;
-        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCoursebind(app.addCourse));
+        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
 
         // Empty the course input fields: 
         document.getElementById('courseName').value = "";
