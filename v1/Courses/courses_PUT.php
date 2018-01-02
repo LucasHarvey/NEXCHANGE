@@ -53,10 +53,20 @@ $cols = implode(",", $colNames);
 array_push($insertValues, $course_id);
 $insertTypes = $insertTypes . "s";
 
+if(!database_start_transaction($conn)){
+	echoError($conn, 500, "DatabaseInsertError", "Could not start transaction.");
+}
+
 // Update the note data in the notes table
 database_update($conn, "UPDATE courses SET $cols WHERE id=? LIMIT 1", $insertTypes, $insertValues);
 
-// TODO: IMPLEMENT TRANSACTION HERE!! 
+if(!database_commit($conn)){
+	if(!database_rollback($conn)){
+	    $GLOBALS["NEXCHANGE_TRANSACTION"] = false;
+		echoError($conn, 500, "DatabaseRollbackError", "Could not rollback the transaction");
+	}
+	echoError($conn, 500, "DatabaseCommitError", "Could not commit transaction.");
+}
 
 // Select the updated course data
 $course = database_get_row($conn, "SELECT id, teacher_fullname as teacherFullName, course_name as courseName, course_number as courseNumber, section, semester, created FROM courses WHERE id=? LIMIT 1", "s", $course_id);
