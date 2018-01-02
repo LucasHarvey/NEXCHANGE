@@ -257,4 +257,3 @@ function database_contains($dbh, $tableName, $idBind){
 }
 
 ?>
-
