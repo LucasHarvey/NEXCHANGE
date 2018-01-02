@@ -74,9 +74,6 @@ app.user = {
         var nextLoc = app.getStore("login_nextLocation") || data.payload.redirect.url;
         app.store("login_nextLocation", null);
         window.location = nextLoc;
-        
-        
-        
     },
     failure: function(data) {
         document.getElementById("errorTray").style.display = 'block';
