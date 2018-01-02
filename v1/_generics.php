@@ -1,5 +1,8 @@
 <?php
 $GLOBALS['PAGE_SIZES'] = 20; //used for pagination
+$GLOBALS['NEXCHANGE_domain'] = "https://ide.c9.io"; //used for cookie access
+$GLOBALS['SECRET'] = "F/|wL~[M%@r],d;xL+GMLB_8X?fx8xhpM1~5|*xU_?K[+f8<lzCio+'7'~kv[e<";
+$GLOBALS['NEXCHANGE_TOKEN_EXPIRY'] = 15; //number of minutes before expiry of JWT
 
 //Convert the request body to JSON if the content type is set to json
 if($_SERVER["REQUEST_METHOD"] != "GET"){
