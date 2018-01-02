@@ -120,13 +120,13 @@ function database_execute_fetch_all($queryHandle){
 function database_handle_error($queryHandle){
     switch($queryHandle->sqlstate){
         case 23000:
-            echoError($dbh, 400, "DatabaseDuplicationError");
+            echoError($queryHandle, 400, "DatabaseDuplicationError");
             break;
         case 45001:
-            echoError($dbh, 400, "UserCreateNotesDenied");
+            echoError($queryHandle, 400, "UserCreateNotesDenied");
             break;
         case 45002:
-            echoError($dbh, 400, "UserAlreadyRegisteredInCourse");
+            echoError($queryHandle, 409, "UserAlreadyRegisteredInCourse");
             break;
         default:
             throw new Exception($queryHandle->error);
