@@ -843,9 +843,6 @@ article span {
     border-collapse: collapse;
     border-spacing: 10px 0;
     text-align: center;
-    
-    max-height: 144px;
-    overflow-y: auto;
 }
 
 #results tr:nth-child(even) {
@@ -859,6 +856,11 @@ article span {
 
 #results thead {
     font-size: 19px;
+}
+
+#tableResults {
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 .removeButton {
