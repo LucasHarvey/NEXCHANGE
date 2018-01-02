@@ -5,6 +5,9 @@ var app = app || {
 };
 
 app.postCourseSearch = {
+    
+    pagesLoaded: 0,
+    paginationEnd: false,
 
     highlightRow: function(row) {
         row.originalColor = row.style.backgroundColor;
@@ -145,15 +148,17 @@ app.postCourseSearch = {
         document.getElementById("submit").disabled = false;
         document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
 
+        app.postCourseSearch.pagesLoaded++;
         
         // Empty the previous search results
         app.postCourseSearch.emptySearchResults();
 
         var courses = data.payload.courses;
         if (courses.length == 0) {
+            app.postCourseSearch.paginationEnd = true;
             document.getElementById('resultsTray').style.display = 'block';
             document.getElementById("noResults").style.display = "block";
-            document.getElementById("noResults").innerHTML = "No Results";
+            document.getElementById("noResults").innerHTML = "No " + app.postCourseSearch.pagesLoaded == 1 ? "" : "more" + " Results";
             return;
         }
 
@@ -251,6 +256,10 @@ app.postCourseSearch = {
         document.getElementById('courseSearch').removeEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
 
         Resources.Courses.SEARCH(teacherFullName, courseName, courseNumber, section, formattedSemester, 0, this.courseSearchSuccess, this.courseSearchFailure);
+    },
+    
+    scrollCourses: function(event){
+        
     }
 
 
@@ -260,6 +269,7 @@ app.startup.push(function postCourseSearchStartup() {
     document.getElementById('courseSearch').addEventListener('submit', app.postCourseSearch.submitCourseSearch.bind(app.postCourseSearch));
     document.getElementById('addCourses').addEventListener('click', app.postCourseSearch.addCourses);
     document.getElementById('results').addEventListener('click', app.postCourseSearch.updateAddButton);
+    document.getElementById('results').addEventListener('scroll', app.postCourseSearch.scrollCourses);
 
     document.getElementById("season").addEventListener("change", app.postCourseSearch.updateYearInput);
     app.postCourseSearch.updateYearInput();
