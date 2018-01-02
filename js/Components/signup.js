@@ -10,7 +10,7 @@ app.signup = {
         
         // Enable the form
         document.getElementById("submit").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup.bind(app.signup));
+        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup);
         
         var modalContent = "User has been created successfully.\n<p><span>Login ID: </span>" + data.payload.loginId + "</p>";
         modalContent += "\n<p><span>Name: </span>" + data.payload.firstName + " " + data.payload.lastName + "</p>";
@@ -31,7 +31,7 @@ app.signup = {
     signupFailure: function(response){
         // Enable the form
         document.getElementById("submit").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup.bind(app.signup));
+        document.getElementById('userData').addEventListener('submit', app.signup.submitSignup);
         
         app.handleFailure(response);
     },
@@ -41,7 +41,7 @@ app.signup = {
         
         // Disable the form
         document.getElementById("submit").disabled = true;
-        document.getElementById('userData').removeEventListener('submit', app.signup.submitSignup.bind(app.signup));
+        document.getElementById('userData').removeEventListener('submit', app.signup.submitSignup);
 
         let email = document.getElementById('email').value;
         let firstName = document.getElementById('firstName').value;
@@ -112,5 +112,6 @@ app.signup = {
 };
 
 app.startup.push(function signupStartup() {
-    document.getElementById('userData').addEventListener('submit', app.signup.submitSignup.bind(app.signup));
+    app.signup.submitSignup = app.signup.submitSignup.bind(app.signup);
+    document.getElementById('userData').addEventListener('submit', app.signup.submitSignup);
 });
