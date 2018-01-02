@@ -15,7 +15,7 @@ app.settings = {
         
         // Enable the form
         document.getElementById("saveChanges").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges.bind(app.settings));
+        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
 
         // Do not allow the user to dismiss the modal
         new Modal("User Updated", MessageCode[data.payload.messageCode], {
@@ -30,7 +30,7 @@ app.settings = {
         
         // Enable the form
         document.getElementById("saveChanges").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges.bind(app.settings));
+        document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
 
 
         app.handleFailure(data);
@@ -170,7 +170,7 @@ app.settings = {
         
         // Disable the form
         document.getElementById("saveChanges").disabled = true;
-        document.getElementById('userData').removeEventListener('submit', app.settings.saveChanges.bind(app.settings));
+        document.getElementById('userData').removeEventListener('submit', app.settings.saveChanges);
 
         Resources.Users.PUT(email, password, currentPassword, this.saveChangesSuccess, this.saveChangesFailure);
     },
@@ -208,10 +208,11 @@ app.settings = {
 };
 
 app.startup.push(function settingsStartup() {
+    app.settings.saveChanges = app.settings.saveChanges.bind(app.settings);
     document.getElementById("logoutEverywhere").addEventListener('click', app.settings.logoutEverywhere);
     document.getElementById("modifyEmailButton").addEventListener('click', app.settings.modifyEmail);
     document.getElementById("modifyPasswordButton").addEventListener('click', app.settings.modifyPassword);
-    document.getElementById('userData').addEventListener('submit', app.settings.saveChanges.bind(app.settings));
+    document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
 
 });
 
