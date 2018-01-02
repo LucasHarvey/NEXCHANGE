@@ -11,7 +11,7 @@ app.user = {
         
         // Enable the form
         document.getElementById("button_login").disabled = false;
-        document.getElementById("loginData").addEventListener("submit", app.user.login.bind(app.user));
+        document.getElementById("loginData").addEventListener("submit", app.user.login);
         
         app.user.authToken = data.payload.token;
         app.user.loginId = data.payload.loginId;
@@ -78,7 +78,7 @@ app.user = {
         
         // Enable the form
         document.getElementById("button_login").disabled = false;
-        document.getElementById("loginData").addEventListener("submit", app.user.login.bind(app.user));
+        document.getElementById("loginData").addEventListener("submit", app.user.login);
     },
     logout: function(e, forced) {
         e.preventDefault();
@@ -133,7 +133,7 @@ app.user = {
         
         // Disable the form
         document.getElementById("button_login").disabled = true;
-        document.getElementById("loginData").removeEventListener("submit", app.user.login.bind(app.user));
+        document.getElementById("loginData").removeEventListener("submit", app.user.login);
         
         Resources.Auth.POST(studentId, password, this.loginSuccess, this.failure, { disableAuthResult: true });
     },
@@ -148,6 +148,8 @@ app.user = {
 };
 
 app.startup.push(function userStartup() {
+    app.user.login = app.user.login.bind(app.user);
+    
     let logout = document.getElementById('logout');
     if (logout) {
         logout.addEventListener('click', app.user.logout);
@@ -155,7 +157,7 @@ app.startup.push(function userStartup() {
 
     let loginForm = document.getElementById("loginData");
     if (loginForm) {
-        loginForm.addEventListener("submit", app.user.login.bind(app.user));
+        loginForm.addEventListener("submit", app.user.login);
     }
 
     app.user.authToken = app.getStore("authToken");
