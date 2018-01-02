@@ -32,8 +32,10 @@ if(!isset($NO_AUTH_CHECKS) || $NO_AUTH_CHECKS !== true){
     $conn = database_connect();
     $authed = authorized();
     if($authed[0] === true){ //Is authorized??
+        // Get the user ID and privilege from the old token
+        $userInfo = retrieveUserInfo();
         // Generate a new JWT and xsrfToken
-        $newTokens = generateAuthToken();
+        $newTokens = generateAuthToken($userInfo["user_id"], $userInfo["privilege"]);
         // Override the JWT and xsrfToken in the request
         $_COOKIE["authToken"] = $newTokens[0];
         header('x-csrftoken: '.$newTokens[1]);
