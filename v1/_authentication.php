@@ -8,10 +8,8 @@ function base64url_decode($data) {
    return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
 }
   
- 
 function generateAuthToken($userid, $privilege){
-    
-    
+
     $header = base64url_encode(json_encode([
         "alg" => "HS256",
         "typ" => "JWT"
@@ -33,8 +31,6 @@ function generateAuthToken($userid, $privilege){
         "privilege" => $privilege,
         "xsrfToken" => $xsrf
     ]));
-    
-    
 
     $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
 
@@ -93,8 +89,6 @@ function authorized(){
     if($encTokenPieces[2] !== $signature)
         return array(false, null);
     
-        
-    
     // Decode the token
     $decTokenPieces = decodeToken($token);
     
@@ -107,24 +101,16 @@ function authorized(){
     if(!in_array("x-csrftoken", array_keys(apache_request_headers())))
         return array(false, null);
     
-        
-    
-    
     $xsrf = $headers["x-csrftoken"];
     
     // Check that $xsrf is the same as the xsrfToken inside the payload
     if($xsrf !== $decTokenPieces[1]["xsrfToken"])
         return array(false, null);
-    
-    
         
     // Check that the token is not expired
     if(intval($decTokenPieces[1]["exp"]) < time())
         return array(false, $token);
     
-        
-    
-
     return array(
        true, $token
     );
