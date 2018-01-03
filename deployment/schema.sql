@@ -28,7 +28,6 @@ CREATE TABLE users (
     PRIMARY KEY (id)
 );
 
-
 CREATE TABLE courses (
     id CHAR(36) NOT NULL,
     teacher_fullname VARCHAR(255) NOT NULL,
@@ -106,7 +105,6 @@ CREATE TRIGGER before_insert_on_notefiles_id
 CREATE TRIGGER before_insert_on_courses_id
     BEFORE INSERT ON courses 
     FOR EACH ROW SET new.id = uuid();
-
 
 DELIMITER $$
 CREATE TRIGGER before_insert_on_user_access
