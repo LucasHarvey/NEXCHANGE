@@ -90,13 +90,9 @@ function authorized(){
     $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
     
     // Check if the token signature and the new signature are the same
-    if($encTokenPieces[2] !== $signature){
-        var_dump("signature not valid");
-        var_dump($encTokenPieces[2]);
-        var_dump($signature);
-        die();
+    if($encTokenPieces[2] !== $signature)
         return array(false, null);
-    }
+    
         
     
     // Decode the token
@@ -108,32 +104,24 @@ function authorized(){
     // Get the xsrf token from the headers
     $headers = apache_request_headers();
     
-    if(!in_array("x-csrftoken", array_keys(apache_request_headers()))){
-        var_dump("xsrf token not present");
-        die();
+    if(!in_array("x-csrftoken", array_keys(apache_request_headers())))
         return array(false, null);
-    }
+    
         
     
     
     $xsrf = $headers["x-csrftoken"];
     
     // Check that $xsrf is the same as the xsrfToken inside the payload
-    if($xsrf !== $decTokenPieces[1]["xsrfToken"]){
-        var_dump($xsrf);
-        var_dump($decTokenPieces[1]["xsrfToken"]);
-        var_dump($token);
-        die();
+    if($xsrf !== $decTokenPieces[1]["xsrfToken"])
         return array(false, null);
-    }
+    
     
         
     // Check that the token is not expired
-    if(intval($decTokenPieces[1]["exp"]) < time()){
-        var_dump("JWT expired");
-        die();
+    if(intval($decTokenPieces[1]["exp"]) < time())
         return array(false, $token);
-    }
+    
         
     
 
