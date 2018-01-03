@@ -36,7 +36,7 @@ if(!isset($NO_AUTH_CHECKS) || $NO_AUTH_CHECKS !== true){
         // Get the user ID and privilege from the old token
         $userInfo = retrieveUserInfo();
         // Generate a new JWT and xsrfToken
-        $newTokens = generateAuthToken($userInfo["user_id"], $userInfo["privilege"]);
+        $newTokens = generateAuthToken($userInfo[0], $userInfo[1]);
         // Override the JWT and xsrfToken in the request
         $_COOKIE["authToken"] = $newTokens[0];
         header('x-csrftoken: '.$newTokens[1]);
