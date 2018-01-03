@@ -2,10 +2,10 @@
 $conn = database_connect();
 
 // Delete the JWT
-setcookie("authToken", "", time() - 3600);
+setcookie("authToken", false, time() - 3600, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, true);
 
 // Delete the xsrf token
-setcookie("xsrfToken", "", time() - 3600);
+setcookie("xsrfToken", false, time() - 3600, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
 
 echoSuccess($conn, array(
     "messageCode" => "UserUnauthenticated"
