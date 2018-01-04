@@ -1,16 +1,8 @@
 <?php
-
-function base64url_encode($data) {
-   return rtrim(strtr(base64_encode($data), "+/", "-_"), "=");
-}
- 
-function base64url_decode($data) { 
-   return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT)); 
-}
   
 function generateAuthToken($userid, $privilege){
 
-    $header = base64url_encode(json_encode([
+    $header = base64_encode(json_encode([
         "alg" => "HS256",
         "typ" => "JWT"
     ]));
@@ -24,7 +16,7 @@ function generateAuthToken($userid, $privilege){
     $xsrf = bin2hex(openssl_random_pseudo_bytes($length, $true));
     
     // The xsrfToken is used to prevent CSRF (Cross-Site Request Forgery)
-    $payload = base64url_encode(json_encode([
+    $payload = base64_encode(json_encode([
         "sub" => $userid,
         "iat" => time(),
         "exp" => $expiry,
@@ -32,7 +24,7 @@ function generateAuthToken($userid, $privilege){
         "xsrfToken" => $xsrf
     ]));
 
-    $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
 
     $token = $header . "." . $payload . "." . $signature;
     
@@ -42,11 +34,11 @@ function generateAuthToken($userid, $privilege){
     // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
 
-    setrawcookie("authToken", $token, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, true);
+    setcookie("authToken", $token, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, true);
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setrawcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
+    setcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
     
     // Override the JWT and xsrfToken in the request
     
@@ -83,7 +75,7 @@ function authorized(){
     $header = $encTokenPieces[0];
     $payload = $encTokenPieces[1];
     
-    $signature = base64url_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
     
     // Check if the token signature and the new signature are the same
     if($encTokenPieces[2] !== $signature)
@@ -178,10 +170,10 @@ function decodeToken($token){
     // Slice the signature off
     $encHeadPay = array_slice($encTokenPieces, 0, 2);
     
-    $decHead = base64url_decode($encHeadPay[0]);
+    $decHead = base64_decode($encHeadPay[0]);
     $decHead = json_decode($decHead, true);
     
-    $decPay = base64url_decode($encHeadPay[1]);
+    $decPay = base64_decode($encHeadPay[1]);
     $decPay = json_decode($decPay, true);
 
     // Created the decoded token array
