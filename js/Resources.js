@@ -154,7 +154,7 @@ let Resources = {
 
             let request = app._generateRequest(successCallback, failureCallback);
             request.open("POST", this.location);
-            request.setRequestHeader("Authorization", app.user.authToken);
+            request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
             request.upload.onprogress = progressCallback;
             request.send(formData);
             return request;
@@ -193,7 +193,7 @@ let Resources = {
 
             let request = app._generateRequest(successCallback, failureCallback);
             request.open("POST", this.location);
-            request.setRequestHeader("Authorization", app.user.authToken);
+            request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
             request.upload.onprogress = progressCallback;
             request.send(formData);
             return request;
