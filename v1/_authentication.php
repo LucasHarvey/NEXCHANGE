@@ -66,9 +66,8 @@ function getAuthToken(){
 function authorized(){
     $token = getAuthToken();
     
-    if($token == null){
+    if($token == null)
         return array(false, null);
-    }
     
     $encTokenPieces = explode(".", $token);
     
