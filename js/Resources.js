@@ -243,13 +243,14 @@ let Resources = {
             return app.post(Resources.Courses, data, successCallback, failureCallback);
         },
         
-        PUT: function(courseId, teacherFullName, courseName, courseNumber, section, semester, successCallback, failureCallback){
+        PUT: function(courseId, teacherFullName, courseName, courseNumber, sectionStart, sectionEnd, semester, successCallback, failureCallback){
             let data = {
                 courseId: courseId,
                 teacherFullName: teacherFullName,
                 courseName: courseName,
                 courseNumber: courseNumber,
-                section: section,
+                sectionStart: sectionStart,
+                sectionEnd: sectionEnd,
                 semester: semester
             };
             return app.put(Resources.Courses, data, successCallback, failureCallback); 
