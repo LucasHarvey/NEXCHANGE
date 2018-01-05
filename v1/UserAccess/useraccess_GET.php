@@ -30,7 +30,7 @@ if(!empty($whereStmt[1])){
 
 $notesCount = "(SELECT count(*) FROM notes WHERE user_id = u.id AND course_id = c.id) as notesAuthored";
 $selectQuery =  "SELECT u.id as 'userId', c.id as 'courseId', ua.role, ua.expires_on, ua.created, u.first_name as 'firstName', u.last_name as 'lastName', ".
-                "c.course_name as 'courseName', c.course_number as 'courseNumber', c.section as 'courseSection', $notesCount ".
+                "c.course_name as 'courseName', c.course_number as 'courseNumber', c.section_start as 'courseSectionStart', c.section_end as 'courseSectionEnd', $notesCount ".
                 "FROM user_access ua INNER JOIN users u ON ua.user_id=u.id INNER JOIN courses c ON ua.course_id=c.id".$whereStmt[0];
 $selectQuery = $selectQuery. " LIMIT ".$GLOBALS['PAGE_SIZES']." OFFSET ". ($offset * $GLOBALS['PAGE_SIZES']);
 
