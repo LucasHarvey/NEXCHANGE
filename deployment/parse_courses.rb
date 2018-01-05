@@ -106,7 +106,7 @@ if(SEMESTER_CMD.nil?)
     if (month >= 0 && month < 5)
         season = "W"
     end
-    if (month >= 11 || (month == 0 && today<15))
+    if (month >= 11)
         season = "I"
     end
     if (month >= 11)
