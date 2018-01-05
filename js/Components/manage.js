@@ -8,7 +8,8 @@ app.manage = {
     pagesLoaded: 0,
     paginationEnd: false,
     
-    _generateArticle: function() {
+    _generateArticle: function(numButtons) {
+        if(!numButtons) numButtons = 2;
         let article = document.createElement("ARTICLE");
 
         let articleHeader = document.createElement("HEADER");
@@ -23,21 +24,29 @@ app.manage = {
         let descriptionP = document.createElement("P");
         descriptionP.className = "description";
         articleSection.appendChild(descriptionP);
-
-        let moreInfoBtn = document.createElement("BUTTON");
-        articleSection.appendChild(moreInfoBtn);
-
-        let moreInfoBtn2 = document.createElement("BUTTON");
-        articleSection.appendChild(moreInfoBtn2);
-
-        return {
+        
+        let buttonSection = document.createElement("SECTION");
+        buttonSection.className = "buttonfield";
+        articleSection.appendChild(buttonSection);
+        
+        var articleObject = {
             section: articleSection,
             article: article,
             header: articleHeaderp,
-            description: descriptionP,
-            button: moreInfoBtn,
-            button2: moreInfoBtn2
+            description: descriptionP
+        }
+        
+        for(var i = 0; i<numButtons; i++){
+            let moreInfoBtn = document.createElement("BUTTON");
+            buttonSection.appendChild(moreInfoBtn);
+            var name = "button";
+            if(i != 0){
+                name += i+1;
+            }
+            articleObject[name] = moreInfoBtn;
         };
+        
+        return articleObject;
     },
     _generateUsers: function(container, users) {
         if (users.length == 0) {
@@ -128,13 +137,17 @@ app.manage = {
         
         for (var i = 0; i < courses.length; i++) {
             let course = courses[i];
-            let article = this._generateArticle();
-            // Not sure what the UA is in the id below (user access?) it is used when generating a user also
+            let article = this._generateArticle(4);
             article.article.id = "UA_C_" + course.id;
             article.header.innerText = course.courseName;
             //TODO clean all.
+            var section =  (course.sectionStart + "").padStart(5, "0");
+            if(course.sectionStart != course.sectionEnd){
+                section += " to " + (course.sectionEnd + "").padStart(5, "0");
+            }
             article.description.innerHTML = "<p>Teacher: " + course.teacherFullName + "</p>" +
-                "<p>Course: " + course.courseNumber + " section: " + (course.section + "").padStart(5, "0") + "</p>" +
+                "<p>Course: " + course.courseNumber + "</p>" +
+                "<p>"+"Section".pluralize(section.length > 5)+": " + section + "</p>" +
                 "<p>Semester: " + course.semester + "</p>" +
                 "<p>Contains: " + course.notesAuthored + " note".pluralize(course.notesAuthored) + "</p>";
             article.button.innerHTML = "See Course Notes";
@@ -151,23 +164,18 @@ app.manage = {
                 window.location.href = "userAccess.html";
             };
             
-            // Create a third button to modify the course
-            let moreInfoBtn3 = document.createElement("BUTTON");
-            moreInfoBtn3.innerHTML = "Modify Course";
-            moreInfoBtn3.id = "Modify" + i + "_" + course.id;
-            moreInfoBtn3.onclick = function(){
+            article.button3.innerHTML = "Modify Course";
+            article.button3.id = "Modify" + i + "_" + course.id;
+            article.button3.onclick = function(){
                 var courseId = this.id.split("_")[1];
                 window.location.href = "./editCourse.html?courseId=" + courseId;
             };
-            article.section.appendChild(moreInfoBtn3);
             
-            // Create a fourth button to delete the course
-            let moreInfoBtn4 = document.createElement("BUTTON");
-            moreInfoBtn4.innerHTML = "Delete Course";
-            moreInfoBtn4.id = "Delete" + i + "_" + course.id;
-            moreInfoBtn4.className = "warning";
-            moreInfoBtn4.dataset.courseName = course.courseName;
-            moreInfoBtn4.onclick = function() {
+            article.button4.innerHTML = "Delete Course";
+            article.button4.id = "Delete" + i + "_" + course.id;
+            article.button4.className = "warning";
+            article.button4.dataset.courseName = course.courseName;
+            article.button4.onclick = function() {
                 var courseName = this.dataset.courseName;
                 var courseId = this.id.split("_")[1];
                 var button4 = this;
@@ -183,8 +191,6 @@ app.manage = {
                     }
                 ).show();
             };
-            article.section.appendChild(moreInfoBtn4);
-            
             
             container.appendChild(article.article);
         }
@@ -203,9 +209,16 @@ app.manage = {
         var that = this;
         Resources.Courses.DELETE(courseId, pass, function(data) {
             that.hide();
-            new Modal("Course Deleted", data.payload.courseName + " (section " + (data.payload.section+ "").padStart(5, "0") + ") has been deleted successfully.", null, null, "Okay").show();
             
-            var article = document.getElementById("UA_C_" + data.payload.courseId);
+            let course = data.payload.course;
+            
+            var section =  (course.sectionStart + "").padStart(5, "0");
+            if(course.sectionStart != course.sectionEnd){
+                section += " to " + (course.sectionEnd + "").padStart(5, "0");
+            }
+            new Modal("Course Deleted", course.courseName + " ("+"Section".pluralize(section.length > 5)+" " + section + ") has been deleted successfully.", null, null, "Okay").show();
+            
+            var article = document.getElementById("UA_C_" + course.id);
             article.parentElement.removeChild(article);
         }, function(data){
             //Failure function
@@ -241,8 +254,13 @@ app.manage = {
             let article = this._generateArticle();
             article.header.innerText = ua.role.toProperCase() + " - " + ua.firstName + " " + ua.lastName;
             //TODO clean all.
+            var section =  (ua.courseSectionStart + "").padStart(5, "0");
+            if(ua.courseSectionStart != ua.courseSectionEnd){
+                section += " to " + (ua.courseSectionEnd + "").padStart(5, "0");
+            }
             article.description.innerHTML =
-                "<p>Course: " + ua.courseNumber + " section: " + (ua.courseSection + "").padStart(5, "0") + " (" + ua.courseName + ")</p>" +
+                "<p>Course: " + ua.courseNumber + " (" + ua.courseName + ")</p>" +
+                "<p>" + "Section".pluralize(section.length > 5) +": " + section + "</p>" +
                 "<p>Role: " + ua.role.toProperCase() + "</p>" +
                 "<p>Contains: " + ua.notesAuthored + " note".pluralize(ua.notesAuthored) + "</p>" +
                 "<p>Created On: " + new Date(ua.created).toPrettyDate() + "</p>" +

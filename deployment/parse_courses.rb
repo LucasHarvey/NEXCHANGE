@@ -2,14 +2,34 @@
 require 'csv'
 require 'date'
 
-class Course 
-    attr_reader :teacher_name, :name, :number, :section
+class CourseGroup
+    attr_reader :teacher_name, :name, :number, :section_start, :section_end
+    def initialize(tname, name, number, sec_start, sec_end)
+        @teacher_name = tname
+        @name = name
+        @number = number
+        @section_start = sec_start
+        @section_end = sec_end
+    end
+    
+    def to_s
+        @teacher_name + ";" + @name + ";" + @number + ";" + @section_start + ";" + @section_end
+    end
+end
 
-    def initialize(tname, name, number, section)
+class Course 
+    attr_reader :teacher_name, :name, :number, :section, :time_slot
+
+    def initialize(tname, name, number, section, tslot)
         @teacher_name = tname
         @name = name
         @number = number
         @section = section
+        @time_slot = tslot
+    end
+    
+    def to_s
+        @teacher_name + ";" + @name + ";" + @number + ";" + @section + ";" + @time_slot
     end
     
     def self.factory(values)
@@ -21,6 +41,7 @@ class Course
         teacher_name = values[8]
         section = values[7]
         type = values[9]
+        slot = values[12]
         
         if(type[0] != "C" && type != "I")
             return false
@@ -35,7 +56,7 @@ class Course
         end
         number = number[0..2] + "-" + number[3..5] + "-" + number[6..7]
         
-        return Course.new(teacher_name, name, number, section)
+        return Course.new(teacher_name, name, number, section, slot)
     end
 end
 
@@ -45,11 +66,34 @@ UPLOADPATH = ARGV[1]
 SEMESTER_CMD = ARGV[2]
 raise "Commandline argument for path and upload path must be supplied. Optional semester" if PATH.nil? || UPLOADPATH.nil?
 
-courses = Array.new
+unparsed_courses = Array.new
 CSV.foreach(PATH, encoding: "CP1252") do |line|
     course = Course.factory(line)
-    if(course) 
-        courses.push(course)
+    if(course)
+        unparsed_courses.push(course)
+    end
+end
+
+courses_ranges = Array.new
+courses_ranges = unparsed_courses.group_by do |course|
+    [course.number, course.teacher_name, course.time_slot]
+end
+
+courses = Array.new
+courses_ranges.each do |key, value|
+    if(!(value.kind_of?(Array)))
+        course_group = CourseGroup.new(value.teacher_name, value.name, value.number, value.section, value.section)
+        courses.push(course_group)
+    else
+        ordered_courses = value.sort_by do |course|
+            begin
+                Integer(course.section)
+            rescue
+                course.section
+            end
+        end
+        course_group = CourseGroup.new(ordered_courses[0].teacher_name, ordered_courses[0].name, ordered_courses[0].number, ordered_courses[0].section, ordered_courses.last.section)
+        courses.push(course_group)
     end
 end
 
@@ -62,7 +106,7 @@ if(SEMESTER_CMD.nil?)
     if (month >= 0 && month < 5)
         season = "W"
     end
-    if (month >= 11 || (month == 0 && today<15))
+    if (month >= 11)
         season = "I"
     end
     if (month >= 11)
@@ -82,13 +126,7 @@ file = File.new(UPLOADPATH,  "w+")
 
 courses.each do |course| 
     file.write(";")
-    file.write(course.teacher_name)
-    file.write(";")
-    file.write(course.name)
-    file.write(";")
-    file.write(course.number)
-    file.write(";")
-    file.write(course.section)
+    file.write(course.to_s)
     file.write(";")
     file.write(semester)
     file.write("\n")
