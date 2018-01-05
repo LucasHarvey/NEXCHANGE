@@ -41,7 +41,7 @@ function generateAuthToken($userid, $privilege){
     setcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
     
     // Override the JWT and xsrfToken in the request
-    
+    // TODO: find another way to set the xsrf token header for further use in other files
     $_COOKIE["authToken"] = $token;
     header('x-csrftoken: '.$xsrf);
 
@@ -63,7 +63,7 @@ function getAuthToken(){
     
 }
 
-function authorized(){
+function authorized($conn){
     $token = getAuthToken();
     
     if(!validateTokenAuthenticity($token))
@@ -90,6 +90,14 @@ function authorized(){
     // Check that the token is not expired
     if(intval($decTokenPieces[1]["exp"]) < time())
         return array(false, $token);
+        
+    // Check that the token is not older than the IAT date of latest token
+    $userId = getUserFromToken($token);
+    $expiry = database_get_row($conn, "SELECT most_recent_token_IAT FROM users WHERE id=?", "s", $userId);
+    // if iat == expiry, then the token is valid
+    if(intval($decTokenPieces[1]["iat"]) < $expiry)
+        // This is not a token expiry error: the token is just not valid anymore
+        return array(false, null);
     
     return array(
        true, $token
@@ -198,6 +206,14 @@ function retrieveUserInfo(){
         $payload["sub"],
         $payload["privilege"]
         );
+}
+
+function retrieveIAT(){
+    $token = getAuthToken();
+    $decTokenPieces = decodeToken($token);
+    $payload = $decTokenPieces[1];
+    
+    return intval($payload["iat"]);
 }
 
 ?>
