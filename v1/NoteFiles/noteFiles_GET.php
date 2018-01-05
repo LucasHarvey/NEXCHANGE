@@ -22,7 +22,7 @@ function outputFileContent($storage_name, $type, $file_name, $size, $expectedMD5
 
 $conn = database_connect();
 
-$user_id = getUserFromToken($conn);
+$user_id = getUserFromToken();
 
 requiredParams($conn, $_GET, array("noteId"));
 $note_id = $_GET["noteId"];

@@ -2,7 +2,7 @@
 
 $conn = database_connect();
 
-$user_id = getUserFromToken($conn);
+$user_id = getUserFromToken();
 $userIsNotAdmin = getUserPrivilege() != "ADMIN";
 
 $whereClause = "";

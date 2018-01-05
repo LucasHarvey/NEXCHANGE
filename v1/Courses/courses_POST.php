@@ -1,7 +1,7 @@
 <?php
 $conn = database_connect();
 
-$userId = getUserFromToken($conn);
+$userId = getUserFromToken();
 
 // Verify that the user is an admin
 if(getUserPrivilege() != "ADMIN"){

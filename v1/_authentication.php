@@ -97,7 +97,7 @@ function authorized(){
 }
 
 
-function getUserFromToken($conn){
+function getUserFromToken(){
     $token = getAuthToken();
     
     if($token == null){
