@@ -2,6 +2,21 @@
 require 'csv'
 require 'date'
 
+class CourseGroup
+    attr_reader :teacher_name, :name, :number, :section_start, :section_end
+    def initialize(tname, name, number, sec_start, sec_end)
+        @teacher_name = tname
+        @name = name
+        @number = number
+        @section_start = sec_start
+        @section_end = sec_end
+    end
+    
+    def to_s
+        @teacher_name + ";" + @name + ";" + @number + ";" + @section_start + ";" + @section_end
+    end
+end
+
 class Course 
     attr_reader :teacher_name, :name, :number, :section, :time_slot
 
@@ -64,6 +79,21 @@ courses_ranges = unparsed_courses.group_by do |course|
     [course.number, course.teacher_name, course.time_slot]
 end
 
+courses = Array.new
+courses_ranges.each do |key, value|
+    if(!(value.kind_of?(Array)))
+        course_group = CourseGroup.new(value.teacher_name, value.name, value.number, value.section, value.section)
+        courses.push(course_group)
+    else
+        ordered_courses = value.sort_by do |course|
+            begin
+                Integer(course.section)
+            rescue
+                course.section
+            end
+        end
+        course_group = CourseGroup.new(ordered_courses[0].teacher_name, ordered_courses[0].name, ordered_courses[0].number, ordered_courses[0].section, ordered_courses.last.section)
+        courses.push(course_group)
     end
 end
 
@@ -102,7 +132,9 @@ courses.each do |course|
     file.write(";")
     file.write(course.number)
     file.write(";")
-    file.write(course.section)
+    file.write(course.section_start)
+    file.write(";")
+    file.write(course.section_end)
     file.write(";")
     file.write(semester)
     file.write("\n")
