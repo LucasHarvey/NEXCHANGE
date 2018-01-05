@@ -3,13 +3,18 @@ require 'csv'
 require 'date'
 
 class Course 
-    attr_reader :teacher_name, :name, :number, :section
+    attr_reader :teacher_name, :name, :number, :section, :time_slot
 
-    def initialize(tname, name, number, section)
+    def initialize(tname, name, number, section, tslot)
         @teacher_name = tname
         @name = name
         @number = number
         @section = section
+        @time_slot = tslot
+    end
+    
+    def to_s
+        @teacher_name + ";" + @name + ";" + @number + ";" + @section + ";" + @time_slot
     end
     
     def self.factory(values)
@@ -21,6 +26,7 @@ class Course
         teacher_name = values[8]
         section = values[7]
         type = values[9]
+        slot = values[12]
         
         if(type[0] != "C" && type != "I")
             return false
@@ -35,7 +41,7 @@ class Course
         end
         number = number[0..2] + "-" + number[3..5] + "-" + number[6..7]
         
-        return Course.new(teacher_name, name, number, section)
+        return Course.new(teacher_name, name, number, section, slot)
     end
 end
 
@@ -45,11 +51,19 @@ UPLOADPATH = ARGV[1]
 SEMESTER_CMD = ARGV[2]
 raise "Commandline argument for path and upload path must be supplied. Optional semester" if PATH.nil? || UPLOADPATH.nil?
 
-courses = Array.new
+unparsed_courses = Array.new
 CSV.foreach(PATH, encoding: "CP1252") do |line|
     course = Course.factory(line)
-    if(course) 
-        courses.push(course)
+    if(course)
+        unparsed_courses.push(course)
+    end
+end
+
+courses_ranges = Array.new
+courses_ranges = unparsed_courses.group_by do |course|
+    [course.number, course.teacher_name, course.time_slot]
+end
+
     end
 end
 
