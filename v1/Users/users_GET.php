@@ -1,4 +1,5 @@
 <?php
+// Used to display user information on the settings page
 
 $conn = database_connect();
 $user_id = getUserFromToken();
