@@ -21,7 +21,7 @@ CREATE TABLE users (
     privilege ENUM("USER", "ADMIN") NOT NULL DEFAULT "USER",
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME DEFAULT NULL,
-    all_token_expire_on DATETIME DEFAULT NULL
+    all_tokens_expire_on DATETIME DEFAULT NULL,
     
     passresetcode CHAR(40) UNIQUE,
     passresetcreated TIMESTAMP,
