@@ -66,18 +66,7 @@ function getAuthToken(){
 function authorized(){
     $token = getAuthToken();
     
-    if($token == null)
-        return array(false, null);
-    
-    $encTokenPieces = explode(".", $token);
-    
-    $header = $encTokenPieces[0];
-    $payload = $encTokenPieces[1];
-    
-    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
-    
-    // Check if the token signature and the new signature are the same
-    if($encTokenPieces[2] !== $signature)
+    if(!validateTokenAuthenticity($token))
         return array(false, null);
     
     // Decode the token
@@ -157,6 +146,25 @@ function getUserPrivilege(){
     $privilege = $payload["privilege"];
     
     return $privilege;
+}
+
+function validateTokenAuthenticity($token){
+    
+    if($token == null)
+        return false;
+    
+    $encTokenPieces = explode(".", $token);
+    
+    $header = $encTokenPieces[0];
+    $payload = $encTokenPieces[1];
+    
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
+    
+    // Check if the token signature and the new signature are the same
+    if($encTokenPieces[2] !== $signature)
+        return false;
+        
+    return true;
 }
 
 function decodeToken($token){
