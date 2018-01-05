@@ -78,7 +78,7 @@ function authorized(){
     // Get the xsrf token from the headers
     $headers = apache_request_headers();
     
-    if(!in_array("x-csrftoken", array_keys(apache_request_headers())))
+    if(!in_array("x-csrftoken", array_keys($headers)))
         return array(false, null);
     
     $xsrf = $headers["x-csrftoken"];
