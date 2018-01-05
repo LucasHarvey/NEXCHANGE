@@ -35,7 +35,7 @@ foreach($courses_id as $courseId){
         echoError($conn, 404, "CourseNotFound");
     }
     
-    $course = database_get_row($conn, "SELECT course_name as courseName, course_number as courseNumber, section FROM courses WHERE id=?", "s", $courseId);
+    $course = database_get_row($conn, "SELECT course_name as courseName, course_number as courseNumber, section_start as sectionStart, section_end as sectionEnd FROM courses WHERE id=?", "s", $courseId);
   
     // Verify that the access doesn't already exist
     $hasAccess = database_get_row($conn, "SELECT * FROM user_access WHERE user_id=? AND course_id=?", "ss", array($user["id"], $courseId));
