@@ -80,8 +80,9 @@ button, .button {
     cursor: pointer;
     font-size: 16px;
     padding: 5px 15px;
-    margin-left: 0;
     text-align: center;
+    margin-left: 0;
+    margin-bottom: 5px;
 }
 
 button+button, .button+.button, button+.button, .button+button {
@@ -160,6 +161,25 @@ button.warning, .button.warning {
         flex-wrap: wrap;
 
     margin: 5px;
+}
+
+.buttonfield {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        
+    -webkit-justify-content: space-around;
+        -ms-flex-pack: distribute;
+            justify-content: space-around;
 }
 
 .userfield>label, .userfield>h3 {

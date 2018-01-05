@@ -7,7 +7,7 @@ if(getUserPrivilege() != "ADMIN"){
 }
 
 $baseQuery= "SELECT n.id, n.user_id as 'author_id', n.course_id, n.created, n.name, n.description, n.taken_on, nf.download_count, nf.distinct_downloads, ".
-                "concat(u.first_name, concat(' ', u.last_name)) as 'user_name', c.course_name, c.course_number, c.section FROM notes n ".
+                "concat(u.first_name, concat(' ', u.last_name)) as 'user_name', c.course_name, c.course_number, c.section_start as sectionStart, c.section_end as sectionEnd FROM notes n ".
             "LEFT JOIN users u ON n.user_id=u.id INNER JOIN courses c ON n.course_id=c.id LEFT JOIN ".
                 "(SELECT gnf.note_id, gnfd.totalcount as download_count, gnfd.countdist as distinct_downloads FROM notefiles gnf INNER JOIN ".
                     "(SELECT notefile_id, COUNT(DISTINCT gnfd.user_id) as countdist, COUNT(*) as totalcount FROM notefile_downloads gnfd GROUP BY notefile_id) as gnfd ".
