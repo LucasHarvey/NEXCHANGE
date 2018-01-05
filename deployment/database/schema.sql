@@ -34,7 +34,8 @@ CREATE TABLE courses (
     teacher_fullname VARCHAR(255) NOT NULL,
     course_name VARCHAR(100) NOT NULL,
     course_number VARCHAR(10) NOT NULL,
-    section int(5),
+    section_start int(5),
+    section_end int(5),
     semester VARCHAR(5) NOT NULL,
     
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -132,10 +133,3 @@ CREATE TRIGGER before_insert_on_notes
         END IF;
     END$$
 DELIMITER ;
-    
--- ADD THE ADMIN USER
--- Password is: adminpass
-INSERT INTO users (login_id, privilege, first_name, last_name, passwordhash, last_login) 
-    VALUES ("Admin01", "ADMIN", "Administrator", "Administrator", "$2y$10$O27XHDCMtLTGDebeNSG2M.LghLnAtlB1FKc4oEAipPJeEWORpX/S.", NOW());
-    
-source /home/ubuntu/workspace/deployment/upload_courses.sql
