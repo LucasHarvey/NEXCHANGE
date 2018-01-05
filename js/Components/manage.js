@@ -257,7 +257,7 @@ app.manage = {
                 section += " to " + (ua.courseSectionEnd + "").padStart(5, "0");
             }
             article.description.innerHTML =
-                "<p>Course: " + ua.courseNumber + " section: " + section + " (" + ua.courseName + ")</p>" +
+                "<p>Course: " + ua.courseNumber + " (" + ua.courseName + ")</p>" +
                 "<p>" + "Section".pluralize(section.length > 5) +": " + section + "</p>" +
                 "<p>Role: " + ua.role.toProperCase() + "</p>" +
                 "<p>Contains: " + ua.notesAuthored + " note".pluralize(ua.notesAuthored) + "</p>" +
