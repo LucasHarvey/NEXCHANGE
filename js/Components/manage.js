@@ -208,13 +208,15 @@ app.manage = {
         Resources.Courses.DELETE(courseId, pass, function(data) {
             that.hide();
             
-            var section =  (data.payload.sectionStart + "").padStart(5, "0");
-            if(data.payload.sectionStart != data.payload.sectionEnd){
-                section += " to " + (data.payload.sectionEnd + "").padStart(5, "0");
-            }
-            new Modal("Course Deleted", data.payload.courseName + " ("+"Section".pluralize(section.length > 5)+" " + section + ") has been deleted successfully.", null, null, "Okay").show();
+            let course = data.payload.course;
             
-            var article = document.getElementById("UA_C_" + data.payload.courseId);
+            var section =  (course.sectionStart + "").padStart(5, "0");
+            if(course.sectionStart != course.sectionEnd){
+                section += " to " + (course.sectionEnd + "").padStart(5, "0");
+            }
+            new Modal("Course Deleted", course.courseName + " ("+"Section".pluralize(section.length > 5)+" " + section + ") has been deleted successfully.", null, null, "Okay").show();
+            
+            var article = document.getElementById("UA_C_" + course.id);
             article.parentElement.removeChild(article);
         }, function(data){
             //Failure function
