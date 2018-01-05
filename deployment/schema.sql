@@ -42,7 +42,8 @@ CREATE TABLE courses (
     teacher_fullname VARCHAR(255) NOT NULL,
     course_name VARCHAR(100) NOT NULL,
     course_number VARCHAR(10) NOT NULL,
-    section int(5),
+    section_start int(5),
+    section_end int(5),
     semester VARCHAR(5) NOT NULL,
     
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
