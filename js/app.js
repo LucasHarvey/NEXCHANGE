@@ -268,8 +268,9 @@ length: The number dictating if the string should be pluralized or not
 pluralizedForm: how the string should be pluralized (s, es, etc) as a string. Default "s"
 */
 String.prototype.pluralize = function(length, pluralizedForm) {
-    if (length == 1 || length === false) return this;
-    return this + (pluralizedForm || "s");
+    if(length === 0 || (length !== 1 && length != false))
+        return this + (pluralizedForm || "s");
+    return this+""; //Needs "" or else will return a string object instead of string primitive.
 };
 
 Date.prototype.toDateInputValue = (function() {
