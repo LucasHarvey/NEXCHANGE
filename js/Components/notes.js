@@ -129,7 +129,11 @@ app.notes = {
 
         let courseP = document.createElement("P");
         //TODO: Clean all
-        courseP.innerHTML = "Notes taken for: <span>" + (noteData.course_number + " : " + (noteData.section + "").padStart(5, "0") + " (" + noteData.course_name + ")" || "Deleted Course") + "</span>";
+        var section =  (noteData.sectionStart + "").padStart(5, "0");
+        if(noteData.sectionStart != noteData.sectionEnd){
+            section += " to " + (noteData.sectionEnd + "").padStart(5, "0");
+        }
+        courseP.innerHTML = "Notes taken for: <span>" + noteData.course_name + "("+noteData.course_number + " : " + section +")" + "</span>";
         courseP.className = "author";
         articleSection.appendChild(courseP);
 
