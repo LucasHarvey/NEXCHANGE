@@ -129,12 +129,16 @@ app.manage = {
         for (var i = 0; i < courses.length; i++) {
             let course = courses[i];
             let article = this._generateArticle();
-            // Not sure what the UA is in the id below (user access?) it is used when generating a user also
             article.article.id = "UA_C_" + course.id;
             article.header.innerText = course.courseName;
             //TODO clean all.
+            var section =  (course.sectionStart + "").padStart(5, "0");
+            if(course.sectionStart != course.sectionEnd){
+                section += " to " + (course.sectionEnd + "").padStart(5, "0");
+            }
             article.description.innerHTML = "<p>Teacher: " + course.teacherFullName + "</p>" +
-                "<p>Course: " + course.courseNumber + " section: " + (course.section + "").padStart(5, "0") + "</p>" +
+                "<p>Course: " + course.courseNumber + "</p>" +
+                "<p>"+"Section".pluralize(section.length > 5)+": " + section + "</p>" +
                 "<p>Semester: " + course.semester + "</p>" +
                 "<p>Contains: " + course.notesAuthored + " note".pluralize(course.notesAuthored) + "</p>";
             article.button.innerHTML = "See Course Notes";
@@ -203,9 +207,16 @@ app.manage = {
         var that = this;
         Resources.Courses.DELETE(courseId, pass, function(data) {
             that.hide();
-            new Modal("Course Deleted", data.payload.courseName + " (section " + (data.payload.section+ "").padStart(5, "0") + ") has been deleted successfully.", null, null, "Okay").show();
             
-            var article = document.getElementById("UA_C_" + data.payload.courseId);
+            let course = data.payload.course;
+            
+            var section =  (course.sectionStart + "").padStart(5, "0");
+            if(course.sectionStart != course.sectionEnd){
+                section += " to " + (course.sectionEnd + "").padStart(5, "0");
+            }
+            new Modal("Course Deleted", course.courseName + " ("+"Section".pluralize(section.length > 5)+" " + section + ") has been deleted successfully.", null, null, "Okay").show();
+            
+            var article = document.getElementById("UA_C_" + course.id);
             article.parentElement.removeChild(article);
         }, function(data){
             //Failure function
@@ -241,8 +252,13 @@ app.manage = {
             let article = this._generateArticle();
             article.header.innerText = ua.role.toProperCase() + " - " + ua.firstName + " " + ua.lastName;
             //TODO clean all.
+            var section =  (ua.courseSectionStart + "").padStart(5, "0");
+            if(ua.courseSectionStart != ua.courseSectionEnd){
+                section += " to " + (ua.courseSectionEnd + "").padStart(5, "0");
+            }
             article.description.innerHTML =
-                "<p>Course: " + ua.courseNumber + " section: " + (ua.courseSection + "").padStart(5, "0") + " (" + ua.courseName + ")</p>" +
+                "<p>Course: " + ua.courseNumber + " (" + ua.courseName + ")</p>" +
+                "<p>" + "Section".pluralize(section.length > 5) +": " + section + "</p>" +
                 "<p>Role: " + ua.role.toProperCase() + "</p>" +
                 "<p>Contains: " + ua.notesAuthored + " note".pluralize(ua.notesAuthored) + "</p>" +
                 "<p>Created On: " + new Date(ua.created).toPrettyDate() + "</p>" +

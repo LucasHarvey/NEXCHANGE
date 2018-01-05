@@ -8,7 +8,7 @@ if(getUserPrivilege($conn, $user_id) == "ADMIN"){
     echoError($conn, 403, "AuthorizationFailed", "ModuleAccessError");
 }
 
-$query = "SELECT id, teacher_fullname as teacherFullName, course_name as courseName, course_number as courseNumber, section, semester, role, notifications ".
+$query = "SELECT id, teacher_fullname as teacherFullName, course_name as courseName, course_number as courseNumber, section_start as sectionStart, section_end as sectionEnd, semester, role, notifications ".
          "FROM courses c INNER JOIN user_access ua ON c.id = ua.course_id ".
          "WHERE ua.user_id=? AND ua.expires_on >= NOW()";
          
