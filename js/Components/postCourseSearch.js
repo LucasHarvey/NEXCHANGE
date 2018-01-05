@@ -126,7 +126,11 @@ app.postCourseSearch = {
         courseNumber.innerText = result.courseNumber;
 
         let section = document.createElement("td");
-        section.innerText = (result.section + "").padStart(5, "0");
+        var sectionText =  (result.sectionStart + "").padStart(5, "0");
+        if(result.sectionStart != result.sectionEnd){
+            sectionText += " to " + (result.sectionEnd + "").padStart(5, "0");
+        }
+        section.innerText = sectionText;
 
         let teacherFullName = document.createElement("td");
         teacherFullName.innerText = result.teacherFullName;
@@ -154,8 +158,13 @@ app.postCourseSearch = {
         if (courses.length == 0) {
             app.postCourseSearch.paginationEnd = true;
             document.getElementById('resultsTray').style.display = 'block';
-            document.getElementById("noResults").style.display = "block";
-            document.getElementById("noResults").innerHTML = "No " + app.postCourseSearch.pagesLoaded == 1 ? "" : "more" + " Results";
+            var noResultsTray = document.getElementById("noResults");
+            noResultsTray.style.display = "block";
+            noResultsTray.innerHTML = "No ";
+            if(app.postCourseSearch.pagesLoaded >= 2){
+                noResultsTray.innerHTML += "More ";
+            }
+            noResultsTray.innerHTML += "Results";
             return;
         }
 
