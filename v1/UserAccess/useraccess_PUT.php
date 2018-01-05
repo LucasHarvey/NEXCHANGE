@@ -6,7 +6,7 @@ allowing a user to modify their own access. Only allowed to modify if they want 
 
 $conn = database_connect();
 
-$user_id = getUserFromToken($conn);
+$user_id = getUserFromToken();
 
 requiredParams($conn, $_JSON, array("courseId", "notifications"));
 $courseId = $_JSON["courseId"];
