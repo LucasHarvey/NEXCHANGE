@@ -1,7 +1,7 @@
 <?php
 $conn = database_connect();
 
-$user_id = getUserFromToken($conn);
+$user_id = getUserFromToken();
 
 if(array_key_exists("id", $_GET)){
     $note = getNoteById($conn, $_GET['id']);
