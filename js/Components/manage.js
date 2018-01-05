@@ -8,7 +8,8 @@ app.manage = {
     pagesLoaded: 0,
     paginationEnd: false,
     
-    _generateArticle: function() {
+    _generateArticle: function(numButtons) {
+        if(!numButtons) numButtons = 2;
         let article = document.createElement("ARTICLE");
 
         let articleHeader = document.createElement("HEADER");
@@ -23,21 +24,29 @@ app.manage = {
         let descriptionP = document.createElement("P");
         descriptionP.className = "description";
         articleSection.appendChild(descriptionP);
-
-        let moreInfoBtn = document.createElement("BUTTON");
-        articleSection.appendChild(moreInfoBtn);
-
-        let moreInfoBtn2 = document.createElement("BUTTON");
-        articleSection.appendChild(moreInfoBtn2);
-
-        return {
+        
+        let buttonSection = document.createElement("SECTION");
+        buttonSection.className = "buttonfield";
+        articleSection.appendChild(buttonSection);
+        
+        var articleObject = {
             section: articleSection,
             article: article,
             header: articleHeaderp,
-            description: descriptionP,
-            button: moreInfoBtn,
-            button2: moreInfoBtn2
+            description: descriptionP
+        }
+        
+        for(var i = 0; i<numButtons; i++){
+            let moreInfoBtn = document.createElement("BUTTON");
+            buttonSection.appendChild(moreInfoBtn);
+            var name = "button";
+            if(i != 0){
+                name += i+1;
+            }
+            articleObject[name] = moreInfoBtn;
         };
+        
+        return articleObject;
     },
     _generateUsers: function(container, users) {
         if (users.length == 0) {
@@ -128,7 +137,7 @@ app.manage = {
         
         for (var i = 0; i < courses.length; i++) {
             let course = courses[i];
-            let article = this._generateArticle();
+            let article = this._generateArticle(4);
             article.article.id = "UA_C_" + course.id;
             article.header.innerText = course.courseName;
             //TODO clean all.
@@ -155,23 +164,18 @@ app.manage = {
                 window.location.href = "userAccess.html";
             };
             
-            // Create a third button to modify the course
-            let moreInfoBtn3 = document.createElement("BUTTON");
-            moreInfoBtn3.innerHTML = "Modify Course";
-            moreInfoBtn3.id = "Modify" + i + "_" + course.id;
-            moreInfoBtn3.onclick = function(){
+            article.button3.innerHTML = "Modify Course";
+            article.button3.id = "Modify" + i + "_" + course.id;
+            article.button3.onclick = function(){
                 var courseId = this.id.split("_")[1];
                 window.location.href = "./editCourse.html?courseId=" + courseId;
             };
-            article.section.appendChild(moreInfoBtn3);
             
-            // Create a fourth button to delete the course
-            let moreInfoBtn4 = document.createElement("BUTTON");
-            moreInfoBtn4.innerHTML = "Delete Course";
-            moreInfoBtn4.id = "Delete" + i + "_" + course.id;
-            moreInfoBtn4.className = "warning";
-            moreInfoBtn4.dataset.courseName = course.courseName;
-            moreInfoBtn4.onclick = function() {
+            article.button4.innerHTML = "Delete Course";
+            article.button4.id = "Delete" + i + "_" + course.id;
+            article.button4.className = "warning";
+            article.button4.dataset.courseName = course.courseName;
+            article.button4.onclick = function() {
                 var courseName = this.dataset.courseName;
                 var courseId = this.id.split("_")[1];
                 var button4 = this;
@@ -187,8 +191,6 @@ app.manage = {
                     }
                 ).show();
             };
-            article.section.appendChild(moreInfoBtn4);
-            
             
             container.appendChild(article.article);
         }
