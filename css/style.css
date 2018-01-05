@@ -80,8 +80,9 @@ button, .button {
     cursor: pointer;
     font-size: 16px;
     padding: 5px 15px;
-    margin-left: 0;
     text-align: center;
+    margin-left: 0;
+    margin-bottom: 5px;
 }
 
 button+button, .button+.button, button+.button, .button+button {
