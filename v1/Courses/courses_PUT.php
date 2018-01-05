@@ -17,8 +17,8 @@ if(!database_contains($conn, "courses", $course_id)){
 }
 
 // Change the insert keys
-$allowedProps = array("teacherFullName", "courseName", "courseNumber", "section", "semester");
-$changesKeysRemap = array("teacherFullName" => "teacher_fullname", "courseName" => "course_name", "courseNumber" => "course_number");
+$allowedProps = array("teacherFullName", "courseName", "courseNumber", "sectionStart", "sectionEnd", "semester");
+$changesKeysRemap = array("teacherFullName" => "teacher_fullname", "courseName" => "course_name", "courseNumber" => "course_number", "sectionStart" => "section_start", "sectionEnd" => "section_end");
 
 $changes = array();
 foreach($_JSON as $key => $value ){
@@ -67,7 +67,7 @@ if(!database_commit($conn)){
 }
 
 // Select the updated course data
-$course = database_get_row($conn, "SELECT id, teacher_fullname as teacherFullName, course_name as courseName, course_number as courseNumber, section, semester, created FROM courses WHERE id=? LIMIT 1", "s", $course_id);
+$course = database_get_row($conn, "SELECT id, teacher_fullname as teacherFullName, course_name as courseName, course_number as courseNumber, section_start as sectionStart, section_end as sectionEnd, semester, created FROM courses WHERE id=? LIMIT 1", "s", $course_id);
 
 if($course == null){
     echoError($conn, 404, "CourseNotFound");
