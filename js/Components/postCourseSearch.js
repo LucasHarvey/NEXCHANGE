@@ -158,8 +158,13 @@ app.postCourseSearch = {
         if (courses.length == 0) {
             app.postCourseSearch.paginationEnd = true;
             document.getElementById('resultsTray').style.display = 'block';
-            document.getElementById("noResults").style.display = "block";
-            document.getElementById("noResults").innerHTML = "No " + app.postCourseSearch.pagesLoaded == 1 ? "" : "more" + " Results";
+            var noResultsTray = document.getElementById("noResults");
+            noResultsTray.style.display = "block";
+            noResultsTray.innerHTML = "No ";
+            if(app.postCourseSearch.pagesLoaded >= 2){
+                noResultsTray.innerHTML += "More ";
+            }
+            noResultsTray.innerHTML += "Results";
             return;
         }
 
