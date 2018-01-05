@@ -10,8 +10,8 @@ if(getUserPrivilege($conn, $userId) != "ADMIN"){
 
 $offset =  array_key_exists("page", $_GET) ? $_GET['page'] : 0;
 
-$allowedProps = array("teacherFullName", "courseName", "courseNumber", "sectionStart", "sectionEnd", "semester", "courseId", "id", "page");
-$changesKeysRemap = array("teacherFullName" => "teacher_fullname", "courseName" => "course_name", "sectionStart" => "section_start", "sectionEnd" => "section_end", "courseNumber" => "course_number", "courseId" => "id", "page"=>NULL);
+$allowedProps = array("teacherFullName", "courseName", "courseNumber", "sectionStart", "sectionEnd", "semester", "courseId", "id", "page", "section");
+$changesKeysRemap = array("teacherFullName" => "teacher_fullname", "courseName" => "course_name", "sectionStart" => "section_start", "sectionEnd" => "section_end", "courseNumber" => "course_number", "courseId" => "id", "page"=>NULL, "section"=>NULL);
 $columnWhereClause = array("teacher_fullname" => "like", "course_name" => "like", "course_number" => "like", "sectionStart" => "=","sectionEnd" => "=", "semester" => "like", "id" => "=");
 
 $whereStmt = generateWhereStatement($conn, $allowedProps, $changesKeysRemap, $columnWhereClause, $_GET);
