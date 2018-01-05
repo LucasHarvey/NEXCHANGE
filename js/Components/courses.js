@@ -40,8 +40,13 @@ app.courses = {
         courseCodeP.innerHTML = "Course Number: " + courseData.courseNumber;
         courseInfo.appendChild(courseCodeP);
         
+        var sectionText = "Section: " + (courseData.sectionStart + "").padStart(5, "0");
+        if(courseData.sectionStart != courseData.sectionEnd){
+            sectionText += " to " + (courseData.sectionEnd + "").padStart(5, "0") ;
+        }
+        
         let sectionP = document.createElement("P");
-        sectionP.innerHTML = "Section: " + (courseData.section + "").padStart(5, "0");
+        sectionP.innerHTML = sectionText;
         courseInfo.appendChild(sectionP);
         
         let teacherP = document.createElement("P");
