@@ -28,20 +28,21 @@ function generateAuthToken($userid, $privilege){
 
     $token = $header . "." . $payload . "." . $signature;
     
-    
-    // Set the cookie for JWT
-    // TODO: change the fourth and fifth parameters once uploaded to server
+    //fourth and fifth parameters once uploaded to server
     // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
 
     setcookie("authToken", $token, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, true);
+    
+    // JSON encode the xsrf token to store it as a cookie
+    $xsrf = json_encode($xsrf);
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
     setcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
     
     return $token;
-
+    
 }
 
 function getAuthToken(){
@@ -69,7 +70,6 @@ function authorized($conn){
     // Decode the token
     $decTokenPieces = decodeToken($token);
     
-    
     /* Defend against CSRF */
     
     // Get the xsrf token from the headers
@@ -77,17 +77,22 @@ function authorized($conn){
     
     if(!in_array("x-csrftoken", array_keys($headers)))
         return array(false, null);
-    
+
     $xsrf = $headers["x-csrftoken"];
     
     // Check that $xsrf is the same as the xsrfToken inside the payload
     if($xsrf !== $decTokenPieces[1]["xsrfToken"])
         return array(false, null);
         
-    // Check that the token is not expired
+    // Check that the user exists
+    $user = database_get_row($conn, "SELECT id FROM users WHERE id=?", "s", $decTokenPieces[1]["sub"]);
+    if(!$user)
+        return array(false, null);
+    
+    // Check that the JWT isn't expired
     if(intval($decTokenPieces[1]["exp"]) < time())
         return array(false, $token);
-        
+
     // Check that the token is not older than the IAT date of latest token
     $userId = getUserFromToken($token);
     $expiry = database_get_row($conn, "SELECT most_recent_token_IAT FROM users WHERE id=?", "s", $userId);
@@ -95,7 +100,7 @@ function authorized($conn){
     if(intval($decTokenPieces[1]["iat"]) < $expiry)
         // This is not a token expiry error: the token is just not valid anymore
         return array(false, null);
-    
+
     return array(
        true, $token
     );
@@ -103,6 +108,7 @@ function authorized($conn){
 
 
 function getUserFromToken(){
+    
     $token = getAuthToken();
     
     if($token == null){
@@ -136,9 +142,10 @@ function isTokenExpired($token){
     return false;
 }
 
-function getUserPrivilege(){
+function getUserPrivilege($token = null){
     
-    $token = getAuthToken();
+    if(!$token)
+        $token = getAuthToken();
     
     if($token == null){
         return false;
