@@ -92,10 +92,15 @@ function authorized($conn){
     // Check that the token is not older than the IAT date of latest token
     $userId = getUserFromToken($token);
     $expiry = database_get_row($conn, "SELECT most_recent_token_IAT FROM users WHERE id=?", "s", $userId);
-    // if iat == expiry, then the token is valid
-    if(intval($decTokenPieces[1]["iat"]) < $expiry)
-    // This is not a token expiry error: the token is just not valid anymore
-        return array(false, null);
+    if($expiry["most_recent_token_IAT"]){
+        // if iat == expiry, then the token is valid
+        if(intval($decTokenPieces[1]["iat"]) < $expiry["most_recent_token_IAT"]){
+            // This is not a token expiry error: the token is just not valid anymore
+            return array(false, null);
+        }
+            
+    }
+    
     
     // Check that the JWT isn't expired
     if(intval($decTokenPieces[1]["exp"]) < time())
