@@ -20,6 +20,7 @@ app.navbar = {
 
     navbarSuccess: function(data) {
         app.navbar._generateNavbar(data.payload);
+        app.store("navbar", data.payload)
     },
 
     getNavbar: function() {
@@ -29,5 +30,12 @@ app.navbar = {
 };
 
 app.afterStartup.push(function navbarAfterStartup() {
+    var navbar = app.getStore("navbar");
+    if(navbar){
+        app.navbar._generateNavbar(navbar);
+        return;
+    }
+    
+    // If no navbar is found in localstorage/cookies, retrieve it from the server
     app.navbar.getNavbar();
 });
