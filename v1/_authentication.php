@@ -184,8 +184,10 @@ function validateTokenAuthenticity($token){
     return true;
 }
 
-function retrieveIAT(){
-    $token = getAuthToken();
+function retrieveIAT($token = null){
+    if(!$token)
+       $token = getAuthToken(); 
+    
     $decTokenPieces = decodeToken($token);
     $payload = $decTokenPieces[1];
      
