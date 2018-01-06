@@ -40,10 +40,7 @@ function generateAuthToken($userid, $privilege){
     // HTTPOnly must be false to access the token on the client side
     setcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
     
-    // Override the JWT and xsrfToken in the request
-    // TODO: find another way to set the xsrf token header for further use in other files
-    $_COOKIE["authToken"] = $token;
-    header('x-csrftoken: '.$xsrf);
+    return $token;
 
 }
 
