@@ -61,7 +61,7 @@ function getAuthToken(){
     
 }
 
-function authorized(){
+function authorized($conn){
     $token = getAuthToken();
     
     if(!validateTokenAuthenticity($token))
@@ -83,11 +83,16 @@ function authorized(){
     // Check that $xsrf is the same as the xsrfToken inside the payload
     if($xsrf !== $decTokenPieces[1]["xsrfToken"])
         return array(false, null);
+        
+    // Check that the user exists
+    $user = database_get_row($conn, "SELECT id FROM users WHERE id=?", "s", $decTokenPieces[1]["sub"]);
+    if(!$user)
+        return array(false, null);
     
     // Check that the JWT isn't expired
     if(intval($decTokenPieces[1]["exp"]) < time())
         return array(false, $token);
-    
+
     return array(
        true, $token
     );

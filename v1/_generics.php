@@ -30,7 +30,7 @@ include_once "_authentication.php";
 
 if(!isset($NO_AUTH_CHECKS) || $NO_AUTH_CHECKS !== true){
     $conn = database_connect();
-    $authed = authorized();
+    $authed = authorized($conn);
     
     if($authed[0] === true){ //Is authorized??
         // Get the user ID and privilege from the old token
