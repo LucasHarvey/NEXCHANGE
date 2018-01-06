@@ -28,26 +28,21 @@ function generateAuthToken($userid, $privilege){
 
     $token = $header . "." . $payload . "." . $signature;
     
-    // Override the JWT and xsrfToken in the request for the new tokens
-    $_COOKIE["authToken"] = $token;
-    
-    $headers = apache_request_headers();
-    $headers["x-csrftoken"] = $xsrf;
-    
-    // JSON encode the xsrf token to store it as a cookie
-    $xsrf = json_encode($xsrf);
-
-    // Set the cookie for JWT
-    // TODO: change the fourth and fifth parameters once uploaded to server
+    //fourth and fifth parameters once uploaded to server
     // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
 
     setcookie("authToken", $token, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, true);
     
+    // JSON encode the xsrf token to store it as a cookie
+    $xsrf = json_encode($xsrf);
+    
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
     setcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
-
+    
+    return $token;
+    
 }
 
 function getAuthToken(){
@@ -75,7 +70,6 @@ function authorized(){
     // Decode the token
     $decTokenPieces = decodeToken($token);
     
-    
     /* Defend against CSRF */
     
     // Get the xsrf token from the headers
@@ -83,19 +77,14 @@ function authorized(){
     
     if(!in_array("x-csrftoken", array_keys($headers)))
         return array(false, null);
-    
+
     $xsrf = $headers["x-csrftoken"];
     
     // Check that $xsrf is the same as the xsrfToken inside the payload
-    if($xsrf !== $decTokenPieces[1]["xsrfToken"]){
-        var_dump($xsrf);
-        var_dump($decTokenPieces[1]["xsrfToken"]);
-        die();
+    if($xsrf !== $decTokenPieces[1]["xsrfToken"])
         return array(false, null);
-    }
-        
-        
-    // Check that the token is not expired
+    
+    // Check that the JWT isn't expired
     if(intval($decTokenPieces[1]["exp"]) < time())
         return array(false, $token);
     
@@ -106,6 +95,7 @@ function authorized(){
 
 
 function getUserFromToken(){
+    
     $token = getAuthToken();
     
     if($token == null){
@@ -139,9 +129,10 @@ function isTokenExpired($token){
     return false;
 }
 
-function getUserPrivilege(){
+function getUserPrivilege($token = null){
     
-    $token = getAuthToken();
+    if(!$token)
+        $token = getAuthToken();
     
     if($token == null){
         return false;
