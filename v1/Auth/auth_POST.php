@@ -41,13 +41,13 @@ if(authenticate($conn)){
     $privilege = $user["privilege"];
     
     $userid = $user["id"];
-    generateAuthToken($userid, $privilege);
+    $token = generateAuthToken($userid, $privilege);
     
     // Update the last_login field
     database_execute($conn, "UPDATE users SET last_login=NOW() WHERE id=?", "s", $userid);
     
     include_once "./NavBar/navbar_GET.php";
-    $navbar = getNavbarItems($conn, $userid);
+    $navbar = getNavbarItems($conn, $token);
 
     echoSuccess($conn, array(
         "redirect" => $navbar[0],
