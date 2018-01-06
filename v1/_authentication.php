@@ -88,6 +88,14 @@ function authorized($conn){
     $user = database_get_row($conn, "SELECT id FROM users WHERE id=?", "s", $decTokenPieces[1]["sub"]);
     if(!$user)
         return array(false, null);
+        
+    // Check that the token is not older than the IAT date of latest token
+    $userId = getUserFromToken($token);
+    $expiry = database_get_row($conn, "SELECT most_recent_token_IAT FROM users WHERE id=?", "s", $userId);
+    // if iat == expiry, then the token is valid
+    if(intval($decTokenPieces[1]["iat"]) < $expiry)
+    // This is not a token expiry error: the token is just not valid anymore
+        return array(false, null);
     
     // Check that the JWT isn't expired
     if(intval($decTokenPieces[1]["exp"]) < time())
@@ -170,6 +178,14 @@ function validateTokenAuthenticity($token){
         
     return true;
 }
+
+function retrieveIAT(){
+    $token = getAuthToken();
+    $decTokenPieces = decodeToken($token);
+    $payload = $decTokenPieces[1];
+     
+    return intval($payload["iat"]);
+ }
 
 function decodeToken($token){
     // Explode the token into its three components
