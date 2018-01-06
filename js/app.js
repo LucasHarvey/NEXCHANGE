@@ -55,19 +55,7 @@ app.store = function(key, data) {
 app.getStore = function(key) {
     if (typeof(Storage) === "undefined") {
         //Store cookies instead
-        var name = key + "=";
-        var decodedCookie = decodeURIComponent(document.cookie);
-        var ca = decodedCookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return null;
+        app.getCookie(key);
     } else {
         let item = window.localStorage.getItem(key);
         return item && JSON.parse(item);
@@ -85,7 +73,7 @@ app.getCookie = function(key) {
             c = c.substring(1);
         }
         if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
+            return JSON.parse(c.substring(name.length, c.length));
         }
     }
     return null;
