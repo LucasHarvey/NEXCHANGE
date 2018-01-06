@@ -1,13 +1,9 @@
 <?php
 $conn = database_connect();
+$token = getAuthToken($conn);
+$user_id = getUserFromToken($conn);
 
-// Get the user's ID
-$userId = getUserFromToken();
-
-// Get the iat time of the newest token
-$latestTokenIAT = retrieveIAT();
-
-database_update($conn, "UPDATE users SET most_recent_token_IAT=? WHERE id=?", "is", array($latestTokenIAT, $userId));
+database_delete($conn, "DELETE FROM auth_tokens WHERE token!=? AND user_id=?", "ss", array($token, $user_id));
 
 echoSuccess($conn, array(
     "messageCode" => "UserUnauthenticated"
