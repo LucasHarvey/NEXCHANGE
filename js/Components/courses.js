@@ -40,10 +40,12 @@ app.courses = {
         courseCodeP.innerHTML = "Course Number: " + courseData.courseNumber;
         courseInfo.appendChild(courseCodeP);
         
-        var sectionText = "Section: " + (courseData.sectionStart + "").padStart(5, "0");
+        var section =  (courseData.sectionStart + "").padStart(5, "0");
         if(courseData.sectionStart != courseData.sectionEnd){
-            sectionText += " to " + (courseData.sectionEnd + "").padStart(5, "0") ;
+            section += " to " + (courseData.sectionEnd + "").padStart(5, "0");
         }
+        
+        var sectionText = "Section".pluralize(section.length > 5)+": " + section;
         
         let sectionP = document.createElement("P");
         sectionP.innerHTML = sectionText;
@@ -54,7 +56,6 @@ app.courses = {
         courseInfo.appendChild(teacherP);
 
         if (courseData.role == 'NOTETAKER') {
-            //TODO: Would it look better for the upload button to be BEFORE the notes or after ? @Lucas :)
             var uploadNoteButton = document.createElement("BUTTON");
             uploadNoteButton.className = "button courseUploadButton";
             uploadNoteButton.innerHTML = "Upload Notes for " + courseData.courseName;
