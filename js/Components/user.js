@@ -86,6 +86,7 @@ app.user = {
 
         Resources.Auth.DELETE(function() {
             app.store("authToken", null);
+            app.store("navbar", null);
             window.location = "./login.html";
         }, function(data) {
             if (data.statusCode == 401 || data.statusCode == 403) {
