@@ -90,10 +90,11 @@ if(!empty($_FILES['file'])){
     	foreach($files['name'] as $key => $name){
     		// Ensure that there is no error for the file
     		if($files['error'][$key] != 0) {
+    		    $err = getFileError($files['error'][$key]);
     		    array_push($failed, array(
     	        	"name" => $name,
-    	        	"messageCode" => "UnknownFileUploadError",
-    	        	"status" => 500
+    	        	"messageCode" => $err[1],
+    	        	"status" => $err[0]
     	    	));
     		    continue;
     		}
@@ -231,10 +232,11 @@ if(!empty($_FILES['file'])){
     		foreach($uploadedFiles as $file){
     			// Files already in $failed will not be in $uploadedFiles
     			array_push($failed, array(
-    	        	"name" => $file[0],
-    	        	"messageCode" => "DatabaseInsertError",
-    	        	"status" => 500
-    	    	));	
+		        	"name" => $file[0],
+		        	"messageCode" => "UnknownFileUploadError",
+		        	"message" => "NEXCODE 1573", //Unique code to find later if it shows up in console. Differenciates from lower UnkonwnFileError
+		        	"status" => 500
+		    	));	
     		}
     	}
     }
@@ -257,6 +259,19 @@ echoSuccess($conn, array(
 	"note" => $note
 ));
 
+function getFileError($errorNo){
+	switch ($errorNo) {
+        case UPLOAD_ERR_OK:
+        	return true;
+        case UPLOAD_ERR_NO_FILE:
+    		return array(400, "NoFilesUploaded");
+        case UPLOAD_ERR_INI_SIZE:
+        case UPLOAD_ERR_FORM_SIZE:
+        	return array(409, "FileIsTooBig");
+        default:
+        	return array(500, "UnknownFileUploadError");
+    }
+}
 
 function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5){
     
@@ -294,7 +309,8 @@ function validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE){
                 echoError($conn, 409, "FileIsTooBig");
             }
         }else{
-            echoError($conn, 500, "UnknownFileUploadError");
+        	$err = getFileError($_FILES['file']['error'][$key]);
+        	echoError($conn, $err[0], $err[1]);
         }
     }
 }

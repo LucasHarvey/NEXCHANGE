@@ -4,6 +4,7 @@ let MessageCode = {
     JSONParseException: "Unable to parse a response from the server. Please contact ITS if this problem persists.",
     MalformedBody: "The request body was not formed properly. Contact ITS if this problem persists.",
     RequestTimedout: "A request took too long to process and has timed out. Ensure you have internet connectivity.",
+    UnknownFileUploadError: "An error occured while uploading a file. Contact ITS if this problem persists.",
     StartupError: "An error occurred during startup of a component.",
     RoleNotFound: "Role was not found.",
     UserAccessNotFound: "The user access was not found.",
