@@ -13,9 +13,14 @@ app.user = {
         document.getElementById("button_login").disabled = false;
         document.getElementById("loginData").addEventListener("submit", app.user.login);
         
+        var nextWindowLocation = data.payload.redirect.url;
         app.user.authToken = data.payload.token;
         app.user.loginId = data.payload.loginId;
         app.store("authToken", app.user.authToken);
+        if(app.getStore("loginId") == app.user.loginId){
+            //Is the previous user and the current user the same? If so use the next location if it exists
+            nextWindowLocation = app.getStore("login_nextLocation") || data.payload.redirect.url;
+        }
         app.store("loginId", app.user.loginId);
         document.getElementById("errorTray").style.display = 'none';
 
@@ -68,9 +73,8 @@ app.user = {
 
             return;
         }
-        var nextLoc = app.getStore("login_nextLocation") || data.payload.redirect.url;
         app.store("login_nextLocation", null);
-        window.location = nextLoc;
+        window.location = nextWindowLocation;
     },
     failure: function(data) {
         document.getElementById("errorTray").style.display = 'block';
@@ -87,6 +91,7 @@ app.user = {
         Resources.Auth.DELETE(function() {
             app.store("authToken", null);
             app.store("navbar", null);
+            app.store("login_nextLocation", null);
             window.location = "./login.html";
         }, function(data) {
             if (data.statusCode == 401 || data.statusCode == 403) {
