@@ -6,7 +6,7 @@ var app = app || {
 
 app.user = {
     authToken: null,
-    userId: null,
+    loginId: null,
     loginSuccess: function(data) {
         
         // Enable the form
