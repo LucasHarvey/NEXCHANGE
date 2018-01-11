@@ -62,8 +62,13 @@ if(!empty($_FILES['file'])){
 		foreach($files['name'] as $key => $name){
 			// Ensure that there is no error for the file
 			if($files['error'][$key] != 0) {
-				array_push($failed, getFileError($files['error'][$key]));
-			    continue;
+				$err = getFileError($files['error'][$key]);
+    		    array_push($failed, array(
+    	        	"name" => $name,
+    	        	"messageCode" => $err[1],
+    	        	"status" => $err[0]
+    	    	));
+    		    continue;
 			}
 			
 			$tmp = $files['tmp_name'][$key];
