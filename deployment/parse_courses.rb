@@ -101,7 +101,6 @@ semester = SEMESTER_CMD
 if(SEMESTER_CMD.nil?)
     year = Date.today.year
     month = Date.today.month - 1
-    today = Date.today.day
     season = "F"
     if (month >= 0 && month < 5)
         season = "W"
