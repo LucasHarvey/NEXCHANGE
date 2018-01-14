@@ -100,6 +100,7 @@ app.handleAuthError = function(response) {
                 // Store the current location as the next location after login
                 app.store("login_nextLocation", window.location.href);
             } else {
+                app.store("navbar", null);
                 app.store("login_nextLocation", null);
             }
             // Redirect the user to the login page
