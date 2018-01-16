@@ -3,7 +3,7 @@ $PASSWORD_LENGTH = 9;
 
 $conn = database_connect();
 
-$user_id = getUserFromToken($conn);
+$user_id = getUserFromToken();
 
 requiredParams($conn, $_JSON, array("currentPassword"));
 $currentPassword = $_JSON["currentPassword"];

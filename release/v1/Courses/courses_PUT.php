@@ -3,10 +3,8 @@ $PASSWORD_LENGTH = 9;
 
 $conn = database_connect();
 
-$userId = getUserFromToken($conn);
-
 // Verify that the user is an admin
-if(getUserPrivilege($conn, $userId) != "ADMIN"){
+if(getUserPrivilege() != "ADMIN"){
     echoError($conn, 403, "AuthorizationFailed");
 }
 

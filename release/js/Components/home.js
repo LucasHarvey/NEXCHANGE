@@ -305,7 +305,6 @@ app.home = {
     
                 downloadFunc(resp, req);
                 
-                alert("resetting");
                 app.home.getCourses();
     
             

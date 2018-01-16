@@ -2,8 +2,8 @@
 
 $conn = database_connect();
 
-$user_id = getUserFromToken($conn);
-$userIsNotAdmin = getUserPrivilege($conn, $user_id) != "ADMIN";
+$user_id = getUserFromToken();
+$userIsNotAdmin = getUserPrivilege() != "ADMIN";
 
 $whereClause = "";
 if($userIsNotAdmin){
