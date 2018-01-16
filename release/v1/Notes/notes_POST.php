@@ -7,8 +7,8 @@ requiredParams($conn, $_POST, array("noteName", "courseId", "takenOn"));
 $allowed = ['pdf','docx', 'doc', 'pptx', 'ppt', 'xlsx', 'jpeg', 'jpg', 'png', 'txt', 'zip'];
 $MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
 
-$user_id = getUserFromToken($conn);
-if(getUserPrivilege($conn, $user_id) == "ADMIN"){
+$user_id = getUserFromToken();
+if(getUserPrivilege() == "ADMIN"){
     echoError($conn, 403, "AuthorizationFailed");
 }
 

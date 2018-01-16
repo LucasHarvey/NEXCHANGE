@@ -32,20 +32,25 @@ if(authenticate($conn)){
     }
     $loginId = $creds[0];
     
-    $user = database_get_row($conn, "SELECT id, login_id, last_login IS NULL as 'changepass' FROM users WHERE login_id=?", "s", $loginId);
+    $user = database_get_row($conn, "SELECT id, login_id, last_login IS NULL as 'changepass', privilege FROM users WHERE login_id=?", "s", $loginId);
     if($user == null){
         echoError($conn, 404, "UserNotFound");
     }
     
+    // Get the user's privilege
+    $privilege = $user["privilege"];
+    
     $userid = $user["id"];
-    $token = generateAuthToken($conn, $userid);
+    $token = generateAuthToken($userid, $privilege);
+    
+    // Update the last_login field
+    database_execute($conn, "UPDATE users SET last_login=NOW() WHERE id=?", "s", $userid);
     
     include_once "./NavBar/navbar_GET.php";
-    $navbar = getNavbarItems($conn, $userid);
+    $navbar = getNavbarItems($conn, $token);
 
     echoSuccess($conn, array(
         "redirect" => $navbar[0],
-        "token" => $token,
         "userId" => $userid,
         "loginId" => $user["login_id"],
         "mustChangePass" => $user["changepass"],

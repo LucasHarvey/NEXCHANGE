@@ -7,7 +7,6 @@ DROP TABLE IF EXISTS notes;
 DROP TABLE IF EXISTS notefiles;
 DROP TABLE IF EXISTS user_access;
 DROP TABLE IF EXISTS courses;
-DROP TABLE IF EXISTS auth_tokens;
 DROP TABLE IF EXISTS notefile_downloads;
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -22,19 +21,12 @@ CREATE TABLE users (
     privilege ENUM("USER", "ADMIN") NOT NULL DEFAULT "USER",
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     last_login DATETIME DEFAULT NULL,
+    most_recent_token_IAT int(10) DEFAULT NULL,
     
     passresetcode CHAR(40) UNIQUE,
     passresetcreated TIMESTAMP,
     
     PRIMARY KEY (id)
-);
-
-CREATE TABLE auth_tokens (
-    user_id CHAR(36) NOT NULL,
-    token CHAR(32) NOT NULL UNIQUE,
-    expires_on TIMESTAMP NOT NULL DEFAULT 0,
-    
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE courses (
@@ -115,16 +107,6 @@ CREATE TRIGGER before_insert_on_notefiles_id
 CREATE TRIGGER before_insert_on_courses_id
     BEFORE INSERT ON courses 
     FOR EACH ROW SET new.id = uuid();
-
-DELIMITER $$
-CREATE TRIGGER before_insert_on_authtokens
-    BEFORE INSERT ON auth_tokens
-    FOR EACH ROW 
-    BEGIN
-        SET new.expires_on = DATE_ADD(NOW(), INTERVAL 15 MINUTE);
-        UPDATE users SET last_login=NOW() WHERE id=new.user_id;
-    END$$
-DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER before_insert_on_user_access

@@ -1,5 +1,10 @@
 <?php
 $GLOBALS['PAGE_SIZES'] = 20; //used for pagination
+$GLOBALS['NEXCHANGE_domain'] = "https://ide.c9.io"; //used for cookie access
+$GLOBALS['NEXCHANGE_SECRET'] = "F/|wL~[M%@r],d;xL+GMLB_8X?fx8xhpM1~5|*xU_?K[+f8<lzCio+'7'~kv[e<";
+$GLOBALS['NEXCHANGE_TOKEN_EXPIRY_MINUTES'] = 15; //number of minutes before expiry of JWT
+$GLOBALS['COOKIE_PATH'] = "/";
+$GLOBALS['COOKIE_DOMAIN'] = "nexchange-git-lucas-lucasharvey.c9users.io";
 
 //Convert the request body to JSON if the content type is set to json
 if($_SERVER["REQUEST_METHOD"] != "GET"){
@@ -26,12 +31,16 @@ include_once "_authentication.php";
 if(!isset($NO_AUTH_CHECKS) || $NO_AUTH_CHECKS !== true){
     $conn = database_connect();
     $authed = authorized($conn);
+    
     if($authed[0] === true){ //Is authorized??
-        refreshUserToken($conn);
+        // Get the user ID and privilege from the old token
+        $userInfo = retrieveUserInfo();
+        // Generate a new JWT and xsrfToken
+        generateAuthToken($userInfo[0], $userInfo[1]);
         $conn->close();
         return;
     }
-    if($authed[1] != null && isTokenExpired($conn, $authed[1])){ //was the token once valid
+    if($authed[1] != null && isTokenExpired($authed[1])){ //was the token once valid
         echoError($conn, 401, "AuthenticationExpired");
     }
     echoError($conn, 401, "AuthorizationFailed");

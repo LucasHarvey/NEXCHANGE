@@ -2,10 +2,10 @@
 
 $conn = database_connect();
 
-$user_id = getUserFromToken($conn);
+$user_id = getUserFromToken();
 
-if(getUserPrivilege($conn, $user_id) == "ADMIN"){
-    echoError($conn, 403, "AuthorizationFailed", "ModuleAccessError");
+if(getUserPrivilege() != "USER"){
+    echoError($conn, 403, "AuthorizationFailed");
 }
 
 $query = "SELECT id, teacher_fullname as teacherFullName, course_name as courseName, course_number as courseNumber, section_start as sectionStart, section_end as sectionEnd, semester, role, notifications ".
