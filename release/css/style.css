@@ -283,7 +283,7 @@ button.warning, .button.warning {
 }
 
 .login {
-    background-image: url("../html/img/loginBackground.jpeg");
+    background-image: url("../img/loginBackground.jpeg");
     background-size: cover;
     background-position: center center;
     background-attachment: fixed;
