@@ -1,8 +1,13 @@
 <?php
 
-function getNavbarItems($conn, $user_id){
+function getNavbarItems($conn, $token = null){
+    
+    if(!$token) 
+        $token = getAuthToken();
+    
+    $user_id = getUserFromToken($token);
 
-    if(getUserPrivilege($conn, $user_id) == "ADMIN"){
+    if(getUserPrivilege($token) == "ADMIN"){
         $signup = array(
             "content" => "SIGN UP NEW USER",
             "url" => "./signup.html"

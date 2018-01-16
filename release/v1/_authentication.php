@@ -1,99 +1,230 @@
 <?php
+  
+function generateAuthToken($userid, $privilege){
 
-function generateAuthToken($conn, $userid){
-    $length = 16;
-    $true = true;
-    $token = bin2hex(openssl_random_pseudo_bytes($length, $true));
+    $header = base64_encode(json_encode([
+        "alg" => "HS256",
+        "typ" => "JWT"
+    ]));
     
-    database_insert($conn, 
-        "INSERT INTO auth_tokens (user_id, token) VALUES (?,?)", "ss", array($userid, $token)
-    );
+    // Create an expiry time
+    $expiry = time() + $GLOBALS['NEXCHANGE_TOKEN_EXPIRY_MINUTES']*60;
     
-    return "Basic ".base64_encode($token);
+     // Create a new xsrf token
+    $length = 16; 
+    $true = true; 
+    $xsrf = bin2hex(openssl_random_pseudo_bytes($length, $true));
+    
+    // The xsrfToken is used to prevent CSRF (Cross-Site Request Forgery)
+    $payload = base64_encode(json_encode([
+        "sub" => $userid,
+        "iat" => time(),
+        "exp" => $expiry,
+        "privilege" => $privilege,
+        "xsrfToken" => $xsrf
+    ]));
+
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
+
+    $token = $header . "." . $payload . "." . $signature;
+    
+    //fourth and fifth parameters once uploaded to server
+    // Argument 3: The cookie will expire when the web browser closes
+    // Arguments 6 and 7 are Secure and HTTPOnly respectively
+
+    setcookie("authToken", $token, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, true);
+    
+    // JSON encode the xsrf token to store it as a cookie
+    $xsrf = json_encode($xsrf);
+    
+    // Set the cookie for xsrf token
+    // HTTPOnly must be false to access the token on the client side
+    setcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
+    
+    return $token;
+    
 }
 
 function getAuthToken(){
-    $headers = apache_request_headers();
     
-    if(!in_array("authorization", array_keys($headers))){
+    if(!isset($_COOKIE["authToken"]))
         return null;
-    }
 
-    $base = $headers["authorization"];
-    if(empty($base)){
+    // $token is the JWT
+    $token = $_COOKIE["authToken"];
+    
+    if(empty($token)){
         return null;
     }
     
-    return base64_decode(substr($base, 6));
+    return $token;
+    
 }
 
 function authorized($conn){
     $token = getAuthToken();
-    if($token == null){
+    
+    if(!validateTokenAuthenticity($token))
         return array(false, null);
+    
+    // Decode the token
+    $decTokenPieces = decodeToken($token);
+    
+    /* Defend against CSRF */
+    
+    // Get the xsrf token from the headers
+    $headers = apache_request_headers();
+    
+    if(!in_array("x-csrftoken", array_keys($headers)))
+        return array(false, null);
+
+    $xsrf = $headers["x-csrftoken"];
+    
+    // Check that $xsrf is the same as the xsrfToken inside the payload
+    if($xsrf !== $decTokenPieces[1]["xsrfToken"])
+        return array(false, null);
+        
+    // Check that the user exists
+    $user = database_get_row($conn, "SELECT id FROM users WHERE id=?", "s", $decTokenPieces[1]["sub"]);
+    if(!$user)
+        return array(false, null);
+        
+    // Check that the token is not older than the IAT date of latest token
+    $userId = getUserFromToken($token);
+    $expiry = database_get_row($conn, "SELECT most_recent_token_IAT FROM users WHERE id=?", "s", $userId);
+    if($expiry["most_recent_token_IAT"]){
+        // if iat == expiry, then the token is valid
+        if(intval($decTokenPieces[1]["iat"]) < $expiry["most_recent_token_IAT"]){
+            // This is not a token expiry error: the token is just not valid anymore
+            return array(false, null);
+        }
+            
     }
     
-    $queryStr = "SELECT * FROM auth_tokens WHERE token=? AND expires_on >= NOW()";
-    $result = database_get_row($conn, $queryStr, "s", array($token));
+    
+    // Check that the JWT isn't expired
+    if(intval($decTokenPieces[1]["exp"]) < time())
+        return array(false, $token);
+
     return array(
-        $result != null, $token
+       true, $token
     );
 }
 
-function tokenForUser($conn, $userId){
-    $token = getAuthToken();
-    if($token == null){
-        return false;
-    }
-    
-    $queryStr = "SELECT * FROM auth_tokens WHERE token=? AND expires_on >= NOW() AND user_id=?";
-    $result = database_get_row($conn, $queryStr, "ss", array($token, $userId));
-    return ($result != null);
-}
 
-function getUserFromToken($conn){
+function getUserFromToken(){
+    
     $token = getAuthToken();
+    
     if($token == null){
         return null;
     }
     
+    $decTokenPieces = decodeToken($token);
     
-    $queryStr = "SELECT user_id FROM auth_tokens WHERE token=? AND expires_on >= NOW()";
-    $result = database_get_row($conn, $queryStr, "s", array($token));
-
-    if($result != null){
-        return $result["user_id"];
-    }
-    return null;
+    // Verify that the token is valid
+    $payload = $decTokenPieces[1];
+    
+    $userId = $payload["sub"];
+    
+    return $userId;
 }
 
-function isTokenExpired($conn, $token){
+function isTokenExpired($token){
+    
     if($token == null){
         return true;
     }
-    $queryStr = "SELECT expires_on <= NOW() FROM auth_tokens WHERE token=?";
-    $result = database_get_row($conn, $queryStr, "s", array($token));
-    return ($result != null);
+    
+    $decTokenPieces = decodeToken($token);
+    
+    $payload = $decTokenPieces[1];
+    
+     // Check that the token is not expired
+    if(intval($payload["exp"]) < time())
+        return true;
+    
+    return false;
 }
 
-function refreshUserToken($conn){
-    $token = getAuthToken();
+function getUserPrivilege($token = null){
+    
+    if(!$token)
+        $token = getAuthToken();
+    
     if($token == null){
         return false;
     }
     
-    $queryStr = "UPDATE auth_tokens SET expires_on = DATE_ADD(NOW(), INTERVAL 15 MINUTE) WHERE token=?";
-    return database_update($conn, $queryStr, "s", array($token));
+    $decTokenPieces = decodeToken($token);
+    
+    $payload = $decTokenPieces[1];
+    
+    $privilege = $payload["privilege"];
+    
+    return $privilege;
 }
 
-function getUserPrivilege($conn, $userId){
-    if($userId == null) return null;
+function validateTokenAuthenticity($token){
     
-    $queryStr = "SELECT privilege FROM users WHERE id=? LIMIT 1";
-    $row = database_get_row($conn, $queryStr, "s", array($userId));
-    if($row != null){
-        return $row["privilege"];
-    }
-    return null;
+    if($token == null)
+        return false;
+    
+    $encTokenPieces = explode(".", $token);
+    
+    $header = $encTokenPieces[0];
+    $payload = $encTokenPieces[1];
+    
+    $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
+    
+    // Check if the token signature and the new signature are the same
+    if($encTokenPieces[2] !== $signature)
+        return false;
+        
+    return true;
 }
+
+function retrieveIAT($token = null){
+    if(!$token)
+       $token = getAuthToken(); 
+    
+    $decTokenPieces = decodeToken($token);
+    $payload = $decTokenPieces[1];
+     
+    return intval($payload["iat"]);
+ }
+
+function decodeToken($token){
+    // Explode the token into its three components
+    $encTokenPieces = explode(".", $token);
+    
+    // Get the signature
+    $signature = $encTokenPieces[2];
+    
+    // Slice the signature off
+    $encHeadPay = array_slice($encTokenPieces, 0, 2);
+    
+    $decHead = base64_decode($encHeadPay[0]);
+    $decHead = json_decode($decHead, true);
+    
+    $decPay = base64_decode($encHeadPay[1]);
+    $decPay = json_decode($decPay, true);
+
+    // Created the decoded token array
+    $decTokenPieces = array($decHead, $decPay, $signature);
+
+    return $decTokenPieces;
+}
+
+function retrieveUserInfo(){
+    $token = getAuthToken();
+    $decTokenPieces = decodeToken($token);
+    $payload = $decTokenPieces[1];
+
+    return array(
+        $payload["sub"],
+        $payload["privilege"]
+        );
+}
+
 ?>

@@ -1,7 +1,6 @@
 <?php
 $conn = database_connect();
 
-
 if(!array_key_exists("studentId", $_GET)){
     echoError($conn, 400, "MissingArgumentStudentId");
 }

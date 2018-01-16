@@ -5,7 +5,7 @@ var app = app || {
 };
 
 app.user = {
-    authToken: null,
+    xsrfToken: null,
     loginId: null,
     loginSuccess: function(data) {
         
@@ -13,8 +13,10 @@ app.user = {
         document.getElementById("button_login").disabled = false;
         document.getElementById("loginData").addEventListener("submit", app.user.login);
         
+        // Note: The JWT is stored in Cookie and only accessible through HTTP
+        // The xsrfToken is retrieved from Cookie and store in app.user.xsrfToken
+        app.user.xsrfToken = app.getCookie("xsrfToken");
         var nextWindowLocation = data.payload.redirect.url;
-        app.user.authToken = data.payload.token;
         app.user.loginId = data.payload.loginId;
         app.store("authToken", app.user.authToken);
         if(app.getStore("loginId") == app.user.loginId){
@@ -73,6 +75,7 @@ app.user = {
 
             return;
         }
+      
         app.store("login_nextLocation", null);
         window.location = nextWindowLocation;
     },
@@ -96,7 +99,6 @@ app.user = {
         }, function(data) {
             if (data.statusCode == 401 || data.statusCode == 403) {
                 console.warn("Already signed out...");
-                app.store("authToken", null);
                 window.location = "./login.html";
                 return;
             }
@@ -166,7 +168,7 @@ app.startup.push(function userStartup() {
         loginForm.addEventListener("submit", app.user.login);
     }
 
-    app.user.authToken = app.getStore("authToken");
+    app.user.xsrfToken = app.getCookie("xsrfToken");
     app.user.loginId = app.getStore("loginId");
     (document.getElementById("input_userId") || {}).value = app.user.loginId || "";
 });

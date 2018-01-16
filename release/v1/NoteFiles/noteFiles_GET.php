@@ -22,7 +22,7 @@ function outputFileContent($storage_name, $type, $file_name, $size, $expectedMD5
 
 $conn = database_connect();
 
-$user_id = getUserFromToken($conn);
+$user_id = getUserFromToken();
 
 requiredParams($conn, $_GET, array("noteId"));
 $note_id = $_GET["noteId"];
@@ -33,7 +33,7 @@ if(!$note){
 }
 
 // Ensure that the user has access to the notes
-if(getUserPrivilege($conn, $user_id) != "ADMIN"){
+if(getUserPrivilege() != "ADMIN"){
     $userAccess = database_get_row($conn, "SELECT user_id FROM user_access WHERE user_id=? AND course_id=?", "ss", array($user_id, $note["course_id"]));
     if(!$userAccess){
         echoError($conn, 403, "UserDownloadNotesDenied");

@@ -1,7 +1,8 @@
 <?php
+// Used to display user information on the settings page
 
 $conn = database_connect();
-$user_id = getUserFromToken($conn);
+$user_id = getUserFromToken();
 
 $query = "SELECT id, login_id as 'studentId', first_name as 'firstName', last_name as 'lastName', email FROM users WHERE id=? LIMIT 1";
 
