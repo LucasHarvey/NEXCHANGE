@@ -1,5 +1,5 @@
-source /home/ubuntu/workspace/deployment/database/schema.sql
-source /home/ubuntu/workspace/deployment/database/upload_courses.sql
+source deployment/database/schema.sql
+source gdeployment/database/upload_courses.sql
 
 -- ADD THE ADMIN USER
 -- Password is: adminpass
