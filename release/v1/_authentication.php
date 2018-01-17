@@ -32,14 +32,14 @@ function generateAuthToken($userid, $privilege){
     // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
 
-    setcookie("authToken", $token, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, true);
+    setcookie("authToken", $token, 0, "/", $GLOBALS['NEXCHANGE_DOMAIN'], $GLOBALS['NEXCHANGE_SECURED_SITE'], true);
     
     // JSON encode the xsrf token to store it as a cookie
     $xsrf = json_encode($xsrf);
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrfToken", $xsrf, 0, $GLOBALS['COOKIE_PATH'], $GLOBALS['COOKIE_DOMAIN'], true, false);
+    setcookie("xsrfToken", $xsrf, 0, "/", $GLOBALS['NEXCHANGE_DOMAIN'], $GLOBALS['NEXCHANGE_SECURED_SITE'], false);
     
     return $token;
     

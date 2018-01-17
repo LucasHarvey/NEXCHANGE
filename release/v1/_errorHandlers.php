@@ -1,4 +1,12 @@
 <?php
+
+function globalErrorHandler($errorNumber, $errorString, $errorFile, $errorLine){
+    error_log("$errorNumber - $errorString in $errorFile on line $errorLine", 0);
+    echoError(null, 500, "UnknownServerError", "$errorNumber - $errorString in $errorFile on line $errorLine");
+}
+
+error_reporting(E_ALL);
+set_error_handler("globalErrorHandler");
     
 function echoError($conn, $status, $messageCode, $message = ""){
     if($conn != null){ //would occur if error happened in a script without need of a DB...?!
@@ -49,13 +57,5 @@ function toUTF8($d) {
     }
     return $d;
 }
-
-function globalErrorHandler($errorNumber, $errorString, $errorFile, $errorLine){
-    error_log("$errorNumber - $errorString in $errorFile on line $errorLine", 0);
-    echoError(null, 500, "UnknownServerError", "$errorNumber - $errorString in $errorFile on line $errorLine");
-}
-
-error_reporting(E_ALL);
-set_error_handler("globalErrorHandler");
 
 ?>
