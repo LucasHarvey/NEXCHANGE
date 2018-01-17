@@ -12,7 +12,7 @@ $GLOBALS['NEXCHANGE_SECURED_SITE'] = false; //important, if secured is FORCED yo
 
 //Convert the request body to JSON if the content type is set to json
 if($_SERVER["REQUEST_METHOD"] != "GET"){
-    if(in_array("Content-Type", array_keys(apache_request_headers())) && apache_request_headers()["Content-Type"] == "application/json"){
+    if(in_array("CONTENT_TYPE", array_keys($_SERVER)) && $_SERVER["CONTENT_TYPE"] == "application/json"){
         $_JSON = json_decode(file_get_contents('php://input'), true);
         if($_JSON == null){
             $_JSON = array();
