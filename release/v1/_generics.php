@@ -1,4 +1,7 @@
 <?php
+//Error handler helpers
+include_once "_errorHandlers.php"; //Should always be first thing.
+
 $GLOBALS['PAGE_SIZES'] = 20; //used for pagination
 $GLOBALS['NEXCHANGE_domain'] = "https://ide.c9.io"; //used for cookie access
 $GLOBALS['NEXCHANGE_SECRET'] = "F/|wL~[M%@r],d;xL+GMLB_8X?fx8xhpM1~5|*xU_?K[+f8<lzCio+'7'~kv[e<";
@@ -18,9 +21,6 @@ if($_SERVER["REQUEST_METHOD"] != "GET"){
 
 //We will be outputting json.
 header('Content-type: application/json');
-
-//Error handler helpers
-include_once "_errorHandlers.php";
 
 // Database helper
 include_once "_database.php";
