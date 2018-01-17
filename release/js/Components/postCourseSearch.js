@@ -196,6 +196,7 @@ app.postCourseSearch = {
         document.getElementById("teacherFullName").value = "";
         document.getElementById("season").selectedIndex = 0;
         var yearInput = document.getElementById("year");
+        yearInput.value = "";
         yearInput.placeholder = "All Years";
         yearInput.readOnly = true;
         yearInput.classList.toggle("noHighlight");
