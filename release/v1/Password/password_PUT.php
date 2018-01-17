@@ -3,7 +3,7 @@ $conn = database_connect();
 
 $headers = apache_request_headers();
 
-$base = $headers["Authorization"];
+$base = $headers["authorization"];
 
 $creds = explode(':' , base64_decode(substr($base, 6)));
 

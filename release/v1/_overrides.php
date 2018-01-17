@@ -12,7 +12,7 @@ if( !function_exists('apache_request_headers') ) {
         $rx_matches = explode('_', $arh_key);
         if( count($rx_matches) > 0 and strlen($arh_key) > 2 ) {
           foreach($rx_matches as $ak_key => $ak_val) 
-              $rx_matches[$ak_key] = ucfirst(strtolower($ak_val));
+              $rx_matches[$ak_key] = strtolower($ak_val);
           $arh_key = implode('-', $rx_matches);
         }
         $arh[$arh_key] = $val;
