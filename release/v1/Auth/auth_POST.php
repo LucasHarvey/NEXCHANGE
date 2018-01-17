@@ -4,7 +4,7 @@
 function authenticate($dbh){
     $headers = apache_request_headers();
     
-    $base = $headers["Authorization"];
+    $base = $headers["authorization"];
     
     $creds = explode(':' , base64_decode(substr($base, 6)));
     
@@ -25,7 +25,7 @@ $conn = database_connect();
 //Authenticate the user
 if(authenticate($conn)){
     $headers = apache_request_headers();
-    $base = $headers["Authorization"];
+    $base = $headers["authorization"];
     $creds = explode(':' , base64_decode(substr($base, 6)));
     if(count($creds) != 2){
         echoError($conn, 400, "MalformedBody");
