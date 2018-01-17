@@ -1,7 +1,7 @@
 /* global app */
 let Resources = {
     Password: {
-        location: "../v1/password.php",
+        location: "v1/password.php",
         POST: function(studentId, email, successCallback, failureCallback){
             let data = {
                 studentId: studentId,
@@ -18,7 +18,7 @@ let Resources = {
         }
     },
     Auth: {
-        location: "../v1/auth.php",
+        location: "v1/auth.php",
         POST: function(studentId, password, successCallback, failureCallback, options) {
             let request = app._generateRequest(successCallback, failureCallback, options);
             request.open("POST", Resources.Auth.location);
@@ -33,7 +33,7 @@ let Resources = {
         },
         DELETEALL: function(successCallback, failureCallback) {
             return app.delete({
-                    location: "../v1/auth_all.php"
+                    location: "v1/auth_all.php"
                 },
                 null,
                 successCallback,
@@ -41,7 +41,7 @@ let Resources = {
         }
     },
     Users: {
-        location: "../v1/users.php",
+        location: "v1/users.php",
         GET: function(successCallback, failureCallback) {
             return app.get(Resources.Users, null, successCallback, failureCallback);
         },
@@ -69,7 +69,7 @@ let Resources = {
             if (name) data["name"] = name;
             if (id) data["studentId"] = id;
             if (page) data["page"] = page;
-            return app.get({ location: "../v1/usersearch.php" },
+            return app.get({ location: "v1/usersearch.php" },
                 data,
                 successCallback,
                 failureCallback);
@@ -85,7 +85,7 @@ let Resources = {
         }
     },
     UserAccess: {
-        location: "../v1/useraccess.php",
+        location: "v1/useraccess.php",
         SEARCH: function(studentId, courseName, courseNumber, page, successCallback, failureCallback) {
             let data = {};
             if (studentId) data["studentId"] = studentId;
@@ -119,13 +119,13 @@ let Resources = {
         }
     },
     UserCourses: {
-        location: "../v1/usercourses.php",
+        location: "v1/usercourses.php",
         GET: function(successCallback, failureCallback) {
             return app.get(Resources.UserCourses, null, successCallback, failureCallback);
         }
     },
     Notes: {
-        location: "../v1/notes.php",
+        location: "v1/notes.php",
         GET_id: function(id, successCallback, failureCallback) {
             let data = {
                 id: id
@@ -172,12 +172,12 @@ let Resources = {
             if (courseId) data["courseId"] = courseId;
             if (studentId) data["studentId"] = studentId;
             if (page) data["page"] = page;
-            return app.get({ location: "../v1/notessearch.php" }, data, successCallback, failureCallback);
+            return app.get({ location: "v1/notessearch.php" }, data, successCallback, failureCallback);
         }
     },
     
     NotesEdit: {
-        location: "../v1/notesEdit.php",
+        location: "v1/notesEdit.php",
         POST: function(noteId, name, description, takenOn, files, successCallback, failureCallback, progressCallback) {
             if (!noteId || (!name && !description && !takenOn && !files)) return; //Nothing to change or no noteid
             var formData = new FormData();
@@ -202,7 +202,7 @@ let Resources = {
     },
 
     Files: {
-        location: "../v1/noteFiles.php",
+        location: "v1/noteFiles.php",
         GET: function(noteId, progressCallback, successCallback, failureCallback) {
             let data = { noteId: noteId };
             let options = {
@@ -214,7 +214,7 @@ let Resources = {
     },
 
     Courses: {
-        location: "../v1/courses.php",
+        location: "v1/courses.php",
         GET: function(id, successCallback, failureCallback) {
             let data = {
                 courseId: id
@@ -269,7 +269,7 @@ let Resources = {
     },
 
     Navbar: {
-        location: "../v1/_navbar.php",
+        location: "v1/_navbar.php",
         GET: function(successCallback, failureCallback) {
             return app.get(Resources.Navbar, null, successCallback, failureCallback);
         }

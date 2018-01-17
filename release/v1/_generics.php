@@ -1,14 +1,18 @@
 <?php
+include_once "_overrides.php";
+
+//Error handler helpers
+include_once "_errorHandlers.php"; //Should always be first thing.
+
 $GLOBALS['PAGE_SIZES'] = 20; //used for pagination
-$GLOBALS['NEXCHANGE_domain'] = "https://ide.c9.io"; //used for cookie access
+$GLOBALS['NEXCHANGE_DOMAIN'] = "nexchange.johnabbott.qc.ca"; //used for cookie access
 $GLOBALS['NEXCHANGE_SECRET'] = "F/|wL~[M%@r],d;xL+GMLB_8X?fx8xhpM1~5|*xU_?K[+f8<lzCio+'7'~kv[e<";
 $GLOBALS['NEXCHANGE_TOKEN_EXPIRY_MINUTES'] = 15; //number of minutes before expiry of JWT
-$GLOBALS['COOKIE_PATH'] = "/";
-$GLOBALS['COOKIE_DOMAIN'] = "nexchange-git-lucas-lucasharvey.c9users.io";
+$GLOBALS['NEXCHANGE_SECURED_SITE'] = false; //important, if secured is FORCED you must add https to NEXCHANGE DOMAIN
 
 //Convert the request body to JSON if the content type is set to json
 if($_SERVER["REQUEST_METHOD"] != "GET"){
-    if(in_array("content-type", array_keys(apache_request_headers())) && apache_request_headers()["content-type"] == "application/json"){
+    if(in_array("CONTENT_TYPE", array_keys($_SERVER)) && $_SERVER["CONTENT_TYPE"] == "application/json"){
         $_JSON = json_decode(file_get_contents('php://input'), true);
         if($_JSON == null){
             $_JSON = array();
@@ -18,9 +22,6 @@ if($_SERVER["REQUEST_METHOD"] != "GET"){
 
 //We will be outputting json.
 header('Content-type: application/json');
-
-//Error handler helpers
-include_once "_errorHandlers.php";
 
 // Database helper
 include_once "_database.php";
@@ -54,16 +55,6 @@ function requiredParams($conn, $json, $paramsArray){
         }
     }
 }
-
-/*function recursive_array_search($needle,$haystack) {
-    foreach($haystack as $key=>$value) {
-        $current_key=$key;
-        if($needle===$value || (is_array($value) && recursive_array_search($needle,$value) !== false)) {
-            return $current_key;
-        }
-    }
-    return false;
-}*/
 
 function generateWhereStatement($conn, $allowedProps, $changesKeysRemap, $columnWhereClause, $props){
     
