@@ -75,10 +75,10 @@ function authorized($conn){
     // Get the xsrf token from the headers
     $headers = apache_request_headers();
     
-    if(!in_array("x-csrftoken", array_keys($headers)))
+    if(!in_array("X-Csrftoken", array_keys($headers)))
         return array(false, null);
 
-    $xsrf = $headers["x-csrftoken"];
+    $xsrf = $headers["X-Csrftoken"];
     
     // Check that $xsrf is the same as the xsrfToken inside the payload
     if($xsrf !== $decTokenPieces[1]["xsrfToken"])
