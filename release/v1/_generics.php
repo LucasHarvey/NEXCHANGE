@@ -13,7 +13,7 @@ $GLOBALS['COOKIE_DOMAIN'] = "nexchange-git-lucas-lucasharvey.c9users.io";
 
 //Convert the request body to JSON if the content type is set to json
 if($_SERVER["REQUEST_METHOD"] != "GET"){
-    if(in_array("content-type", array_keys(apache_request_headers())) && apache_request_headers()["content-type"] == "application/json"){
+    if(in_array("Content-Type", array_keys(apache_request_headers())) && apache_request_headers()["Content-Type"] == "application/json"){
         $_JSON = json_decode(file_get_contents('php://input'), true);
         if($_JSON == null){
             $_JSON = array();
