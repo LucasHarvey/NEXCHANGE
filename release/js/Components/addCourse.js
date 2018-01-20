@@ -4,8 +4,39 @@ var app = app || {
     afterStartup: []
 };
 
-app.addCourse = {
+app.addCourses = {
+    uploadInProgress: false,
 
+    reset: function() {
+        app.addCourses.uploadInProgress = false;
+
+        document.getElementById("pb").style.width = 0;
+        document.getElementById("pt").innerText = "";
+
+        // Empty the course input fields: 
+        document.getElementById("file").value = "";
+        document.getElementById("season").selectedIndex = app.addCourses.getDefaultSeason();
+        document.getElementById("year").value = new Date().getFullYear();
+    },
+    
+    addFile: function(event) {
+        // Reset the progess bar and progress text to 0 when the user clicks on the button to select files
+        document.getElementById("pb").style.width = 0;
+        document.getElementById("pt").innerText = "";
+    },
+    
+    updateFileLabel: function(){
+        var input = document.getElementById("file");
+        var label = document.getElementById("fileLabel");
+        
+        if(!this.files || this.files.length == 0) {
+            label.innerText = "Select File (*.csv)";
+            return;
+        }
+        
+        label.innerText = this.files.length + " File".pluralize(this.files.length)+" Selected";
+    },
+    
     getDefaultSeason: function() {
         let month = new Date().getMonth();
         let today = new Date().getDate();
@@ -15,18 +46,32 @@ app.addCourse = {
         return 1; //fall
     },
     
+    setProgress: function(percent) {
+        percent = percent || 0;
+        let progressBar = document.getElementById("pb");
+        let progressText = document.getElementById("pt");
+
+        if (progressBar !== undefined) {
+            progressBar.style.width = percent + "%";
+        }
+
+        if (progressText !== undefined) {
+            progressText.innerText = percent + "%";
+            if(percent == 100){
+                progressText.innerText += " - Upload Complete";
+            }
+        }
+    },
+    
     submitCourseSuccess: function(data) {
         
         // Enable the form
         document.getElementById('submit').disabled = false;
-        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
+        document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitCourse);
 
         // Empty the course input fields: 
-        document.getElementById('courseName').value = "";
-        document.getElementById("courseNumber").value = "";
-        document.getElementById("section").value = "";
-        document.getElementById("teacherFullName").value = "";
-        document.getElementById("season").selectedIndex = app.addCourse.getDefaultSeason();
+        document.getElementById("file").value = "";
+        document.getElementById("season").selectedIndex = app.addCourses.getDefaultSeason();
         document.getElementById("year").value = new Date().getFullYear();
         
         new Modal("Course Added", MessageCode["CourseCreated"], null, {
@@ -37,50 +82,30 @@ app.addCourse = {
     submitCourseFailure: function(data){
         // Enable the form
         document.getElementById('submit').disabled = false;
-        document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
+        document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitCourse);
         app.handleFailure(data);
     },
-
-    submitCourse: function(event) {
+    
+    submitFile: function(event) {
+        if (this.uploadInProgress) {
+            console.warn("Courses are already being uploaded...");
+            return;
+        }
         event.preventDefault();
+        app.addCourses.reset();
 
-        let courseName = document.getElementById('courseName').value;
-        let courseNumber = document.getElementById("courseNumber").value;
-        let section = document.getElementById("section").value;
-        let teacherFullName = document.getElementById("teacherFullName").value;
+        let file = document.getElementById('file').files;
+        if (file.length == 0) {
+            app.handleFailure({ messageCode: "NoFilesUploaded" });
+            return;
+        }
+        
+        // TODO XSS ESCAPING!
+
         let seasonSelector = document.getElementById("season");
         var season = seasonSelector.value;
         var year = document.getElementById("year").value;
         var formattedSemester = "";
-        var thisYear = new Date().getFullYear();
-        
-        if(!courseName){
-            new Modal("Error", MessageCode["MissingArgumentCourseName"], null, {
-                    text: "Okay"
-                }).show();
-            return;
-        }
-        
-        if(!courseNumber){
-            new Modal("Error", MessageCode["MissingArgumentCourseNumber"], null, {
-                    text: "Okay"
-                }).show();
-            return;
-        }
-        
-        if(!section){
-            new Modal("Error", MessageCode["MissingArgumentSection"], null, {
-                    text: "Okay"
-                }).show();
-            return;
-        }
-        
-        if(!teacherFullName){
-            new Modal("Error", MessageCode["MissingArgumentTeacher"], null, {
-                    text: "Okay"
-                }).show();
-            return;
-        }
         
         if(!season){
             new Modal("Error", MessageCode["MissingArgumentSeason"], null, {
@@ -112,25 +137,36 @@ app.addCourse = {
 
         // Format the semester correctly
         formattedSemester = season + year;
-        
-        // Disable the form
-        document.getElementById('submit').disabled = true;
-        document.getElementById('addCourse').removeEventListener('submit', app.addCourse.submitCourse);
-        
 
-        Resources.Courses.POST(teacherFullName, courseName, courseNumber, section, formattedSemester, this.submitCourseSuccess, this.submitCourseFailure);
-    }
+        app.addCourses.uploadInProgress = true;
+        
+        //Disable the form
+        document.getElementById('submit').disabled = true;
+        document.getElementById('addCourses').removeEventListener('submit', app.addCourses.submitCourse);
+ 
+        Resources.Courses.POST(formattedSemester, file, this.submitCourseSuccess, this.submitCourseFailure, function(event) {
+            if (event.lengthComputable === true) {
+                let percent = Math.round((event.loaded / event.total) * 100);
+                app.addCourses.setProgress(percent);
+            }
+        });
+    },
 
 
 };
 
-app.startup.push(function addCourseStartup() {
-    app.addCourse.submitCourse = app.addCourse.submitCourse.bind(app.addCourse);
+app.startup.push(function addCoursesStartup() {
+    app.addCourses.submitFile = app.addCourses.submitFile.bind(app.addCourses);
     
-    document.getElementById('addCourse').addEventListener('submit', app.addCourse.submitCourse);
+    document.getElementById('file').addEventListener('click', app.addCourses.addFile);
+    document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitFile);
     
     document.getElementById("year").value = new Date().getFullYear();
-    document.getElementById("season").selectedIndex = app.addCourse.getDefaultSeason();
+    document.getElementById("season").selectedIndex = app.addCourses.getDefaultSeason();
+    
+    // Change the file label when files are added
+    document.getElementById("file").addEventListener("change", app.addCourses.updateFileLabel);
+    app.addCourses.updateFileLabel();
 
 });
 
