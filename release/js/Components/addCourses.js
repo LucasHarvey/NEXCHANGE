@@ -70,9 +70,7 @@ app.addCourses = {
         document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitCourse);
 
         // Empty the course input fields: 
-        document.getElementById("file").value = "";
-        document.getElementById("season").selectedIndex = app.addCourses.getDefaultSeason();
-        document.getElementById("year").value = new Date().getFullYear();
+        app.addCourses.reset();
         
         new Modal("Course Added", MessageCode["CourseCreated"], null, {
                     text: "Okay"
@@ -92,7 +90,6 @@ app.addCourses = {
             return;
         }
         event.preventDefault();
-        app.addCourses.reset();
 
         let file = document.getElementById('file').files;
         if (file.length == 0) {
