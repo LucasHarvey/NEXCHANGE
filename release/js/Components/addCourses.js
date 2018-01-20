@@ -72,7 +72,7 @@ app.addCourses = {
         // Empty the course input fields: 
         app.addCourses.reset();
         
-        new Modal("Course Added", MessageCode["CourseCreated"], null, {
+        new Modal("Courses Added", MessageCode["CoursesCreated"], null, {
                     text: "Okay"
                 }).show();
     },

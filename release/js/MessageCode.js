@@ -77,6 +77,7 @@ let MessageCode = {
     UserAlreadyExists: "The student ID is already registered to a user. Ensure the Student ID was entered correctly.",
     CourseAlreadyExists: "The course already exists.",
     CourseCreated: "The course has been created successfully.",
+    CoursesCreated: "The courses have been created successfully.",
     CourseEdited: "The course has been edited successfully.",
     AuthorizationFailed: "You are not logged in or you do not have permission to do this.",
     AuthenticationFailed: "User ID or Password is incorrect",
