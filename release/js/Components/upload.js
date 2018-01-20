@@ -126,7 +126,7 @@ app.postNotes = {
 
         let files = document.getElementById('file').files;
         if (files.length == 0) {
-            app.handleFailure({ messageCode: "NoFilesUploaded" });
+            app.handleFailure({ messageCode: "NoNoteFilesUploaded" });
             return;
         }
         let name = document.getElementById('noteName').value;
