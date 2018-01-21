@@ -117,11 +117,11 @@ app.postNotes = {
     },
 
     submitFiles: function(event) {
+        event.preventDefault();
         if (this.uploadInProgress) {
             console.warn("Notes are already being uploaded...");
             return;
         }
-        event.preventDefault();
         app.postNotes.reset();
 
         let files = document.getElementById('file').files;
