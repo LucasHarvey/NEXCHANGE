@@ -17,6 +17,8 @@ app.addCourses = {
         document.getElementById("file").value = "";
         document.getElementById("season").selectedIndex = app.addCourses.getDefaultSeason();
         document.getElementById("year").value = new Date().getFullYear();
+        
+        app.addCourses.updateFileLabel();
     },
     
     addFile: function(event) {
@@ -72,7 +74,7 @@ app.addCourses = {
         // Empty the course input fields: 
         app.addCourses.reset();
         
-        new Modal("Courses Added", MessageCode["CoursesCreated"], null, {
+        new Modal("Courses Added", MessageCode["CoursesCreated"] + "<br>" + data.payload.output, null, {
                     text: "Okay"
                 }).show();
     },
@@ -164,6 +166,5 @@ app.startup.push(function addCoursesStartup() {
     // Change the file label when files are added
     document.getElementById("file").addEventListener("change", app.addCourses.updateFileLabel);
     app.addCourses.updateFileLabel();
-
 });
 
