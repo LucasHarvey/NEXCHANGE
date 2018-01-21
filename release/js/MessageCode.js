@@ -5,6 +5,7 @@ let MessageCode = {
     MalformedBody: "The request body was not formed properly. Contact ITS if this problem persists.",
     RequestTimedout: "A request took too long to process and has timed out. Ensure you have internet connectivity.",
     UnknownFileUploadError: "An error occured while uploading a file. Contact ITS if this problem persists.",
+    OneFileAllowed: "Only one file per upload is allowed.",
     StartupError: "An error occurred during startup of a component.",
     RoleNotFound: "Role was not found.",
     UserAccessNotFound: "The user access was not found.",
@@ -71,7 +72,7 @@ let MessageCode = {
     MissingArgumentsPasswords: "Please fill out fields to change password.",
     PasswordsNoMatch: "Passwords do not match.",
     MissingArgumentCurrentPassword: "Please confirm current password.",
-
+    NoFilesUploaded: "No file was uploaded.",
 
     UserRegistered: "has been signed up successfully. They have been sent an email with their credentials.",
     UserAlreadyExists: "The student ID is already registered to a user. Ensure the Student ID was entered correctly.",
@@ -90,6 +91,7 @@ let MessageCode = {
     UserNoCoursesAccessible: "User is not signed up for any courses.",
     NoNotesForCourse: "There are no notes available for this course.",
     NoNotesForUser: "There are no notes available to you.",
+    CourseExtensionUnauthorized: "Extension of course file provided is not allowed. Allowed extensions are: <ul><li>.csv</li></ul>",
     NoteExtensionUnauthorized: "Note extension is not allowed. Allowed extensions are: "
     + "<ul><li>.pdf</li><li>.docx</li><li>.doc</li><li>.pptx</li><li>.ppt</li><li>.xlsx</li><li>.jpeg</li><li>.jpg</li><li>.png</li><li>.txt</li><li>zip</li></ul>",
     NoFilesForNote: "No files are attached to this note package.",
