@@ -87,11 +87,11 @@ app.addCourses = {
     },
     
     submitFile: function(event) {
+        event.preventDefault();
         if (this.uploadInProgress) {
             console.warn("Courses are already being uploaded...");
             return;
         }
-        event.preventDefault();
 
         let file = document.getElementById('file').files;
         if (file.length == 0) {
