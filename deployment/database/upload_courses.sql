@@ -1,6 +1,6 @@
 use nexchange;
 
-LOAD DATA LOCAL INFILE '/var/lib/mysql-files/upload_courses.csv' 
+LOAD DATA LOCAL INFILE "/home/ubuntu/workspace/deployment/database/latest_courses.csv"
     IGNORE 
-    INTO TABLE courses 
+    INTO TABLE courses
     FIELDS TERMINATED BY ';' ;

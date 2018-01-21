@@ -15,7 +15,7 @@
     <script async type="text/javascript" src="js/Components/modal.js"></script>
     <script async type="text/javascript" src="js/Components/user.js"></script>
 
-    <script async type="text/javascript" src="js/Components/addCourse.js"></script>
+    <script async type="text/javascript" src="js/Components/addCourses.js"></script>
     <script async type="text/javascript" src="js/Components/dateFormatting.js"></script>
 
 </head>
@@ -40,25 +40,15 @@
         <aside class="aside1"></aside>
         <div class="main">
 
-            <h1>Add a Course</h1>
+            <h1>Add Courses</h1>
 
             <div class="userform-wrapper">
-                <form id="addCourse" class="userform">
+                <form id="addCourses" class="userform">
     
                     <div class="userfield">
-                        <input type="text" id="courseName" placeholder="Course Name" maxlength="100">
-                    </div>
-
-                    <div class="userfield">
-                        <input type="text" id="courseNumber" placeholder="Course Code" maxlength="10">
-                    </div>
-
-                    <div class="userfield">
-                        <input type="number" id="section" placeholder="Section" min="00001" max="99999">
-                    </div>
-                    
-                    <div class="userfield">
-                        <input type="text" id="teacherFullName" placeholder="Teacher Full Name" maxlength="255">
+                        <label>Select file (*.csv): </label>
+                        <input type="file" id="file" name="file[]" class="inputFile" required>
+                        <label id="fileLabel" for="file"></label>
                     </div>
 
                     <div class="userfield">
@@ -80,10 +70,15 @@
                             <input type="number" id="year" min="2017">
                         </div>
                     </div>
-
-
+                    
                     <div class="userfield">
-                        <input class="button" type="submit" id="submit" value="Add Course">
+                        <input class="button" type="submit" id="submit" value="Upload CSV of Courses">
+                    </div>
+                    
+                    <div class="userfield">
+                        <div class="bar">
+                            <span class="bar-fill" id="pb"><span class="bar-fill-text" id="pt"></span></span>
+                        </div>
                     </div>
                 </form>
             </div>
