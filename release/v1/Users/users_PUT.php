@@ -61,7 +61,7 @@ echoSuccess($conn, array(
 
 function validateEmail($email){
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echoError($conn, 400, "InvalidEmailAddress");
+        echoError($conn, 400, "EmailNotValid");
     }
     return;
 }
