@@ -5,6 +5,8 @@ function send_email($conn, $to, $subject, $message){
         'X-Mailer: PHP/' . phpversion();
     
     mail($to, $subject, $message, $headers);
+    
+    database_insert($conn, "INSERT INTO log_notifications_sent (user_id, notification_code) values (?,?)", "ss", array($userid, $ip));
 }
 
 ?>
