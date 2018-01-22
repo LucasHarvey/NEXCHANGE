@@ -15,8 +15,8 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Create the tables
 CREATE TABLE log_notifications_sent (
     user_id CHAR(36) NOT NULL,
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    notification_code INT(1) -- 1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password
+    notification_code INT(1), -- 1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE log_user_logins (
