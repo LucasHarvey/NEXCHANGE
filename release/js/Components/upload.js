@@ -117,16 +117,16 @@ app.postNotes = {
     },
 
     submitFiles: function(event) {
+        event.preventDefault();
         if (this.uploadInProgress) {
             console.warn("Notes are already being uploaded...");
             return;
         }
-        event.preventDefault();
         app.postNotes.reset();
 
         let files = document.getElementById('file').files;
         if (files.length == 0) {
-            app.handleFailure({ messageCode: "NoFilesUploaded" });
+            app.handleFailure({ messageCode: "NoNoteFilesUploaded" });
             return;
         }
         let name = document.getElementById('noteName').value;
@@ -246,14 +246,7 @@ app.postNotes = {
             return;
         }
         
-        if(this.files.length == 1){
-            label.innerText = "1 File Selected";
-            return;
-        }
-
-        if(this.files.length > 1){
-            label.innerText = input.files.length + " Files Selected";
-        }
+        label.innerText = this.files.length + " File".pluralize(this.files.length)+" Selected";
     }
 
 };
@@ -263,7 +256,6 @@ app.startup.push(function postNotesStartup() {
 
     document.getElementById('file').addEventListener('click', app.postNotes.addFile);
     document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles);
-    document.getElementById('submit').addEventListener("click", app.postNotes.submitFiles);
 
     datePolyFillStart();
 

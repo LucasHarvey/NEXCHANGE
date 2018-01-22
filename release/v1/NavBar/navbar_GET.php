@@ -19,8 +19,8 @@ function getNavbarItems($conn, $token = null){
         );
         
         $addCourse = array(
-            "content" => "ADD A COURSE",
-            "url" => "./addCourse.html"
+            "content" => "ADD COURSES",
+            "url" => "./addCourses.html"
             );
         
         $manageNotes = array(

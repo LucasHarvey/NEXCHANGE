@@ -1,4 +1,4 @@
-#sudo ruby deployment/parse_courses.rb deployment/courses.csv /var/lib/mysql-files/upload_courses.csv
+#ruby deployment/parse_courses.rb deployment/courses.csv deployment/database/latest_courses.csv
 require 'csv'
 require 'date'
 
