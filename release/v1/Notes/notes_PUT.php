@@ -120,8 +120,7 @@ if(!empty($_FILES['file'])){
     	    
     	    // Ensure that file name is 100 characters or less
 	        if(strlen($fileName) > 100){
-    	    	$fileDotSeparated = explode('.', $fileName); //MUST be on 2 lines.
-                $ext = "." . strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
+    	    	$ext = getExtension($fileName);
                 // Calculate the amount of characters left excluding the extension
                 $lenLeft = 100 - strlen($ext);
                 // Rename the file by truncating the file name such that strlen($fileName . $ext) = 100
@@ -213,7 +212,7 @@ if(!empty($_FILES['file'])){
     	$md5 = md5_file($storageName);
     	
     	// Insert the file information into the database
-    	$result = insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5);
+    	$result = updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5);
     	
     	if($result){
     		
@@ -234,7 +233,7 @@ if(!empty($_FILES['file'])){
     			array_push($failed, array(
 		        	"name" => $file[0],
 		        	"messageCode" => "UnknownFileUploadError",
-		        	"message" => "NEXCODE 1573", //Unique code to find later if it shows up in console. Differenciates from lower UnkonwnFileError
+		        	"message" => "NEXCODE 1573", //Unique code to find later if it shows up in console. Differentiates from lower UnknownFileError
 		        	"status" => 500
 		    	));	
     		}
