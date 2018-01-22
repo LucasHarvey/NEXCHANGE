@@ -17,6 +17,12 @@ CREATE TABLE log_notifications_sent (
     notification_code INT(1) --1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password
 );
 
+CREATE TABLE log_user_logins (
+    user_id CHAR(36) NOT NULL,
+    ip_address CHAR(15) NOT NULL,
+    login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE users (
     id CHAR(36) NOT NULL,
     login_id CHAR(7) NOT NULL UNIQUE,
