@@ -1,6 +1,6 @@
 <?php
 
-function send_email($conn, $to, $subject, $message){
+function send_email($conn, $userid, $to, $subject, $message){
     $headers = 'From: no-reply@nexchange.johnabbott.qc.ca' . "\r\n" .
         'X-Mailer: PHP/' . phpversion();
     
