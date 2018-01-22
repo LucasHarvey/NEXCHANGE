@@ -46,6 +46,9 @@ if(authenticate($conn)){
     // Update the last_login field
     database_execute($conn, "UPDATE users SET last_login=NOW() WHERE id=?", "s", $userid);
     
+    $ip = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
+    database_insert($conn, "INSERT INTO log_user_logins (user_id, ip_address) values (?,?)", "ss", array($userid, $ip));
+    
     include_once "./NavBar/navbar_GET.php";
     $navbar = getNavbarItems($conn, $token);
 
