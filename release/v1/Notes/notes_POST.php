@@ -93,8 +93,7 @@ if(!empty($_FILES['file'])){
 		    
 		    // Ensure that file name is 100 characters or less
 		    if(strlen($fileName) > 100){
-		    	$fileDotSeparated = explode('.', $fileName); //MUST be on 2 lines.
-	            $ext = "." . strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
+	            $ext = getExtension($fileName);
 	            // Calculate the amount of characters left excluding the extension
 	            $lenLeft = 100 - strlen($ext);
 	            // Rename the file by truncating the file name such that strlen($fileName . $ext) = 100
