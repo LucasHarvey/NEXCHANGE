@@ -11,6 +11,12 @@ DROP TABLE IF EXISTS notefile_downloads;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Create the tables
+CREATE TABLE log_notifications_sent (
+    user_id CHAR(36) NOT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    notification_code INT(1) --1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password
+);
+
 CREATE TABLE users (
     id CHAR(36) NOT NULL,
     login_id CHAR(7) NOT NULL UNIQUE,
