@@ -2,7 +2,7 @@
 
 include_once("./_generic_email.php");
 
-function reset_password($conn, $email, $token){
+function reset_password($conn, $userid, $email, $token){
     if(empty($email)){
         echoError(null, 500, "InternalServerError", "No email sent to password reset task.");
     }
@@ -15,7 +15,7 @@ function reset_password($conn, $email, $token){
     $subject = 'No-Reply: Password Reset Request';
     $message = "We've received a request to reset your account linked with this email. If this was not you, ignore this message. Follow this link to reset your password: <br> <a href='$link'>$link</a>";
     
-    send_email($conn, $email, $subject, $message);
+    send_email($conn, $userid, $email, $subject, $message);
 }
 
 ?>

@@ -13,11 +13,12 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
                                 //Everything is vulnerable
     $conn = database_connect();
     
+    $userid = "123456789123456789123";
     $to      = 'zackarytherrien@gmail.com';
     $subject = 'the subject';
     $message = 'hello from nexchange';
     
-    send_email($conn, $to, $subject, $message);
+    send_email($conn, $userid, $to, $subject, $message);
     
     echo "Emails sent.".PHP_EOL;
 }
