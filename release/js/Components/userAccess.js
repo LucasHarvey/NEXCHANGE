@@ -23,6 +23,19 @@ app.useraccess = {
         course.appendChild(removeButton);
         courseContainer.appendChild(course);
     },
+    
+    clearForm: function(){
+        document.getElementById('studentId').value = "";
+        document.getElementById("role").selectedIndex = 0;
+
+        document.getElementById("yearExpiry").value = new Date().getFullYear();
+        document.getElementById("seasonExpiry").selectedIndex = app.useraccess.getDefaultSeason();
+        
+        let courseContainer = document.getElementById("courseContainer");
+        while (courseContainer.firstChild) {
+            courseContainer.removeChild(courseContainer.firstChild);
+        }
+    },
 
     userAccessSuccess: function(response) {
         
@@ -80,6 +93,8 @@ app.useraccess = {
         new Modal("User Access Updated", modalContent, null, {
             text: "Okay"
         }).show();
+        
+        app.useraccess.clearForm();
     },
     
     userAccessFailure: function(response){
