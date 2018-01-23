@@ -97,24 +97,31 @@ courses_ranges.each do |key, value|
     end
 end
 
-semester = SEMESTER_CMD
-if(SEMESTER_CMD.nil?)
-    year = Date.today.year
-    month = Date.today.month - 1
-    season = "F"
-    if (month >= 0 && month < 5)
-        season = "W"
+year = Date.today.year
+month = Date.today.month - 1
+season = "F"
+if (month >= 0 && month < 5)
+    season = "W"
+end
+if (month >= 11)
+    season = "I"
+end
+if (month >= 11)
+    year = year + 1
+end
+if (month >= 5 && month < 8)
+    season = "S"
+end
+semester = season + year.to_s
+
+
+if(! SEMESTER_CMD.nil?)
+    semester_codes = ["I", "W", "S", "F"]
+    isSemesterCodeOk = semester_codes.include?(SEMESTER_CMD[0])
+    yearInput = SEMESTER_CMD[1..5].to_i
+    if(SEMESTER_CMD.length == 5 && isSemesterCodeOk && yearInput < 9999)
+        semester = SEMESTER_CMD[0] + yearInput
     end
-    if (month >= 11)
-        season = "I"
-    end
-    if (month >= 11)
-        year = year + 1
-    end
-    if (month >= 5 && month < 8)
-        season = "S"
-    end
-    semester = season + year.to_s
 end
 
 if(File.file?(UPLOADPATH))
