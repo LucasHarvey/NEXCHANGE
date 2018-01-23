@@ -119,8 +119,8 @@ if(! SEMESTER_CMD.nil?)
     semester_codes = ["I", "W", "S", "F"]
     isSemesterCodeOk = semester_codes.include?(SEMESTER_CMD[0])
     yearInput = SEMESTER_CMD[1..5].to_i
-    if(SEMESTER_CMD.length == 5 && isSemesterCodeOk && yearInput < 9999)
-        semester = SEMESTER_CMD[0] + yearInput
+    if(SEMESTER_CMD.length == 5 && isSemesterCodeOk && yearInput < 9999 && yearInput > 2000)
+        semester = SEMESTER_CMD[0] + yearInput.to_s
     end
 end
 
