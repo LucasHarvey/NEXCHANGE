@@ -14,12 +14,12 @@ $semesterCode = $_POST["semesterCode"];
 
 $season = ["I", "W", "S", "F"];
 
-if(!in_array($semesterCode[0], $season))
+if(!in_array($semesterCode[0], $season) || strlen($semesterCode) != 5)
     echoError($conn, 400, "SemesterNotValid");
 
 $year = substr($semesterCode, 1);
 
-if(!is_int($year) || $year<0)
+if(!is_int($year) || $year<2000 || $year>9999)
     echoError($conn, 400, "SemesterNotValid");
 
 $allowed = ['csv'];
