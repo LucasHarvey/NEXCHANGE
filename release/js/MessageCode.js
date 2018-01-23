@@ -65,6 +65,7 @@ let MessageCode = {
     UserNameNotValid: "The student name is not valid.",
     FutureSemester: "Please choose a past or current semester.",
     PastSemester: "Please choose a future or current semester.",
+    SemesterNotValid: "The semester you entered is not valid.",
     // Settings error codes
     MissingArgumentEmail: "Email was left empty.",
     EmailNotValid: "The email address is not valid.",
