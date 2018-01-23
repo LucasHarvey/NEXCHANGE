@@ -31,10 +31,10 @@ $passwordhash = password_hash($password, PASSWORD_BCRYPT);
 $insertParams = array($student_id, $first_name, $last_name, $email, $passwordhash);
 
 database_insert($conn, "INSERT INTO users (login_id, first_name, last_name, email, passwordhash) VALUES (?,?,?,?,?)", "sssss", $insertParams);
+$user = database_get_row($conn, "SELECT id FROM users WHERE login_id=?", "s", $student_id);
 
-$email_password_email = $email;
-$email_password_token = $password;
 include_once("./_EMAIL_TASKS/temporary_password_task.php");
+temporary_password_email($conn, $user['id'], $email, $password);
 
 echoSuccess($conn, array(
     "loginId" => $student_id,
