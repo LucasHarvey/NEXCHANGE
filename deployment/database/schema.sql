@@ -40,7 +40,8 @@ CREATE TABLE courses (
     
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT UC_Course UNIQUE (teacher_fullname,course_name,course_number,section_start,section_end,semester)
 );
 
 -- User access denotes the courses a student or a note taker is allowed to do stuff for
