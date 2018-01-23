@@ -128,6 +128,10 @@ CREATE TRIGGER before_insert_on_user_access
     BEFORE INSERT ON user_access
     FOR EACH ROW
     BEGIN
+        IF new.role='NOTETAKER' THEN
+            SET new.notifications = FALSE;
+        END IF;
+        
         IF EXISTS (SELECT * FROM user_access WHERE user_id = new.user_id AND course_id = new.course_id) THEN
             SIGNAL SQLSTATE '45002' SET MESSAGE_TEXT = "This user is already signed up to be a notetaker or a student in this course.";
         END IF;
