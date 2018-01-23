@@ -215,6 +215,12 @@ if(!empty($_FILES['file'])){
 
 /* END OF FILE UPLOAD SECTION */
 
+$users_Notified = database_get_all($conn, 
+	"SELECT u.id, u.email FROM user_access ua INNER JOIN courses c ON ua.course_id=c.id ".
+								 "INNER JOIN users u ON ua.user_id = u.id INNER JOIN notes n ON n.course_id = c.id ".
+								 "WHERE ua.notifications=1 AND ua.role='STUDENT' AND n.id=?", 
+								   $note["id"]);
+
 if(!database_commit($conn)){
 	if(!database_rollback($conn)){
 		$GLOBALS['NEXCHANGE_TRANSACTION'] = false;
@@ -222,6 +228,9 @@ if(!database_commit($conn)){
 	}
 	echoError($conn, 500, "DatabaseCommitError", "Could not commit transaction.");
 }
+
+include_once("./_EMAIL_TASKS/notify_upload_task.php");
+notify_note_upload_email_task($conn, $users_Notified, $note['id']);
 
 //TODO LOG failures.
 echoSuccess($conn, array(
