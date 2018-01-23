@@ -27,7 +27,6 @@ if($userExists != null){
 
 $passwordhash = password_hash($password, PASSWORD_BCRYPT);
 
-
 $insertParams = array($student_id, $first_name, $last_name, $email, $passwordhash);
 
 database_insert($conn, "INSERT INTO users (login_id, first_name, last_name, email, passwordhash) VALUES (?,?,?,?,?)", "sssss", $insertParams);
@@ -50,7 +49,7 @@ function generateRandomPassword() {
     //IF CHANGING PASSWORD LENGTH, CHANGE IN:
     //users_PUT.php, users.js, settings.js
 
-    $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$_-+=';
+    $alphabet = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890][!@#$_-+=';
     $pass = array();
     $alphaLength = strlen($alphabet) - 1;
     for ($i = 0; $i < $PASSWORD_LENGTH; $i++) {
