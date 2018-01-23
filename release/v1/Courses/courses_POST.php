@@ -12,6 +12,16 @@ if(empty($_FILES['file'])){
 $semesterCode = $_POST["semesterCode"];
 //TODO VALIDATE SEMESTER CODE
 
+$season = ["I", "W", "S", "F"];
+
+if(!in_array($semesterCode[0], $season) || strlen($semesterCode) != 5)
+    echoError($conn, 400, "SemesterNotValid");
+
+$year = substr($semesterCode, 1);
+
+if(!is_int($year) || $year<2000 || $year>9999)
+    echoError($conn, 400, "SemesterNotValid");
+
 $allowed = ['csv'];
 $MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
 validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
