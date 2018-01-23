@@ -68,34 +68,6 @@ app.home = {
         courseHeaderDropDown.className = "dropdownIcon";
         courseHeaderDropDown.onclick = app.home.__toggleCourse;
         courseDiv.appendChild(courseHeader);
-
-        var toggleNotifications = document.createElement("label");
-        toggleNotifications.className = "switch";
-        var toggleNotifications_check = document.createElement("INPUT");
-        toggleNotifications_check.type = "checkbox";
-        toggleNotifications_check.id = "togglenotifications_" + course.id;
-        toggleNotifications.appendChild(toggleNotifications_check);
-        var toggleNotifications_span = document.createElement("SPAN");
-        toggleNotifications_span.className = "slider round";
-        toggleNotifications.appendChild(toggleNotifications_span);
-
-        var toggleText = document.createElement("label");
-        toggleText.className = "notificationSpan";
-        toggleText.htmlFor = toggleNotifications_check.id;
-        toggleText.innerText = "Notify Me";
-
-        var div = document.createElement("DIV");
-        div.className = "notificationWrapper";
-        div.appendChild(toggleText);
-        div.appendChild(toggleNotifications);
-
-        toggleNotifications_check.onchange = function(e) {
-            e.preventDefault();
-            var courseId = e.target.id.replace("togglenotifications_", "");
-            Resources.UserAccess.PUT(e.target.checked, courseId, function(data) { app.home.notificationsToggledSuccess(data.payload) }, app.home.notificationsToggledFailed);
-        };
-        
-        courseHeader.appendChild(div);
         
         if (course.role == 'NOTETAKER') {
             var uploadNoteButton = document.createElement("BUTTON");
@@ -111,6 +83,33 @@ app.home = {
         } else {
             //As soon as user is student in a course, show hide downloaded field.
             document.getElementById("hideDownloadedField").style.display = "flex";
+            var toggleNotifications = document.createElement("label");
+            toggleNotifications.className = "switch";
+            var toggleNotifications_check = document.createElement("INPUT");
+            toggleNotifications_check.type = "checkbox";
+            toggleNotifications_check.id = "togglenotifications_" + course.id;
+            toggleNotifications.appendChild(toggleNotifications_check);
+            var toggleNotifications_span = document.createElement("SPAN");
+            toggleNotifications_span.className = "slider round";
+            toggleNotifications.appendChild(toggleNotifications_span);
+    
+            var toggleText = document.createElement("label");
+            toggleText.className = "notificationSpan";
+            toggleText.htmlFor = toggleNotifications_check.id;
+            toggleText.innerText = "Notify Me";
+    
+            var div = document.createElement("DIV");
+            div.className = "notificationWrapper";
+            div.appendChild(toggleText);
+            div.appendChild(toggleNotifications);
+    
+            toggleNotifications_check.onchange = function(e) {
+                e.preventDefault();
+                var courseId = e.target.id.replace("togglenotifications_", "");
+                Resources.UserAccess.PUT(e.target.checked, courseId, function(data) { app.home.notificationsToggledSuccess(data.payload) }, app.home.notificationsToggledFailed);
+            };
+            
+            courseHeader.appendChild(div);
         }
         
         courseHeader.appendChild(courseHeaderDropDown);
