@@ -10,7 +10,7 @@ function reset_password_email($conn, $userid, $email, $token){
         echoError(null, 500, "InternalServerError", "No token sent to password reset task.");
     }
     
-    $link = $WEBSERVER_ADDRESS."passwordreset.html?q=".$email_password_token;
+    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/passwordreset.html?q=".$token;
 
     $subject = 'No-Reply: Password Reset Request';
     $message = "We've received a request to reset your account password linked with this email.\n\nThis request will expire after 15 minutes. Follow this link to reset your password: $link\n\nIf this was not you, ignore this message.";
