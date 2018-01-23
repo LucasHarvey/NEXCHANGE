@@ -14,7 +14,7 @@ function temporary_password_email($conn, $userid, $email, $token){
     $link = $WEBSERVER_ADDRESS."passwordreset.html?q=".$email_password_token;
 
     $subject = 'No-Reply: NEXCHANGE Account Created';
-    $message = "Your NEXCHANGE account was created! Your login ID is your student ID, and your temporary password is: $token<br> You can login at: <a href='$link'>$link</a>";
+    $message = "Your NEXCHANGE account was created!\n Your login ID is your student ID, and your temporary password is: $token\n You can login at: $link";
     
     send_email($conn, $userid, $email, $subject, $message);
 }
