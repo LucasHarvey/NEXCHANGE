@@ -21,9 +21,8 @@ if($user != null){
     
     $value = password_hash($password, PASSWORD_BCRYPT);
     $insertParams = array($value, $user["id"], $code);
-    
-    // shouldn't this be UPDATE users SET ... etc??
-    database_update($dbh, "UPDATE password=? FROM users WHERE id=? AND passresetcode=? LIMIT 1", $insertParams);
+
+    database_update($dbh, "UPDATE users SET password=? WHERE id=? AND passresetcode=? LIMIT 1", "sss", $insertParams);
     echoSuccess($conn, array(
         "messageCode" => "PasswordReset"
     ));
