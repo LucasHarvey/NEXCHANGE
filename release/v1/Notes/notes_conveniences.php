@@ -64,6 +64,8 @@ function uploadFiles($noteId, $action){
 			    	    "name" => $fileName,
 			    	    "md5" => $md5
 			    	));
+			    	
+			    	return $storageName;
 				}else{
 			    	// delete the file from the server
 					if(file_exists($storageName))
@@ -144,13 +146,15 @@ function uploadFiles($noteId, $action){
 			    	    "name" => $file[0],
 			    	    "md5" => $file[1]
 		    		));
+		    		
+		    		return $storageName;
 				}
 		    	
 			} else {
 				// delete the file from the server
 				if(file_exists($storageName))
-					unlink($storageName)
-				echoError($conn, 500, "UnknownFileUploadError")
+					unlink($storageName);
+				echoError($conn, 500, "UnknownFileUploadError");
 			}
 		}
 	} 

@@ -31,12 +31,7 @@ if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseInsertError", "Could not start transaction.");
 }
 
-include_once("./Notes/notes_conveniences.php");
-
-// Insert the new note files
-uploadFiles($note["id"], "insert");
-
-// Insert the note information into the database
+// Insert the note information into the database and store success/failure in variable
 database_insert($conn, "INSERT INTO notes (user_id, course_id, name, description, taken_on) VALUES (?,?,?,?,?)", $noteTypes, $noteValues);
 
 $note = database_get_row($conn, 
@@ -46,6 +41,11 @@ $note = database_get_row($conn,
 if($note == null){
 	echoError($conn, 500, "DatabaseInsertError");
 }
+
+include_once("./Notes/notes_conveniences.php");
+
+// Insert the new note files and retrieve the storage name
+uploadFiles($note["id"], "insert");
 
 $users_Notified = database_get_all($conn, 
 	"SELECT u.id, u.email FROM user_access ua INNER JOIN courses c ON ua.course_id=c.id ".
