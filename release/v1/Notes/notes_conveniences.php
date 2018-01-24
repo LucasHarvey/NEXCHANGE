@@ -1,5 +1,6 @@
 <? php
-/* COMMON CODE */
+
+/* Common code for uploading note files*/
 
 // Allowed file types
 $allowed = ['pdf','docx', 'doc', 'ppt', 'xlsx', 'jpeg', 'jpg', 'png', 'txt', 'zip'];
@@ -12,7 +13,7 @@ $succeeded = array();
 //Verify all note extensions are allowed and file size is appropriate
 validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
 
-function uploadFiles($noteId, $action){
+function moveFiles(){
 	
 	if(!empty($_FILES['file'])){
 		
@@ -50,27 +51,14 @@ function uploadFiles($noteId, $action){
 		            // Rename the file by truncating the file name such that strlen($fileName . $ext) = 100
 		            $fileName = substr($fileName,0,$lenLeft) . $ext;
 			    }
+			    
+			    // Add the name and md5 of the file to the succeeded array (using the original name)
+			    array_push($succeeded, array($fileName, $md5));
+			    
+				$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5);
+			
+				return $noteFileData;
 				
-				// Insert or Update the file information in the database
-				switch($action) {
-					case "insert":
-						$result = insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5);
-					case "update":
-						$result = updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5);
-				}
-				
-				if($result){
-					array_push($succeeded, array(
-			    	    "name" => $fileName,
-			    	    "md5" => $md5
-			    	));
-			    	
-				}else{
-			    	// delete the file from the server
-					if(file_exists($storageName))
-						unlink($storageName)
-					echoError($conn, 500, "UnknownFileUploadError")
-				}
 			}
 		}
 		
@@ -79,12 +67,6 @@ function uploadFiles($noteId, $action){
 			
 			// Put the files in a variable for easy access
 			$files = $_FILES['file'];
-			
-			// Array of files to be deleted
-			$deleteFiles = array();
-			
-			// Array of uploaded files
-			$uploadedFiles = array();
 			
 			//Create a zip object
 			$zip = new ZipArchive;
@@ -113,7 +95,7 @@ function uploadFiles($noteId, $action){
 			    	$zip->addFile($tmp, $name);
 			    	
 			    	// Add the name and md5 of the file to the succeeded array (using the original name)
-			    	array_push($uploadedFiles, array($name, $md5));
+			    	array_push($succeeded, array($name, $md5));
 			    }
 			 
 			 
@@ -127,35 +109,12 @@ function uploadFiles($noteId, $action){
 			$fileType = "zip";
 			$md5 = md5_file($storageName);
 			
-			// Insert or Update the file information in the database
-			switch($action) {
-				case "insert":
-					$result = insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5);
-				case "update":
-					$result = updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5);
-			}
+			$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5);
+			
+			return $noteFileData;
 				
-			if($result){
-				
-				// Loop through the files to add them to $succeeded
-				foreach($uploadedFiles as $file){
-					
-					// Add the file to $succeeded
-					array_push($succeeded, array(
-			    	    "name" => $file[0],
-			    	    "md5" => $file[1]
-		    		));
-				}
-		    	
-			} else {
-				// delete the file from the server
-				if(file_exists($storageName))
-					unlink($storageName);
-				echoError($conn, 500, "UnknownFileUploadError");
-			}
 		}
 	} 
-
 }
 
 function getFileError($errorNo){
