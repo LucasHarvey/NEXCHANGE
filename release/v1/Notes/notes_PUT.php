@@ -43,6 +43,18 @@ if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseUpdateError", "Could not start transaction.");
 }
 
+include_once("./Notes/notes_conveniences.php");
+
+// Move the note files onto the server and retrieve the note data
+$noteData = moveFiles();
+
+$fileName = $noteData[0];
+$storageName = $noteData[1];
+$fileType = $noteData[2];
+$fileSize = $noteData[3];
+$md5 = $noteData[4];
+
+
 // Update the note information 
 if(!empty($changes)){
     $colNames = array();
@@ -68,13 +80,21 @@ if(!empty($changes)){
 $note = database_get_row($conn, "SELECT id, name, description, taken_on, created FROM notes WHERE id=? LIMIT 1", "s", $noteId);
 
 if($note == null){
+    // Delete the file from the server
+    if(file_exists($storageName))
+		unlink($storageName);
 	echoError($conn, 500, "DatabaseUpdateError");
 }
 
-include_once("./Notes/notes_conveniences.php");
+// Update the file information in the database
+$result = updateNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
 
-// Update the new note files
-uploadFiles($noteId, "update");
+if(!$result){
+	// Delete the file from the server
+    if(file_exists($storageName))
+		unlink($storageName);
+	echoError($conn, 500, "DatabaseUpdateError");
+}
 
 if(!database_commit($conn)){
 	if(!database_rollback($conn)){

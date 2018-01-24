@@ -31,7 +31,18 @@ if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseInsertError", "Could not start transaction.");
 }
 
-// Insert the note information into the database and store success/failure in variable
+include_once("./Notes/notes_conveniences.php");
+
+// Move the note files onto the server and retrieve the note data
+$noteData = moveFiles();
+
+$fileName = $noteData[0];
+$storageName = $noteData[1];
+$fileType = $noteData[2];
+$fileSize = $noteData[3];
+$md5 = $noteData[4];
+
+// Insert the note information into the database 
 database_insert($conn, "INSERT INTO notes (user_id, course_id, name, description, taken_on) VALUES (?,?,?,?,?)", $noteTypes, $noteValues);
 
 $note = database_get_row($conn, 
@@ -39,13 +50,21 @@ $note = database_get_row($conn,
 	 "ss", array($user_id, $course_id));
 
 if($note == null){
+	// Delete the file from the server
+	if(file_exists($storageName))
+		unlink($storageName);
 	echoError($conn, 500, "DatabaseInsertError");
 }
 
-include_once("./Notes/notes_conveniences.php");
+// Insert the file information into the database
+$result = insertNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
 
-// Insert the new note files and retrieve the storage name
-uploadFiles($note["id"], "insert");
+if(!$result){
+	// Delete the file from the server
+	if(file_exists($storageName))
+		unlink($storageName);
+	echoError($conn, 500, "UnknownFileUploadError");
+}
 
 $users_Notified = database_get_all($conn, 
 	"SELECT u.id, u.email FROM user_access ua INNER JOIN courses c ON ua.course_id=c.id ".
