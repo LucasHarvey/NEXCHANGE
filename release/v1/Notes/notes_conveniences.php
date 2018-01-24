@@ -65,7 +65,6 @@ function uploadFiles($noteId, $action){
 			    	    "md5" => $md5
 			    	));
 			    	
-			    	return $storageName;
 				}else{
 			    	// delete the file from the server
 					if(file_exists($storageName))
@@ -146,8 +145,6 @@ function uploadFiles($noteId, $action){
 			    	    "name" => $file[0],
 			    	    "md5" => $file[1]
 		    		));
-		    		
-		    		return $storageName;
 				}
 		    	
 			} else {
