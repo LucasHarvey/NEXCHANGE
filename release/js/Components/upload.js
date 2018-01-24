@@ -12,12 +12,6 @@ app.postNotes = {
 
         document.getElementById("pb").style.width = 0;
         document.getElementById("pt").innerText = "";
-
-        // Can this be removed?? 
-        document.getElementById("successTray").style.display = "none";
-        document.getElementById("successTray").innerText = "";
-        document.getElementById('errorTray').style.display = 'none';
-        document.getElementById('errorTray').innerText = "";
     },
 
     setProgress: function(percent) {
@@ -80,24 +74,12 @@ app.postNotes = {
         document.getElementById('noteData').addEventListener('submit', app.postNotes.submitFiles);
         
         let successes = response.payload.succeeded;
-        let failures = response.payload.failed;
 
         let uploadDiv = document.getElementById("uploads");
-        let failedDiv = document.createElement("div");
         let succeededDiv = document.createElement("div");
         succeededDiv.className = "uploadSuccess"
         
         uploadDiv.innerText = '';
-
-        if (failures.length) {
-            failedDiv.innerHTML = '<p>Unfortunately, the following failed:</p><ul>';
-            for (var x = 0; x < failures.length; x++) {
-                let span = document.createElement('span');
-                span.innerHTML = failures[x].name + "</br>" + MessageCode[failures[x].messageCode];
-                failedDiv.appendChild(span);
-            }
-            failedDiv.innerHTML += "</ul>"
-        }
 
         if (successes.length) {
             succeededDiv.innerHTML = '<p>Uploaded file'.pluralize(successes.length) + ':</p><ul>';
@@ -112,7 +94,6 @@ app.postNotes = {
         }
 
         uploadDiv.appendChild(succeededDiv);
-        uploadDiv.appendChild(failedDiv);
 
     },
 
