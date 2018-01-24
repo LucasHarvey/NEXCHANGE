@@ -43,11 +43,6 @@ if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseUpdateError", "Could not start transaction.");
 }
 
-include_once("./Notes/notes_conveniences.php");
-
-// Update the new note files
-uploadFiles($noteId, "update");
-
 // Update the note information 
 if(!empty($changes)){
     $colNames = array();
@@ -75,6 +70,11 @@ $note = database_get_row($conn, "SELECT id, name, description, taken_on, created
 if($note == null){
 	echoError($conn, 500, "DatabaseUpdateError");
 }
+
+include_once("./Notes/notes_conveniences.php");
+
+// Update the new note files
+uploadFiles($noteId, "update");
 
 if(!database_commit($conn)){
 	if(!database_rollback($conn)){
