@@ -30,8 +30,18 @@ if(is_null($row)){
 if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseInsertError", "Could not start transaction.");
 }
+// Allowed file types
+$allowed = ['pdf','docx', 'doc', 'ppt', 'xlsx', 'jpeg', 'jpg', 'png', 'txt', 'zip'];
+
+//Max file size
+$MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
+
+$succeeded = array();
 
 include_once("./Notes/notes_conveniences.php");
+
+//Verify all note extensions are allowed and file size is appropriate
+validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
 
 // Move the note files onto the server and retrieve the note data
 $noteData = moveFiles();
@@ -41,6 +51,7 @@ $storageName = $noteData[1];
 $fileType = $noteData[2];
 $fileSize = $noteData[3];
 $md5 = $noteData[4];
+$succeeded = $noteData[5];
 
 // Insert the note information into the database 
 database_insert($conn, "INSERT INTO notes (user_id, course_id, name, description, taken_on) VALUES (?,?,?,?,?)", $noteTypes, $noteValues);
@@ -69,7 +80,7 @@ if(!$result){
 $users_Notified = database_get_all($conn, 
 	"SELECT u.id, u.email FROM user_access ua INNER JOIN courses c ON ua.course_id=c.id ".
 								 "INNER JOIN users u ON ua.user_id = u.id INNER JOIN notes n ON n.course_id = c.id ".
-								 "WHERE ua.notifications=1 AND ua.role='STUDENT' AND n.id=?", 
+								 "WHERE ua.notifications=1 AND ua.role='STUDENT' AND n.id=?", "s",
 								   $note["id"]);
 
 if(!database_commit($conn)){
@@ -80,8 +91,8 @@ if(!database_commit($conn)){
 	echoError($conn, 500, "DatabaseCommitError", "Could not commit transaction.");
 }
 
-include_once("./_EMAIL_TASKS/notify_upload_task.php");
-notify_note_upload_email_task($conn, $users_Notified, $note['id']);
+//include_once("./_EMAIL_TASKS/notify_upload_task.php");
+//notify_note_upload_email_task($conn, $users_Notified, $note['id']);
 
 //TODO LOG failures.
 echoSuccess($conn, array(
