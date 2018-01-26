@@ -51,13 +51,13 @@ $fileOut = $base."deployment/database/latest_courses.csv";
 
 exec('ruby '.$script." ".$fileIn.' '.$fileOut.' '.$semesterCode.' 2>&1', $output, $returnValue);
 if($returnValue != 0){
-	echoError($conn, 500, "ErrorParsingCourseFile", "O: ".$output." --R:".$returnValue);
+	echoError($conn, 500, "ErrorParsingCourseFile", "O: ".implode(",", $output)." --R:".$returnValue);
 }
 
 $uploadSQL = $base."deployment/database/upload_courses.sql";
 exec('mysql --local-infile -uzacky1 --password= nexchange < '.$uploadSQL, $output2, $returnValue2);
 if($returnValue2 != 0){
-	echoError($conn, 500, "ErrorUploadingParsedCourseFile", "O: ".$output2." --R:".$returnValue2);
+	echoError($conn, 500, "ErrorUploadingParsedCourseFile", "O: ".implode(",", $output2)." --R:".$returnValue2);
 }
 
 echoSuccess($conn, array("output" => $output[0]), 200);
