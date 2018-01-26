@@ -1,19 +1,11 @@
-<? php
+<?php
+
 
 /* Common code for uploading note files*/
 
-// Allowed file types
-$allowed = ['pdf','docx', 'doc', 'ppt', 'xlsx', 'jpeg', 'jpg', 'png', 'txt', 'zip'];
-
-//Max file size
-$MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
-
-$succeeded = array();
-
-//Verify all note extensions are allowed and file size is appropriate
-validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
-
 function moveFiles(){
+	
+	$succeeded = array();
 	
 	if(!empty($_FILES['file'])){
 		
@@ -53,9 +45,11 @@ function moveFiles(){
 			    }
 			    
 			    // Add the name and md5 of the file to the succeeded array (using the original name)
-			    array_push($succeeded, array($fileName, $md5));
+			    array_push($succeeded, array(
+			    	"name" => $fileName, 
+			    	"md5" => $md5));
 			    
-				$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5);
+				$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5, $succeeded);
 			
 				return $noteFileData;
 				
@@ -94,8 +88,10 @@ function moveFiles(){
 			    	// Add the file to the zip with its original name within the zip
 			    	$zip->addFile($tmp, $name);
 			    	
-			    	// Add the name and md5 of the file to the succeeded array (using the original name)
-			    	array_push($succeeded, array($name, $md5));
+				    // Add the name and md5 of the file to the succeeded array (using the original name)
+				    array_push($succeeded, array(
+				    	"name" => $name, 
+				    	"md5" => $md5));
 			    }
 			 
 			 
@@ -109,7 +105,7 @@ function moveFiles(){
 			$fileType = "zip";
 			$md5 = md5_file($storageName);
 			
-			$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5);
+			$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5, $succeeded);
 			
 			return $noteFileData;
 				
