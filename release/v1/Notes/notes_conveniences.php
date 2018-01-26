@@ -136,27 +136,24 @@ function insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fil
 		$insertTypes, $insertValues, false);
 }
 
-function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5){
-    
-    // Get the storage_name of the old file
+function retrieveStorageName($conn, $noteId){
+	// Get the storage_name of the old file
     $oldFile = database_get_row($conn,
         "SELECT storage_name FROM notefiles WHERE note_id=?", 
-        "s", array($noteId));
+        "s", $noteId);
         
-    $oldStorageName = $oldFile['storage_name'];
-    
-    // Ensure that the old file exists and delete it
-	if(!file_exists($oldStorageName) || !unlink($oldStorageName)){
-	    echoError($conn, 404, "NoteFileNotFound");
-	} 
-    
+    return $oldFile['storage_name'];
+	
+}
+
+function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5){
+ 
 	$insertTypes = "sssiss";
 	$insertValues = array($fileName,$storageName,$fileType,$fileSize,$md5,$noteId);
 	
-	return database_update($conn,
+	return  database_update($conn,
 	    "UPDATE notefiles SET file_name=?, storage_name=?, type=?, size=?, md5=? WHERE note_id=? LIMIT 1",
 		$insertTypes, $insertValues, false);
-
 }
 
 function validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE){
