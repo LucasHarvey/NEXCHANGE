@@ -97,15 +97,23 @@ if($note == null){
 	echoError($conn, 500, "DatabaseUpdateError");
 }
 
+// Retrieve the old storage name for the file
+$oldStorageName = retrieveStorageName($conn, $note["id"]);
+
 // Update the file information in the database
 $result = updateNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
 
+// If the update failed, delete the most recent file
 if(!$result){
-	// Delete the file from the server
+	// Delete the most recent file from the server
     if(file_exists($storageName))
-		unlink($storageName);
+        unlink($storageName);
 	echoError($conn, 500, "DatabaseUpdateError");
-}
+} 
+
+// Delete the old file
+if(!file_exists($oldStorageName) || !unlink($oldStorageName));
+    echoError($conn, 404, "NoteFileDeleteFailure");
 
 if(!database_commit($conn)){
 	if(!database_rollback($conn)){
