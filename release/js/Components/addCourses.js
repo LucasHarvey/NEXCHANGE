@@ -83,6 +83,7 @@ app.addCourses = {
         // Enable the form
         document.getElementById('submit').disabled = false;
         document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitCourse);
+        app.addCourses.uploadInProgress = false;
         app.handleFailure(data);
     },
     
