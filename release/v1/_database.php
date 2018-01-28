@@ -11,11 +11,16 @@ function database_connect(){
     $dbport = "3306";
     $database = "nexchange";
     
-    $dbh = new mysqli("p:".$servername, $username, $password, $database, $dbport);
-    if($dbh->connect_error){
-        echoError(null, 500, "DatabaseConnectError");
+    try{
+        $dbh = new mysqli("p:".$servername, $username, $password, $database, $dbport);
+        if($dbh->connect_error){
+            echoError(null, 500, "DatabaseConnectError", $dbh->connect_error);
+        }
+        return $dbh;
+    }catch(Exception $e){
+        $error = $dbh->error;
+        echoError($dbh, 500, "DatabaseConnectError", $error);
     }
-    return $dbh;
 }
 
 function SqlArrayReferenceValues($arr){
