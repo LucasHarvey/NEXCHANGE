@@ -91,8 +91,8 @@ if(!database_commit($conn)){
 	echoError($conn, 500, "DatabaseCommitError", "Could not commit transaction.");
 }
 
-//include_once("./_EMAIL_TASKS/notify_upload_task.php");
-//notify_note_upload_email_task($conn, $users_Notified, $note['id']);
+include_once("./_EMAIL_TASKS/notify_upload_task.php");
+notify_note_upload_email_task($conn, $users_Notified, $note['id']);
 
 //TODO LOG failures.
 echoSuccess($conn, array(
