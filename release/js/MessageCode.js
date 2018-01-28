@@ -74,6 +74,7 @@ let MessageCode = {
     PasswordsNoMatch: "Passwords do not match.",
     MissingArgumentCurrentPassword: "Please confirm current password.",
     NoFilesUploaded: "No file was uploaded.",
+    ErrorParsingCourseFile: "Error parsing the courses.csv file uploaded... Make sure it is formatted properly.",
 
     UserRegistered: "has been signed up successfully. They have been sent an email with their credentials.",
     UserAlreadyExists: "The student ID is already registered to a user. Ensure the Student ID was entered correctly.",
