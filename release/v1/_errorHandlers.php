@@ -9,10 +9,11 @@ error_reporting(E_ALL);
 set_error_handler("globalErrorHandler");
     
 function echoError($conn, $status, $messageCode, $message = ""){
+    error_log("EchoError: $status - $messageCode with M: $message", 0);
     if($conn != null){ //would occur if error happened in a script without need of a DB...?!
         if($GLOBALS['NEXCHANGE_TRANSACTION']){
             if(!database_rollback($conn)){
-                $GLOBALS['NEXCHANGE_TRANSACTION'] = false;
+                $GLOBALS['NEXCHANGE_TRANSACTION'] = false; //Prevent infinite loop of not being able to rollback transaction.
         		echoError($conn, 500, "DatabaseRollbackError", "Could not rollback the transaction");
         	}
         }
@@ -23,7 +24,7 @@ function echoError($conn, $status, $messageCode, $message = ""){
         'requestedAt' => $_SERVER['REQUEST_TIME'],
         'requested' => $_SERVER['REQUEST_URI'],
         'messageCode' => $messageCode,
-        'message' => $message
+        'message' => ""
     ));
     http_response_code($status);
     die();
