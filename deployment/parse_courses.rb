@@ -18,14 +18,15 @@ class CourseGroup
 end
 
 class Course 
-    attr_reader :teacher_name, :name, :number, :section, :time_slot
+    attr_reader :teacher_name, :name, :number, :section, :time_slot, :type
 
-    def initialize(tname, name, number, section, tslot)
+    def initialize(tname, name, number, section, tslot, type)
         @teacher_name = tname
         @name = name
         @number = number
         @section = section
         @time_slot = tslot
+        @type = type
     end
     
     def to_s
@@ -47,6 +48,18 @@ class Course
             return false
         end
         
+        if(slot.include? ";")
+            slot = slot.split(";");
+        else
+            arr = Array.new
+            arr[0] = slot
+            slot = arr
+        end
+        
+        slot.each do |time|
+            time.strip!
+        end
+        
         if(teacher_name.nil?)
             teacher_name = "Teacher TBA"
         end
@@ -56,7 +69,7 @@ class Course
         end
         number = number[0..2] + "-" + number[3..5] + "-" + number[6..7]
         
-        return Course.new(teacher_name, name, number, section, slot)
+        return Course.new(teacher_name, name, number, section, slot, type)
     end
 end
 
@@ -76,7 +89,7 @@ end
 
 courses_ranges = Array.new
 courses_ranges = unparsed_courses.group_by do |course|
-    [course.number, course.teacher_name, course.time_slot]
+    [course.number, course.teacher_name, course.type[0], course.time_slot]
 end
 
 courses = Array.new
