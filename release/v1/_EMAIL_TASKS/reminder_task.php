@@ -1,5 +1,5 @@
 <?php
-include_once "v1/_EMAIL_TASK/_generic_email.php";
+include_once "v1/_EMAIL_TASKS/_generic_email.php";
 include_once "v1/_database.php";
 
 /*
