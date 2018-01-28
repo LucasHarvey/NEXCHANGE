@@ -1,6 +1,6 @@
 <?php
-include_once "./_generic_email.php";
-include_once "../_database.php";
+include_once "v1/_EMAIL_TASKS/_generic_email.php";
+include_once "v1/_database.php";
 
 /*
 This script will send reminders to notetakers who have not uploaded any notes for the past x days (see consts below...)
