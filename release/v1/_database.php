@@ -148,17 +148,17 @@ function database_rollback($dbh){
 }
 
 /* CONVENIENCES */
-function database_execute($dbh, $query, $types, $params, $throw = true){
+function database_execute($dbh, $query, $types, $params, $throw = false){
     $stmt = database_prepare($dbh, $query, $types, $params);
     try{
         database_execute_no_fetch($stmt);
         $stmt->close();
-        if(!$throw){
+        if($throw){
             return true;
         }
     }catch(Exception $e){
         $stmt->close();
-        if($throw){
+        if(!$throw){
             $error = $dbh->error;
             echoError($dbh, 500, "DatabaseError", $error); //Most likely a bad request. TBD
         }
@@ -166,17 +166,17 @@ function database_execute($dbh, $query, $types, $params, $throw = true){
     }
 }
 
-function database_insert($dbh, $query, $types, $params, $throw = true){
+function database_insert($dbh, $query, $types, $params, $throw = false){
     $stmt = database_prepare($dbh, $query, $types, $params);
     try{
         database_execute_no_fetch($stmt);
         $stmt->close();
-        if(!$throw){
+        if($throw){
             return true;
         }
     }catch(Exception $e){
         $stmt->close();
-        if($throw){
+        if(!$throw){
             $error = $dbh->error;
             echoError($dbh, 500, "DatabaseInsertError", $error); //Most likely a bad request. TBD
         }
@@ -184,17 +184,17 @@ function database_insert($dbh, $query, $types, $params, $throw = true){
     }
 }
 
-function database_update($dbh, $query, $types, $params, $throw = true){
+function database_update($dbh, $query, $types, $params, $throw = false){
     $stmt = database_prepare($dbh, $query, $types, $params);
     try{
         database_execute_no_fetch($stmt);
         $stmt->close();
-        if(!$throw){
+        if($throw){
             return true;
         }
     }catch(Exception $e){
         $stmt->close();
-        if($throw){
+        if(!$throw){
             $error = $dbh->error;
             echoError($dbh, 500, "DatabaseUpdateError", $error); //Most likely a bad request. TBD
         }
@@ -202,7 +202,7 @@ function database_update($dbh, $query, $types, $params, $throw = true){
     }
 }
 
-function database_delete($dbh, $query, $types, $params, $throw = false){
+function database_delete($dbh, $query, $types, $params, $throw = true){
     $stmt = database_prepare($dbh, $query, $types, $params);
     try{
         database_execute_no_fetch($stmt);

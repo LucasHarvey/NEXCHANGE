@@ -133,7 +133,7 @@ function insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fil
 
 	return database_insert($conn, 
 		"INSERT INTO notefiles (note_id, file_name, storage_name, type, size, md5) VALUES (?,?,?,?,?,?)",
-		$insertTypes, $insertValues, false);
+		$insertTypes, $insertValues, true);
 }
 
 function retrieveStorageName($conn, $noteId){
@@ -153,7 +153,7 @@ function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fil
 	
 	return  database_update($conn,
 	    "UPDATE notefiles SET file_name=?, storage_name=?, type=?, size=?, md5=? WHERE note_id=? LIMIT 1",
-		$insertTypes, $insertValues, false);
+		$insertTypes, $insertValues, true);
 }
 
 function validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE){
