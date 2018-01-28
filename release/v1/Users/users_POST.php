@@ -33,9 +33,10 @@ database_insert($conn, "INSERT INTO users (login_id, first_name, last_name, emai
 $user = database_get_row($conn, "SELECT id FROM users WHERE login_id=?", "s", $student_id);
 
 include_once("./_EMAIL_TASKS/temporary_password_task.php");
-temporary_password_email($conn, $user['id'], $email, $password);
+$emailSent = temporary_password_email($conn, $user['id'], $email, $password);
 
 echoSuccess($conn, array(
+    "emailSent" => $emailSent,
     "loginId" => $student_id,
     "firstName" => $first_name,
     "lastName" => $last_name,

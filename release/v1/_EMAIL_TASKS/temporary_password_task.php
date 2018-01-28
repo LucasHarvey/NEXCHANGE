@@ -1,6 +1,6 @@
 <?php
 
-include_once("./_generic_email.php");
+include_once("./_EMAIL_TASKS/_generic_email.php");
 
 function temporary_password_email($conn, $userid, $email, $token){
     if(empty($email)){
@@ -15,7 +15,7 @@ function temporary_password_email($conn, $userid, $email, $token){
     $subject = 'No-Reply: NEXCHANGE Account Created';
     $message = "Your NEXCHANGE account was created!\n Your login ID is your student ID, and your temporary password is: $token\n You can login at: $link";
     
-    send_email($conn, $userid, $email, $subject, $message);
+    return send_email($conn, $userid, $email, $subject, $message);
 }
 
 
