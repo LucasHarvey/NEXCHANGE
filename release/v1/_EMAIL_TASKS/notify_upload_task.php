@@ -1,6 +1,6 @@
 <?php
 
-include_once("./_generic_email.php");
+include_once("./_EMAIL_TASKS/_generic_email.php");
 
 function notify_note_upload_email_task($conn, $users, $noteId){
     if(empty($noteId)){
@@ -17,9 +17,12 @@ function notify_note_upload_email_task($conn, $users, $noteId){
         "\nTaken On: ".$note['taken_on'].
         "\nFor: ".$note['course_name']."(".$note['course_number'].")\n\n You can login at: $link";
     
+    $resp = array();
     foreach ($users as $user) {
-        send_email($conn, $user['id'], $user['email'], $subject, $message);
+        $re = send_email($conn, $user['id'], $user['email'], $subject, $message);
+        array_push($resp, array($user['id'], $re));
     }
+    return $resp;
 }
 
 
