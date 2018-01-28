@@ -10,7 +10,16 @@ if(empty($_FILES['file'])){
     echoError($conn, 400, "NoFilesUploaded");
 }
 $semesterCode = $_POST["semesterCode"];
-//TODO VALIDATE SEMESTER CODE
+
+$season = ["I", "W", "S", "F"];
+
+if(!in_array($semesterCode[0], $season) || strlen($semesterCode) != 5)
+    echoError($conn, 400, "SemesterNotValid");
+
+$year = substr($semesterCode, 1);
+
+if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
+    echoError($conn, 400, "SemesterNotValid");
 
 $allowed = ['csv'];
 $MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
@@ -34,20 +43,19 @@ $fileName = "courses-".$semesterCode."-".uniqid().".csv";
 $storageName = "./CoursesCSV/".$fileName;
 move_uploaded_file($tmp, $storageName);
 
-$base = "/home/ubuntu/workspace/";
-$script = $base."deployment/parse_courses.rb";
-$fileIn = $base."release/v1/".$storageName;
-$fileOut = $base."deployment/database/latest_courses.csv";
+$script = "./Courses/parse_courses.rb";
+$fileIn = $storageName;
+$fileOut = "./CoursesCSV/courses.latest.csv";
 
 exec('ruby '.$script." ".$fileIn.' '.$fileOut.' '.$semesterCode.' 2>&1', $output, $returnValue);
 if($returnValue != 0){
-	echoError($conn, 500, "ErrorParsingCourseFile", "O: ".$output." --R:".$returnValue);
+        echoError($conn, 500, "ErrorParsingCourseFile", "O: ".implode(",", $output)." --R:".$returnValue);
 }
 
-$uploadSQL = $base."deployment/database/upload_courses.sql";
-exec('mysql --local-infile -uzacky1 --password= nexchange < '.$uploadSQL, $output2, $returnValue2);
+$execCMD = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,teacher_fullname,course_name,course_number,section_start,section_end,semester' --local -uroot --password=THE_PASSWORD nexchange ".$fileOut;
+exec($execCMD, $output2, $returnValue2);
 if($returnValue2 != 0){
-	echoError($conn, 500, "ErrorUploadingParsedCourseFile", "O: ".$output2." --R:".$returnValue2);
+        echoError($conn, 500, "ErrorUploadingParsedCourseFile", "O: ".implode(",", $output2)." --R:".$returnValue2);
 }
 
 echoSuccess($conn, array("output" => $output[0]), 200);
