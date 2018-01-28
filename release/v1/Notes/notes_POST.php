@@ -4,9 +4,6 @@ $conn = database_connect();
 
 requiredParams($conn, $_POST, array("noteName", "courseId", "takenOn"));
 
-$allowed = ['pdf','docx', 'doc', 'pptx', 'ppt', 'xlsx', 'jpeg', 'jpg', 'png', 'txt', 'zip'];
-$MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
-
 $user_id = getUserFromToken();
 if(getUserPrivilege() == "ADMIN"){
     echoError($conn, 403, "AuthorizationFailed");
@@ -30,194 +27,60 @@ if(is_null($row)){
 	echoError($conn, 403, "UserCreateNotesDenied");
 }
 
-//Verify all note extensions are allowed and file size is appropriate
-validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
-
 if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseInsertError", "Could not start transaction.");
 }
+// Allowed file types
+$allowed = ['pdf','docx', 'doc', 'ppt', 'xlsx', 'jpeg', 'jpg', 'png', 'txt', 'zip'];
 
+//Max file size
+$MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
+
+$succeeded = array();
+
+include_once("./Notes/notes_conveniences.php");
+
+//Verify all note extensions are allowed and file size is appropriate
+validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
+
+// Move the note files onto the server and retrieve the note data
+$noteData = moveFiles();
+
+$fileName = $noteData[0];
+$storageName = $noteData[1];
+$fileType = $noteData[2];
+$fileSize = $noteData[3];
+$md5 = $noteData[4];
+$succeeded = $noteData[5];
+
+// Insert the note information into the database 
 database_insert($conn, "INSERT INTO notes (user_id, course_id, name, description, taken_on) VALUES (?,?,?,?,?)", $noteTypes, $noteValues);
+
 $note = database_get_row($conn, 
 	"SELECT id FROM notes WHERE user_id=? AND course_id=? ORDER BY created DESC LIMIT 1",
 	 "ss", array($user_id, $course_id));
+
 if($note == null){
+	// Delete the file from the server
+	if(file_exists($storageName))
+		unlink($storageName);
 	echoError($conn, 500, "DatabaseInsertError");
 }
 
+// Insert the file information into the database
+$result = insertNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
 
-/* FILE UPLOAD SECTION */
-
-if(!empty($_FILES['file'])){
-		
-	$failed = array();
-	$succeeded = array();
-	
-	// Check if there is only one file
-	if(count($_FILES['file']['name']) == 1){
-		
-		// Put the files in a variable for easy access
-		$files = $_FILES['file'];
-		
-		foreach($files['name'] as $key => $name){
-			// Ensure that there is no error for the file
-			if($files['error'][$key] != 0) {
-				$err = getFileError($files['error'][$key]);
-    		    array_push($failed, array(
-    	        	"name" => $name,
-    	        	"messageCode" => $err[1],
-    	        	"status" => $err[0]
-    	    	));
-    		    continue;
-			}
-			
-			$tmp = $files['tmp_name'][$key];
-			$fileName = $files['name'][$key];
-			$fileSize = $files['size'][$key];
-			$fileType = $files['type'][$key];
-			$md5 = md5_file($files['tmp_name'][$key]);
-			
-			// Generate a unique file name for storage using the file content
-			$storageName =  uniqid() . getExtension($fileName);
-			
-			// If the file happens to already exist, add a unique id until it doesn't
-			while(file_exists("./Files/".$storageName)){
-				$storageName =  uniqid() . getExtension($fileName);
-			}
-			
-			// Add the proper directory
-			$storageName = "./Files/" . $storageName;
-			
-			// Move the temporary file to the Files folder
-		    move_uploaded_file($tmp, $storageName);
-		    
-		    // Ensure that file name is 100 characters or less
-		    if(strlen($fileName) > 100){
-	            $ext = getExtension($fileName);
-	            // Calculate the amount of characters left excluding the extension
-	            $lenLeft = 100 - strlen($ext);
-	            // Rename the file by truncating the file name such that strlen($fileName . $ext) = 100
-	            $fileName = substr($fileName,0,$lenLeft) . $ext;
-		    }
-			
-			// Insert the file information into the database
-			$result = insertNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
-			
-			if($result){
-				array_push($succeeded, array(
-		    	    "name" => $fileName,
-		    	    "md5" => $md5
-		    	));
-			}else{
-		    	array_push($failed, array(
-		        	"name" => $fileName,
-		        	"messageCode" => "DatabaseInsertError",
-		        	"status" => 500
-		    	));
-			}
-		}
-	}
-	
-	// Check if there is more than one file 
-	if(count($_FILES['file']['name']) > 1){
-		
-		// Put the files in a variable for easy access
-		$files = $_FILES['file'];
-		
-		// Array of files to be deleted
-		$deleteFiles = array();
-		
-		// Array of uploaded files
-		$uploadedFiles = array();
-		
-		//Create a zip object
-		$zip = new ZipArchive;
-	
-		// Name the zip file using a uuid (this may seem sketch to the user)
-		$storageName = uniqid().".zip";
-		
-		// If the file happens to already exists, add a unique id until it doesn't
-		while(file_exists("./Files/".$storageName)){
-			$storageName = uniqid().".zip";
-		}
-		
-		// Keep the same name to insert into db before modifiying $storageName with rel path
-		$fileName = $storageName;
-		
-		// Add the proper directory (added here because we need to add the uuid in front of $storageName)
-		$storageName = "./Files/" . $storageName;
-		
-		if ($zip->open($storageName, ZipArchive::CREATE) === TRUE){
-		    
-		    // Add files to the zip file
-		    foreach($files['name'] as $key => $name){
-		    	// Look for errors in the file before adding it to the zip
-				if($files['error'][$key] != 0) {
-				    $err = getFileError($files['error'][$key]);
-					array_push($failed, array(
-			        	"name" => $file[0],
-			        	"messageCode" => $err[1],
-			        	"status" => $err[0]
-			    	));	
-				    continue;
-				}
-		    	
-		    	$tmp = $files['tmp_name'][$key];
-		    	$md5 = md5_file($tmp);
-		    	
-		    	// Add the file to the zip with its original name within the zip
-		    	$zip->addFile($tmp, $name);
-		    	
-		    	// Add the name and md5 of the file to the succeeded array (using the original name)
-		    	array_push($uploadedFiles, array($name, $md5));
-		    }
-		 
-		 
-		    // All files are added, so close the zip file
-		    $zip->close();
-		   
-		}
-			
-		// Get the file size of the zip
-		$fileSize = filesize($storageName);
-		$fileType = "zip";
-		$md5 = md5_file($storageName);
-		
-		// Insert the file information into the database
-		$result = insertNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
-		
-		if($result){
-			
-			// Loop through the files to add them to $succeeded
-			foreach($uploadedFiles as $file){
-				
-				// Add the file to $succeeded
-				array_push($succeeded, array(
-		    	    "name" => $file[0],
-		    	    "md5" => $file[1]
-	    		));
-			}
-	    	
-		} else {
-			foreach($uploadedFiles as $file){
-				// Files already in $failed will not be in $uploadedFiles
-				array_push($failed, array(
-		        	"name" => $file[0],
-		        	"messageCode" => "UnknownFileUploadError",
-		        	"message" => "NEXCODE 1573", //Unique code to find later if it shows up in console. Differenciates from lower UnkonwnFileError
-		        	"status" => 500
-		    	));	
-			}
-		}
-	}
+if(!$result){
+	// Delete the file from the server
+	if(file_exists($storageName))
+		unlink($storageName);
+	echoError($conn, 500, "UnknownFileUploadError");
 }
-
-/* END OF FILE UPLOAD SECTION */
 
 $users_Notified = database_get_all($conn, 
 	"SELECT u.id, u.email FROM user_access ua INNER JOIN courses c ON ua.course_id=c.id ".
 								 "INNER JOIN users u ON ua.user_id = u.id INNER JOIN notes n ON n.course_id = c.id ".
-								 "WHERE ua.notifications=1 AND ua.role='STUDENT' AND n.id=?", 
+								 "WHERE ua.notifications=1 AND ua.role='STUDENT' AND n.id=?", "s",
 								   $note["id"]);
 
 if(!database_commit($conn)){
@@ -228,62 +91,14 @@ if(!database_commit($conn)){
 	echoError($conn, 500, "DatabaseCommitError", "Could not commit transaction.");
 }
 
-include_once("./_EMAIL_TASKS/notify_upload_task.php");
-notify_note_upload_email_task($conn, $users_Notified, $note['id']);
+//include_once("./_EMAIL_TASKS/notify_upload_task.php");
+//notify_note_upload_email_task($conn, $users_Notified, $note['id']);
 
 //TODO LOG failures.
 echoSuccess($conn, array(
 	'succeeded' => $succeeded,
-	'failed' => $failed
 ), 207);
 
-function getFileError($errorNo){
-	switch ($errorNo) {
-        case UPLOAD_ERR_OK:
-        	return true;
-        case UPLOAD_ERR_NO_FILE:
-    		return array(400, "NoFilesUploaded");
-        case UPLOAD_ERR_INI_SIZE:
-        case UPLOAD_ERR_FORM_SIZE:
-        	return array(409, "FileIsTooBig");
-        default:
-        	return array(500, "UnknownFileUploadError");
-    }
-}
 
-function insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5){
-	$insertTypes = "ssssis";
-	$insertValues = array($noteId,$fileName,$storageName,$fileType,$fileSize,$md5);
-
-	return database_insert($conn, 
-		"INSERT INTO notefiles (note_id, file_name, storage_name, type, size, md5) VALUES (?,?,?,?,?,?)",
-		$insertTypes, $insertValues, false);
-}
-
-function validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE){
-    foreach($_FILES["file"]["name"] as $key => $name){
-        if($_FILES['file']['error'][$key] == 0) {
-            $fileDotSeparated = explode('.', $name); //MUST be on 2 lines.
-            $ext = strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
-            if(!in_array($ext, $allowed)){
-            	echoError($conn, 409, "NoteExtensionUnauthorized");
-            }
-            
-            if($_FILES['file']['size'][$key] > $MAX_SINGLE_FILE_SIZE){
-                echoError($conn, 409, "FileIsTooBig");
-            }
-        }else{
-        	$err = getFileError($_FILES['file']['error'][$key]);
-        	echoError($conn, $err[0], $err[1]);
-        }
-    }
-}
-
-function getExtension($fileName){
-	$fileDotSeparated = explode('.', $fileName); //MUST be on 2 lines.
-    $ext = strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
-    
-    return ".".$ext;
-}
 
 ?>
