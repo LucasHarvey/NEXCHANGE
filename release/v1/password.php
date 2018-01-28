@@ -12,9 +12,9 @@ if($_SERVER["REQUEST_METHOD"] == "PUT" || $_SERVER["REQUEST_METHOD"] == "POST"){
 include_once "_generics.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "PUT"){
-    include_once "Password/auth_PUT.php";
+    include_once "Password/password_PUT.php";
 }else if ($_SERVER["REQUEST_METHOD"] == "POST"){
-    include_once "Password/auth_POST.php";
+    include_once "Password/password_POST.php";
 }else{
   echoError(null, 404, "UnknownResourceMethod");
 }

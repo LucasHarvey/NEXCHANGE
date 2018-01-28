@@ -20,6 +20,7 @@ let MessageCode = {
 
     UserUpdated: "Your settings have been updated successfully.",
     PasswordUpdateFailure: "Your password could not be updated. Please change it in the settings page.",
+    PasswordResetRequested: "If the email entered matches the email on record, you will receive an email with the steps to reset your password.",
     PasswordTooSmall: "Password must be 9 characters or more.",
     UserDeleted: "User deleted.",
     NoteDeleted: "Note has been deleted",
@@ -65,6 +66,7 @@ let MessageCode = {
     UserNameNotValid: "The student name is not valid.",
     FutureSemester: "Please choose a past or current semester.",
     PastSemester: "Please choose a future or current semester.",
+    SemesterNotValid: "The semester you entered is not valid.",
     // Settings error codes
     MissingArgumentEmail: "Email was left empty.",
     EmailNotValid: "The email address is not valid.",
@@ -73,6 +75,7 @@ let MessageCode = {
     PasswordsNoMatch: "Passwords do not match.",
     MissingArgumentCurrentPassword: "Please confirm current password.",
     NoFilesUploaded: "No file was uploaded.",
+    ErrorParsingCourseFile: "Error parsing the courses.csv file uploaded... Make sure it is formatted properly.",
 
     UserRegistered: "has been signed up successfully. They have been sent an email with their credentials.",
     UserAlreadyExists: "The student ID is already registered to a user. Ensure the Student ID was entered correctly.",
@@ -97,6 +100,7 @@ let MessageCode = {
     NoFilesForNote: "No files are attached to this note package.",
     FileIsTooBig: "The selected file is too large.",
     UnknownFileUploadError: "An unknown error occured when uploading a file.",
+    NoteFileDeleteFailure: "A note file could not be deleted successfully.",
     DownloadConfirmationFailed: "The file download confirmation failed.",
     FileCorruptedFrontEnd: "The file you are attempting to download is corrupted.",
     ModuleAccessError: "You do not have access to this module.",

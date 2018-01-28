@@ -105,18 +105,8 @@ app.editNote = {
         app.editNote.updateCharacterLimit();
         
         let successes = response.payload.succeeded;
-        let failures = response.payload.failed;
 
         var modalText = "Note has been updated.";
-        
-        if (failures.length > 0) {
-            modalText += '<p>Unfortunately, the following failed:</p>';
-            for (var x = 0; x < failures.length; x++) {
-            let span = document.createElement('span');
-            span.innerHTML = failures[x].name + "</br>" + MessageCode[failures[x].messageCode];
-            modalText += span;
-        }
-        }
 
         if (successes.length > 0) {
             modalText += '<p>Uploaded file'.pluralize(successes.length) + ':</p><ul>';
