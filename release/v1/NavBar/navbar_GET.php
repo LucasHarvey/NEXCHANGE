@@ -21,14 +21,19 @@ function getNavbarItems($conn, $token = null){
         $addCourse = array(
             "content" => "ADD COURSES",
             "url" => "./addCourses.html"
-            );
+        );
         
         $manageNotes = array(
             "content" => "MANAGE SYSTEM",
             "url" => "./manage.html"
         );
+            
+        $settings = array(
+            "content" => "MY PROFILE",
+            "url" => "./settings.html"
+        );
         
-        return array($signup, $userAccess, $addCourse, $manageNotes);
+        return array($signup, $userAccess, $addCourse, $manageNotes, $settings);
     }
     
     $userAccesses = database_get_all($conn, "SELECT role FROM user_access WHERE user_id=?", "s", $user_id);
