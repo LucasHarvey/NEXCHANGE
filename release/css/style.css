@@ -302,6 +302,11 @@ button.warning, .button.warning {
     font-family: 'Open Sans', sans-serif;
 }
 
+.loginBody>footer>img {
+    width: 200px;
+    height: 62px;
+}
+
 .login {
     position: relative;
     margin-top: 15%;
