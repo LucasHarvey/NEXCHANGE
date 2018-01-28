@@ -2,6 +2,8 @@ use nexchange;
 
 -- DROP EVERYTHING
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS log_notifications_sent;
+DROP TABLE IF EXISTS log_user_logins;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS notes;
 DROP TABLE IF EXISTS notefiles;
@@ -11,6 +13,18 @@ DROP TABLE IF EXISTS notefile_downloads;
 SET FOREIGN_KEY_CHECKS = 1;
 
 -- Create the tables
+CREATE TABLE log_notifications_sent (
+    user_id CHAR(36) NOT NULL,
+    notification_code INT(1), -- 1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE log_user_logins (
+    user_id CHAR(36) NOT NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE users (
     id CHAR(36) NOT NULL,
     login_id CHAR(7) NOT NULL UNIQUE,
@@ -40,7 +54,8 @@ CREATE TABLE courses (
     
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    CONSTRAINT UC_Course UNIQUE (teacher_fullname,course_name,course_number,section_start,section_end,semester)
 );
 
 -- User access denotes the courses a student or a note taker is allowed to do stuff for
@@ -113,6 +128,10 @@ CREATE TRIGGER before_insert_on_user_access
     BEFORE INSERT ON user_access
     FOR EACH ROW
     BEGIN
+        IF new.role='NOTETAKER' THEN
+            SET new.notifications = FALSE;
+        END IF;
+        
         IF EXISTS (SELECT * FROM user_access WHERE user_id = new.user_id AND course_id = new.course_id) THEN
             SIGNAL SQLSTATE '45002' SET MESSAGE_TEXT = "This user is already signed up to be a notetaker or a student in this course.";
         END IF;
