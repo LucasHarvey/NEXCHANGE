@@ -283,21 +283,27 @@ button.warning, .button.warning {
 */
 
 .loginHtml {
-    background-color: inherit;
-}
-
-.login {
     background-image: url("../img/loginBackground.jpeg");
     background-size: cover;
     background-position: center center;
     background-attachment: fixed;
-    width: 100%;
-    height: 100%;
     z-index: -2;
+}
+
+.loginBody {
+    min-height: 100%!important;
     overflow: hidden;
     margin: 0;
-    position: absolute;
-    top: 15%;
+}
+
+.loginBody>footer {
+    background-color: rgba(89, 89, 89, 0.7);
+}
+
+.login {
+    min-height: 100%!important;
+    position: relative;
+    margin-top: 15%;
 
     display: -webkit-box !important;
 
@@ -392,6 +398,7 @@ button.warning, .button.warning {
 }
 
 .middle {
+    background-color: inherit;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
