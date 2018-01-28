@@ -9,7 +9,7 @@ app.passwordForgot = {
         
         // Enable the submit button
         document.getElementById("sendRequest").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.password.submitForgot);
+        document.getElementById('userData').addEventListener('submit', app.passwordForgot.submit);
         
         let logoutFunction = function() {
             window.location = "./login.html";
@@ -25,7 +25,7 @@ app.passwordForgot = {
         
         // Enable the submit button
         document.getElementById("sendRequest").disabled = false;
-        document.getElementById('userData').addEventListener('submit', app.password.submitForgot);
+        document.getElementById('userData').addEventListener('submit', app.passwordForgot.submit);
         
         app.handleFailure(response);
     },
@@ -62,7 +62,7 @@ app.passwordForgot = {
         
         // Disable the form
         document.getElementById("sendRequest").disabled = true;
-        document.getElementById('userData').removeEventListener('submit', app.password.submitForgot);
+        document.getElementById('userData').removeEventListener('submit', app.passwordForgot.submit);
         
         Resources.Password.POST(studentId, email, this.success, this.failure);
     },
@@ -76,5 +76,5 @@ app.passwordForgot = {
 
 app.startup.push(function passwordForgotStartup() {
     app.passwordForgot.submit = app.passwordForgot.submit.bind(app.passwordForgot);
-    document.getElementById('userData').addEventListener('submit', app.passwordForgot.submitForgot);
+    document.getElementById('userData').addEventListener('submit', app.passwordForgot.submit);
 });

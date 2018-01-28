@@ -20,6 +20,7 @@ let MessageCode = {
 
     UserUpdated: "Your settings have been updated successfully.",
     PasswordUpdateFailure: "Your password could not be updated. Please change it in the settings page.",
+    PasswordResetRequested: "If the email entered matches the email on record, you will receive an email with the steps to reset your password.",
     PasswordTooSmall: "Password must be 9 characters or more.",
     UserDeleted: "User deleted.",
     NoteDeleted: "Note has been deleted",
