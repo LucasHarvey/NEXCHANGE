@@ -2,6 +2,14 @@
     SHARED STYLES
 */
 
+.feedbackLink {
+    color: #ad5252;
+}
+
+.feedbackLink:hover {
+    color: #c68686;
+}
+
 html {
     height: 100%;
     width: 100%;
