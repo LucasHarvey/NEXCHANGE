@@ -1,4 +1,4 @@
-/* global Resources, MessageCode, Modal */
+/* global Resources,MessageCode,Modal,location */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -21,7 +21,7 @@ app.signup = {
             text: "Grant User Access",
             callback: function() {
                 app.store("userAccessLoginId", data.payload.loginId); //Prepopulate id field in user access
-                window.location.href = "userAccess.html";
+                location.assign("userAccess.html");
             }
         };
         new Modal("User Created", modalContent, confirmButton, {

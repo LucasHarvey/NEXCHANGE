@@ -1,4 +1,4 @@
-/* global Resources, MessageCode, Modal,getQueryParameterByName */
+/* global Resources, MessageCode, Modal,getQueryParameterByName,location */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -12,7 +12,7 @@ app.password = {
         
         
         let logoutFunction = function() {
-            window.location = "./login.html";
+            location.assign("./login.html");
         };
         let successData = {
             text: "Okay",
