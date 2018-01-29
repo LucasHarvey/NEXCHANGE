@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal */
+/* global Resources,MessageCode,Modal,location */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -63,7 +63,7 @@ app.courses = {
             uploadNoteButton.onclick = function(e) {
                 var id = e.target.id.replace("upload_", "");
                 app.store("uploadNotesCourseId", id);
-                window.location = "./upload.html";
+                location.assign("./upload.html");
             };
             course.appendChild(uploadNoteButton);
         } else {

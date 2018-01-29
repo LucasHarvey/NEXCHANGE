@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal */
+/* global Resources,MessageCode,Modal,location */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -121,7 +121,7 @@ app.editNote = {
             text: "Back To Home Page",
             callback: function() {
                 app.store("editNoteNoteId", null);
-                window.location = "./home.html";
+                location.assign("./home.html");
             }
         }).show();
     },
@@ -147,7 +147,7 @@ app.editNote = {
                     new Modal("Delete Note", MessageCode[response.payload.messageCode], null, {
                         text: "Okay",
                         callback: function() {
-                            window.location = "./home.html"
+                            location.assign("./home.html");
                             this.hide();
                         }
                     }).show();
@@ -229,6 +229,6 @@ app.afterStartup.push(function editNoteAfterStartup() {
         app.editNote.noteId = noteId;
         Resources.Notes.GET_id(noteId, app.editNote.getNote);
     } else {
-        window.location = "./home.html";
+        location.assign("./home.html");
     }
 });
