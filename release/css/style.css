@@ -760,7 +760,12 @@ body>div>* {
         padding: 10px 5px!important;
     }
     
-    
+}
+
+@media all and (max-height: 600px){
+    body>footer {
+        display: none!important;
+    }
 }
 
 .main {
