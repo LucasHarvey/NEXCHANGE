@@ -71,7 +71,7 @@ app.manage = {
             article.button.id = "UA" + i + "_" + user.id;
             article.button.onclick = function() {
                 var studentId = this.id.split("_")[1];
-                window.location.href = "./notes.html?studentId=" + studentId;
+                window.location.href = "./notes.html?studentId=" + encodeURIComponent(studentId);
             };
             article.button2.innerHTML = "Delete Account";
             article.button2.className = "warning";
@@ -154,7 +154,7 @@ app.manage = {
             article.button.id = "UA" + i + "_" + course.id;
             article.button.onclick = function() {
                 var courseId = this.id.split("_")[1];
-                window.location.href = "./notes.html?courseId=" + courseId;
+                window.location.href = "./notes.html?courseId=" + encodeURIComponent(courseId);
             };
             article.button2.innerHTML = "Grant User Access";
             article.button2.id = "Access" + i + "_" + course.id;
@@ -168,7 +168,7 @@ app.manage = {
             article.button3.id = "Modify" + i + "_" + course.id;
             article.button3.onclick = function(){
                 var courseId = this.id.split("_")[1];
-                window.location.href = "./editCourse.html?courseId=" + courseId;
+                window.location.href = "./editCourse.html?courseId=" + encodeURIComponent(courseId);
             };
             
             article.button4.innerHTML = "Delete Course";
@@ -270,7 +270,7 @@ app.manage = {
             article.button.onclick = function(e) {
                 var userId = this.id.split("_")[1];
                 var courseId = this.id.split("_")[2];
-                window.location.href = "./notes.html?studentId=" + userId + "&courseId=" + courseId;
+                window.location.href = "./notes.html?studentId=" + encodeURIComponent(userId) + "&courseId=" + encodeURIComponent(courseId);
             };
             article.button2.innerHTML = "Revoke Access";
             article.button2.className = "warning";
