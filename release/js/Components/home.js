@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal */
+/* global Resources,MessageCode,Modal,location */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -77,7 +77,7 @@ app.home = {
             uploadNoteButton.onclick = function(e) {
                 var id = e.target.id.replace("upload_", "");
                 app.store("uploadNotesCourseId", id);
-                window.location = "./upload.html";
+                location.assign("./upload.html");
             };
             courseDiv.appendChild(uploadNoteButton);
         } else {
@@ -189,7 +189,7 @@ app.home = {
             editNoteBtn.addEventListener("click", function(e) {
                 let noteId = this.id.slice(0, -5);
                 app.store("editNoteNoteId", noteId);
-                window.location = "./edit.html";
+                location.assign("./edit.html");
             });
             articleSection.appendChild(editNoteBtn);
         }

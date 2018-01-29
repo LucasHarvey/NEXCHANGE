@@ -1,4 +1,4 @@
-/* global Resources, MessageCode, Modal */
+/* global Resources,MessageCode,Modal,location */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -52,13 +52,13 @@ app.user = {
                     document.getElementById("modalErrorTray").innerHTML = "";
      
                     Resources.Users.PUT(null, newPass, curPass, function() {
-                        window.location = data.payload.redirect.url;
+                        location.assign(data.payload.redirect.url);
                     }, function(d) {
                         let successBtn = {
                             text: "Okay",
                             // Callback for the modal which tells the user that password update failed
                             callback: function() {
-                                window.location = "./settings.html";
+                                location.assign("./settings.html");
                             }
                         };
                         
@@ -77,7 +77,7 @@ app.user = {
         }
       
         app.store("login_nextLocation", null);
-        window.location = nextWindowLocation;
+        location.assign("./settings.html");
     },
     failure: function(data) {
         document.getElementById("errorTray").style.display = 'block';
@@ -95,11 +95,11 @@ app.user = {
             app.store("authToken", null);
             app.store("navbar", null);
             app.store("login_nextLocation", null);
-            window.location = "./login.html";
+            location.assign("./login.html");
         }, function(data) {
             if (data.statusCode == 401 || data.statusCode == 403) {
                 console.warn("Already signed out...");
-                window.location = "./login.html";
+                location.assign("./login.html");
                 return;
             }
             new Modal("Error", "You could not be signed out because: " + MessageCode[data.messageCode], null, { text: "Okay" }).show();
