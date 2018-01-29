@@ -15,14 +15,13 @@ if($code == null){
 
 $password = $creds[1];
 
-$user = database_get_row($dbh, "SELECT id FROM users WHERE passresetcode=? AND privilege='USER' AND DATE_ADD(passresetcreated, INTERVAL 15 MINUTE) < NOW()", "s", $code);
+$user = database_get_row($conn, "SELECT id FROM users WHERE passresetcode=? AND privilege='USER' AND DATE_ADD(passresetcreated, INTERVAL 15 MINUTE) > NOW()", "s", $code);
 
 if($user != null){
-    
     $value = password_hash($password, PASSWORD_BCRYPT);
     $insertParams = array($value, $user["id"], $code);
 
-    database_update($dbh, "UPDATE users SET password=? WHERE id=? AND passresetcode=? LIMIT 1", "sss", $insertParams);
+    database_update($conn, "UPDATE users SET passwordhash=? WHERE id=? AND passresetcode=? LIMIT 1", "sss", $insertParams);
     echoSuccess($conn, array(
         "messageCode" => "PasswordReset"
     ));
