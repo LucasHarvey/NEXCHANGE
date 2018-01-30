@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,getQueryParameterByName */
+/* global Resources,MessageCode,Modal,getQueryParameterByName,location */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -81,7 +81,7 @@ app.editCourse = {
         new Modal("Course Updated", MessageCode["CourseEdited"], {
             text: "Back To Home Page",
             callback: function() {
-                window.location = "./signup.html";
+                location.assign("./signup.html");
             }
         }).show();
         
