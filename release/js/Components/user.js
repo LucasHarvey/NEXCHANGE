@@ -22,6 +22,8 @@ app.user = {
         if(app.getStore("loginId") == app.user.loginId){
             //Is the previous user and the current user the same? If so use the next location if it exists
             nextWindowLocation = app.getStore("login_nextLocation") || data.payload.redirect.url;
+        } else {
+            app.store("navbar", null);
         }
         app.store("loginId", app.user.loginId);
         document.getElementById("errorTray").style.display = 'none';
