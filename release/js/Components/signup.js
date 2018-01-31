@@ -15,7 +15,7 @@ app.signup = {
         var modalContent = "User has been created successfully.\n<p><span>Login ID: </span>" + data.payload.loginId + "</p>";
         modalContent += "\n<p><span>Name: </span>" + data.payload.firstName + " " + data.payload.lastName + "</p>";
         modalContent += "\n<p><span>Temporary Password: </span>" + data.payload.password + "</p>";
-        modalContent += "\n<p><span>Email Sent: </span>" + data.payload.emailSent ? "Successfully" : "Unsuccessfully" + "</p>";
+        modalContent += "\n<p><span>Email Sent: </span>" + (data.payload.emailSent ? "Successfully" : "Unsuccessfully") + "</p>";
 
         let confirmButton = {
             text: "Grant User Access",
