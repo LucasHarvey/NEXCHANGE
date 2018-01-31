@@ -9,7 +9,7 @@ function notify_note_upload_email_task($conn, $users, $noteId){
     
     $note = database_get_row($conn, "SELECT n.name, description, n.taken_on, c.course_name, c.course_number, n.course_id FROM notes n INNER JOIN courses c ON n.course_id = c.id WHERE n.id=?", "s", $noteId);
     
-    $users = database_get_all($conn, "SELECT u.id, u.email FROM users u INNER JOIN user_access ua ON ua.user_id = u.id WHERE ua.course_id=?", "s", $note['course_id']);
+    $users = database_get_all($conn, "SELECT u.id, u.email FROM users u INNER JOIN user_access ua ON ua.user_id = u.id WHERE ua.course_id=? AND role='STUDENT'", "s", $note['course_id']);
     
     $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/home.html";
     
