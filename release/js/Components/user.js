@@ -79,7 +79,7 @@ app.user = {
         }
       
         app.store("login_nextLocation", null);
-        location.assign("./settings.html");
+        location.assign(nextWindowLocation);
     },
     failure: function(data) {
         document.getElementById("errorTray").style.display = 'block';
