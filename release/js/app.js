@@ -35,8 +35,22 @@ app.start = function() {
     }
 };
 
+app.storageEnabled = function(){
+    try {
+        if(typeof(Storage) === "undefined") return false;
+        if (typeof(window) !== 'undefined' && 'localStorage' in window) { 
+            window.localStorage.setItem("nexchange_test_storage", true);
+            window.localStorage.removeItem("nexchange_test_storage");
+        }
+        return true;
+    }
+    catch(err) {
+        return false;
+    }
+};
+
 app.store = function(key, data) {
-    if (typeof(Storage) === "undefined") {
+    if (!app.storageEnabled()) {
         //Store cookies instead
         if (data === null) {
             document.cookie = key + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT";
