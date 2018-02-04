@@ -18,8 +18,9 @@ $noteName = $_POST['noteName'];
 $description = $_POST['description'];
 $date = $_POST['takenOn'];
 
-$noteTypes = "sssss";
-$noteValues = array($user_id,$course_id,$noteName,$description,$date);
+$noteTypes = "ssssss";
+$created = date('Y-m-d H:i:s');
+$noteValues = array($user_id,$course_id,$created,$noteName,$description,$date);
 
 // Ensure that the user is a note taker for the course
 $row = database_get_row($conn, "SELECT role FROM user_access WHERE user_id=? AND course_id=? AND role='NOTETAKER'", "ss", array($user_id, $course_id));
@@ -54,11 +55,11 @@ $md5 = $noteData[4];
 $succeeded = $noteData[5];
 
 // Insert the note information into the database 
-database_insert($conn, "INSERT INTO notes (user_id, course_id, name, description, taken_on) VALUES (?,?,?,?,?)", $noteTypes, $noteValues);
+database_insert($conn, "INSERT INTO notes (user_id, course_id, created, name, description, taken_on) VALUES (?,?,?,?,?,?)", $noteTypes, $noteValues);
 
 $note = database_get_row($conn, 
-	"SELECT id FROM notes WHERE user_id=? AND course_id=? ORDER BY created DESC LIMIT 1",
-	 "ss", array($user_id, $course_id));
+	"SELECT id FROM notes WHERE user_id=? AND course_id=? AND created=? LIMIT 1",
+	 "sss", array($user_id, $course_id, $created));
 
 if($note == null){
 	// Delete the file from the server
