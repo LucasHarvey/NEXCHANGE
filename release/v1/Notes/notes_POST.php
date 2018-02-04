@@ -32,7 +32,7 @@ if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseInsertError", "Could not start transaction.");
 }
 // Allowed file types
-$allowed = ['pdf','docx', 'doc', 'ppt', 'xlsx', 'jpeg', 'jpg', 'png', 'txt', 'zip'];
+$allowed = ['pdf','docx','doc','pptx','ppt','xlsx','csv','jpeg','jpg','png', 'txt', 'zip'];
 
 //Max file size
 $MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
