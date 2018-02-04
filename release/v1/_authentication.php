@@ -64,7 +64,7 @@ function getAuthToken(){
 function authorized($conn){
     $token = getAuthToken();
     
-    if(!validateTokenAuthenticity($token))
+    if(!validateTokenAuthenticity($token) || getUserPrivilege($token) == "NONE")
         return array(false, null);
     
     // Decode the token
@@ -100,7 +100,6 @@ function authorized($conn){
         }
             
     }
-    
     
     // Check that the JWT isn't expired
     if(intval($decTokenPieces[1]["exp"]) < time())
@@ -152,8 +151,8 @@ function getUserPrivilege($token = null){
     if(!$token)
         $token = getAuthToken();
     
-    if($token == null){
-        return false;
+    if(!validateTokenAuthenticity($token)){
+        return "NONE";
     }
     
     $decTokenPieces = decodeToken($token);
@@ -224,7 +223,7 @@ function retrieveUserInfo(){
     return array(
         $payload["sub"],
         $payload["privilege"]
-        );
+    );
 }
 
 ?>
