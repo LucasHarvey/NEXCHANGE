@@ -121,38 +121,27 @@ app.notes = {
         descriptionP.className = "description";
         articleSection.appendChild(descriptionP);
 
-        let authorP = document.createElement("P");
-        //TODO clean all.
-        authorP.innerHTML = "Notes taken by: <span>" + (noteData.user_name || "Anonymous") + "</span>";
-        authorP.className = "author";
+        let authorP = generatePTag("Notes taken by", noteData.user_name || "Anonymous", true);
         articleSection.appendChild(authorP);
 
-        let courseP = document.createElement("P");
-        //TODO: Clean all
         var section =  (noteData.sectionStart + "").padStart(5, "0");
         if(noteData.sectionStart != noteData.sectionEnd){
             section += " to " + (noteData.sectionEnd + "").padStart(5, "0");
         }
-        courseP.innerHTML = "Notes taken for: <span>" + noteData.course_name + "("+noteData.course_number + " : " + section +")" + "</span>";
-        courseP.className = "author";
+        let courseP = generatePTag("Notes taken for", noteData.course_name + "("+noteData.course_number + " : " + section +")", true);
         articleSection.appendChild(courseP);
-
-        let dateP = document.createElement("P");
-        dateP.innerHTML = "Notes taken on: <span>" + new Date(noteData.taken_on.replace(/-/g, '\/')).toPrettyDate() + "</span>";
-        dateP.className = "date";
+        
+        let dateP = generatePTag("Notes taken on", new Date(noteData.taken_on.replace(/-/g, '\/')).toPrettyDate(), true);
         articleSection.appendChild(dateP);
 
-        let uploadDateP = document.createElement("P");
-        uploadDateP.innerHTML = "Notes uploaded on: <span>" + new Date(noteData.created).toPrettyDate() + "</span>";
-        uploadDateP.className = "date";
+        let uploadDateP = generatePTag("Notes uploaded on", new Date(noteData.created).toPrettyDate(), true);
         articleSection.appendChild(uploadDateP);
 
-        var numberDownloadCount = (noteData.download_count || 0);
-        var numberDistinctCount = (noteData.distinct_downloads || 0);
+        var numberDownloadCount = (parseInt(noteData.download_count) || 0);
+        var numberDistinctCount = (parseInt(noteData.distinct_downloads) || 0);
         let downloadCount = document.createElement("P");
         downloadCount.innerHTML = "Downloaded <span>" + numberDownloadCount + "</span> time".pluralize(numberDownloadCount) + " by <span>" + numberDistinctCount + "</span> " +
             (numberDistinctCount > 1 ? "different " : "") + "user".pluralize(numberDistinctCount);
-        downloadCount.className = "date";
         articleSection.appendChild(downloadCount);
 
         let noteDownload = document.createElement("BUTTON");
