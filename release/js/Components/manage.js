@@ -62,11 +62,12 @@ app.manage = {
             let article = this._generateArticle();
             article.article.id = "UA_A_" + user.id;
             article.header.innerText = user.firstName + " " + user.lastName;
-            //TODO clean user email + student id.
-            article.description.innerHTML = "<p>Student ID: " + user.studentId + "</p>" +
-                "<p>Email: " + user.email + "</p>" +
-                "<p>Author of: " + user.notesAuthored + " note".pluralize(user.notesAuthored) + "</p>" +
-                "<p>User Created On: " + (new Date(user.created)).toPrettyDate() + "</p>";
+            
+            article.description.appendChild(generatePTag("Student ID", user.studentId));
+            article.description.appendChild(generatePTag("Email", user.email));
+            article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
+            article.description.appendChild(generatePTag("User Created On", (new Date(user.created)).toPrettyDate()));
+            
             article.button.innerHTML = "See Student Notes";
             article.button.id = "UA" + i + "_" + user.id;
             article.button.onclick = function() {
@@ -140,16 +141,18 @@ app.manage = {
             let article = this._generateArticle(4);
             article.article.id = "UA_C_" + course.id;
             article.header.innerText = course.courseName;
-            //TODO clean all.
+            
             var section =  (course.sectionStart + "").padStart(5, "0");
             if(course.sectionStart != course.sectionEnd){
                 section += " to " + (course.sectionEnd + "").padStart(5, "0");
             }
-            article.description.innerHTML = "<p>Teacher: " + course.teacherFullName + "</p>" +
-                "<p>Course: " + course.courseNumber + "</p>" +
-                "<p>"+"Section".pluralize(section.length > 5)+": " + section + "</p>" +
-                "<p>Semester: " + course.semester + "</p>" +
-                "<p>Contains: " + course.notesAuthored + " note".pluralize(course.notesAuthored) + "</p>";
+            
+            article.description.appendChild(generatePTag("Teacher", course.teacherFullName));
+            article.description.appendChild(generatePTag("Course", course.courseNumber));
+            article.description.appendChild(generatePTag("Section".pluralize(section.length > 5), section));
+            article.description.appendChild(generatePTag("Semester", course.semester));
+            article.description.appendChild(generatePTag("Contains", course.notesAuthored + " note".pluralize(course.notesAuthored)));
+
             article.button.innerHTML = "See Course Notes";
             article.button.id = "UA" + i + "_" + course.id;
             article.button.onclick = function() {
@@ -179,9 +182,8 @@ app.manage = {
                 var courseName = this.dataset.courseName;
                 var courseId = this.id.split("_")[1];
                 var button4 = this;
-                // TODO: clean courseName
                 new Modal("Delete Course",
-                    "Are you sure you want to delete the course named: " + courseName +
+                    "Are you sure you want to delete the course named: " + courseName.nescape() +
                     "<br>This <b>CANNOT</b> be undone." +
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='manage_deleteCoursePw'><p></p>", {
                         text: "Yes, DELETE Course",
@@ -216,7 +218,7 @@ app.manage = {
             if(course.sectionStart != course.sectionEnd){
                 section += " to " + (course.sectionEnd + "").padStart(5, "0");
             }
-            new Modal("Course Deleted", course.courseName + " ("+"Section".pluralize(section.length > 5)+" " + section + ") has been deleted successfully.", null, null, "Okay").show();
+            new Modal("Course Deleted", course.courseName.nescape() + " ("+"Section".pluralize(section.length > 5)+" " + section.nescape() + ") has been deleted successfully.", null, null, "Okay").show();
             
             var article = document.getElementById("UA_C_" + course.id);
             article.parentElement.removeChild(article);
@@ -258,13 +260,14 @@ app.manage = {
             if(ua.courseSectionStart != ua.courseSectionEnd){
                 section += " to " + (ua.courseSectionEnd + "").padStart(5, "0");
             }
-            article.description.innerHTML =
-                "<p>Course: " + ua.courseNumber + " (" + ua.courseName + ")</p>" +
-                "<p>" + "Section".pluralize(section.length > 5) +": " + section + "</p>" +
-                "<p>Role: " + ua.role.toProperCase() + "</p>" +
-                "<p>Contains: " + ua.notesAuthored + " note".pluralize(ua.notesAuthored) + "</p>" +
-                "<p>Created On: " + new Date(ua.created).toPrettyDate() + "</p>" +
-                "<p>Expires On: " + new Date(ua.expires_on).toPrettyDate() + "</p>";
+            
+            article.description.appendChild(generatePTag("Course", ua.courseNumber + " (" + ua.courseName + ")"));
+            article.description.appendChild(generatePTag("Section".pluralize(section.length > 5), section));
+            article.description.appendChild(generatePTag("Role", ua.role.toProperCase()));
+            article.description.appendChild(generatePTag("Contains", ua.notesAuthored + " note".pluralize(ua.notesAuthored)));
+            article.description.appendChild(generatePTag("Created On", new Date(ua.created).toPrettyDate()));
+            article.description.appendChild(generatePTag("Expires On", new Date(ua.expires_on).toPrettyDate()));
+
             article.button.innerHTML = "View Notes";
             article.button.id = "UA2" + i + "_" + ua.userId + "_" + ua.courseId;
             article.button.onclick = function(e) {
