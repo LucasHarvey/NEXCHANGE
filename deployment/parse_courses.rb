@@ -102,7 +102,7 @@ courses_ranges.each do |key, value|
             begin
                 Integer(course.section)
             rescue
-                course.section
+                course.section.to_i
             end
         end
         course_group = CourseGroup.new(ordered_courses[0].teacher_name, ordered_courses[0].name, ordered_courses[0].number, ordered_courses[0].section, ordered_courses.last.section)
