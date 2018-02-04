@@ -1,3 +1,17 @@
+<?php
+include_once "v1/_globals.php";
+include_once "v1/_authentication.php";
+
+$priv = getUserPrivilege($token);
+if(isTokenExpired()){
+    header("Location: https://".$GLOBALS['NEXCHANGE_DOMAIN']."/".$GLOBALS['NEXCHANGE_LANDING_PAGES']["NONE"]);
+    exit;
+}
+if($priv != "USER"){
+    header("Location: https://".$GLOBALS['NEXCHANGE_DOMAIN']."/".$GLOBALS['NEXCHANGE_LANDING_PAGES'][$priv]);
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html>
 
