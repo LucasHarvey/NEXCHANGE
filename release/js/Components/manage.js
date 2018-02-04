@@ -4,12 +4,6 @@ var app = app || {
     afterStartup: []
 };
 
-function generatePTag(header, content){
-    let ptag = document.createElement("P");
-    ptag.innerText = header + ": " + content;
-    return ptag;
-}
-
 app.manage = {
     pagesLoaded: 0,
     paginationEnd: false,
