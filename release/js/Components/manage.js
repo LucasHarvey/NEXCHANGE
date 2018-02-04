@@ -147,16 +147,18 @@ app.manage = {
             let article = this._generateArticle(4);
             article.article.id = "UA_C_" + course.id;
             article.header.innerText = course.courseName;
-            //TODO clean all.
+            
             var section =  (course.sectionStart + "").padStart(5, "0");
             if(course.sectionStart != course.sectionEnd){
                 section += " to " + (course.sectionEnd + "").padStart(5, "0");
             }
-            article.description.innerHTML = "<p>Teacher: " + course.teacherFullName + "</p>" +
-                "<p>Course: " + course.courseNumber + "</p>" +
-                "<p>"+"Section".pluralize(section.length > 5)+": " + section + "</p>" +
-                "<p>Semester: " + course.semester + "</p>" +
-                "<p>Contains: " + course.notesAuthored + " note".pluralize(course.notesAuthored) + "</p>";
+            
+            article.description.appendChild(generatePTag("Teacher", course.teacherFullName));
+            article.description.appendChild(generatePTag("Course", course.courseNumber));
+            article.description.appendChild(generatePTag("Section".pluralize(section.length > 5), section));
+            article.description.appendChild(generatePTag("Semester", course.semester));
+            article.description.appendChild(generatePTag("Contains", course.notesAuthored + " note".pluralize(course.notesAuthored)));
+
             article.button.innerHTML = "See Course Notes";
             article.button.id = "UA" + i + "_" + course.id;
             article.button.onclick = function() {
