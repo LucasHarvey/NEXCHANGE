@@ -148,6 +148,8 @@ app.post = function(resource, data, success, failure) {
     // Set the xsrf token in header
     request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.setRequestHeader("content-type", "application/json");
+    // Enable the loading spinner 
+    document.body.classList.add("load");
     request.send(JSON.stringify(data || {}));
     return request;
 };
@@ -158,6 +160,8 @@ app.put = function(resource, data, success, failure, options) {
     // Set the xsrf token in header
     request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.setRequestHeader("content-type", "application/json");
+    // Enable the loading spinner 
+    document.body.classList.add("load");
     request.send(this._generateRequestBody(data));
     return request;
 };
@@ -174,6 +178,8 @@ app.delete = function(resource, data, success, failure, options) {
     // Set the xsrf token in header
     request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.setRequestHeader("content-type", "application/json");
+    // Enable the loading spinner 
+    document.body.classList.add("load");
     request.send();
     return request;
 };
@@ -193,6 +199,8 @@ app.get = function(resource, data, success, failure, options) {
     }
     // Set the xsrf token in header
     request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
+    // Enable the loading spinner 
+    document.body.classList.add("load");
     request.send();
     return request;
 };
@@ -226,8 +234,12 @@ app._generateRequest = function(success, failure, options) {
 
             // Check if the XMLHttpRequest is "OK"
             if (this.status >= 200 && this.status < 300) {
+                // Disable the loading spinner 
+                document.body.classList.remove("load");
                 success(response, this);
             } else {
+                // Disable the loading spinner 
+                document.body.classList.remove("load");
                 let failureFunc = function(resp) {
                     if (!options.disableAuthResult && (this.status == 401 || this.status == 403)) {
                         app.handleAuthError(resp);

@@ -13,6 +13,8 @@ let Resources = {
             let request = app._generateRequest(successCallback, failureCallback, null);
             request.open("PUT", Resources.Password.location);
             request.setRequestHeader("Authorization", "Basic " + window.btoa(code + ":" + password));
+            // Enable the loading spinner 
+            document.body.classList.add("load");
             request.send();
             return request;
         }
@@ -23,6 +25,8 @@ let Resources = {
             let request = app._generateRequest(successCallback, failureCallback, options);
             request.open("POST", Resources.Auth.location);
             request.setRequestHeader("Authorization", "Basic " + window.btoa(studentId + ":" + password));
+            // Enable the loading spinner 
+            document.body.classList.add("load");
             request.send();
             return request;
         },
@@ -156,6 +160,8 @@ let Resources = {
             request.open("POST", this.location);
             request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
             request.upload.onprogress = progressCallback;
+            // Enable the loading spinner 
+            document.body.classList.add("load");
             request.send(formData);
             return request;
         },
@@ -195,6 +201,8 @@ let Resources = {
             request.open("POST", this.location);
             request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
             request.upload.onprogress = progressCallback;
+            // Enable the loading spinner 
+            document.body.classList.add("load");
             request.send(formData);
             return request;
             
@@ -243,6 +251,8 @@ let Resources = {
             request.open("POST", this.location);
             request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
             request.upload.onprogress = progressCallback;
+            // Enable the loading spinner 
+            document.body.classList.add("load");
             request.send(formData);
             return request;
         },

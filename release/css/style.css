@@ -18,6 +18,10 @@ html {
     color: #3f5374;
 }
 
+.load {
+    cursor: wait;
+}
+
 a {
     color: #002b80;
 }
