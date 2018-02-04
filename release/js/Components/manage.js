@@ -4,6 +4,12 @@ var app = app || {
     afterStartup: []
 };
 
+function generatePTag(header, content){
+    let ptag = document.createElement("P");
+    ptag.innerText = header + ": " + content;
+    return ptag;
+}
+
 app.manage = {
     pagesLoaded: 0,
     paginationEnd: false,
@@ -62,11 +68,12 @@ app.manage = {
             let article = this._generateArticle();
             article.article.id = "UA_A_" + user.id;
             article.header.innerText = user.firstName + " " + user.lastName;
-            //TODO clean user email + student id.
-            article.description.innerHTML = "<p>Student ID: " + user.studentId + "</p>" +
-                "<p>Email: " + user.email + "</p>" +
-                "<p>Author of: " + user.notesAuthored + " note".pluralize(user.notesAuthored) + "</p>" +
-                "<p>User Created On: " + (new Date(user.created)).toPrettyDate() + "</p>";
+            
+            article.description.appendChild(generatePTag("Student ID", user.studentId));
+            article.description.appendChild(generatePTag("Email", user.email));
+            article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
+            article.description.appendChild(generatePTag("User Created On", (new Date(user.created)).toPrettyDate()));
+            
             article.button.innerHTML = "See Student Notes";
             article.button.id = "UA" + i + "_" + user.id;
             article.button.onclick = function() {
