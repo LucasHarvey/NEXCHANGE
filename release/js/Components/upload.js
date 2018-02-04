@@ -112,8 +112,6 @@ app.postNotes = {
         }
         let name = document.getElementById('noteName').value;
         let description = document.getElementById('description').value;
-        
-        // TODO XSS ESCAPING!
 
         // Add check that name is present
         if (!name) {
