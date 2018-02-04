@@ -99,8 +99,6 @@ app.addCourses = {
             app.handleFailure({ messageCode: "NoFilesUploaded" });
             return;
         }
-        
-        // TODO XSS ESCAPING!
 
         let seasonSelector = document.getElementById("season");
         var season = seasonSelector.value;
