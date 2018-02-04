@@ -26,6 +26,6 @@ database_update($conn, $update, "ss", array($token, $user["id"]));
 include_once("../_EMAIL_TASKS/reset_password_task.php");
 reset_password_email($conn, $user['id'], $user['email'], $token);
 
-echoSuccess($conn, "PasswordResetRequested");
+echoSuccess($conn, array("messageCode" => "PasswordResetRequested"));
 
 ?>
