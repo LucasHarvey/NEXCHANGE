@@ -7,33 +7,35 @@ This script will send reminders to notetakers who have not uploaded any notes fo
 */
 $NOTETAKER_REMINDER_DAYS = 7;
 echo "/==================NEXCHANGE EMAIL TASK=================\\".PHP_EOL;
-echo "Sending Email Task running...".PHP_EOL;
+echo "Reminder Email Task Running...".PHP_EOL;
 if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! Only allow this script to run from the commandline.
                                 //We are not checking for credentials but we expect commandline is secure. If an intruder has cmd access
                                 //Everything is vulnerable
     $conn = database_connect();
-    
-    $users = "SELECT c.id, c.course_name, c.course_number, u.email 
-        FROM courses c INNER JOIN user_access ua ON c.id=ua.course_id
-            INNER JOIN users u ON ua.user_id = u.id 
-        WHERE ua.role='NOTETAKER'";
         
-    //Course added within 7 days
-    //If empty, notify user id.
-    $notesWithin7Days = "SELECT * FROM notes WHERE DATE_ADD(created, INTERVAL $NOTETAKER_REMINDER_DAYS DAY) > NOW() ORDER BY created DESC";
-    $courseWithin7Days = "SELECT * FROM $notesWithin7Days as n GROUP BY n.course_id";
-        
-    $latestNotes = "SELECT * FROM users u LEFT INNER JOIN ($coursesWithin7Days) as nc ON u.id=nc.user_id";
+    $notesWithin7Days = "SELECT n.user_id, n.course_id FROM notes n WHERE DATE_ADD(created, INTERVAL $NOTETAKER_REMINDER_DAYS DAY) > NOW() ORDER BY created DESC";
+    $coursesWithin7Days = "SELECT n.user_id, n.course_id FROM ($notesWithin7Days) n GROUP BY n.course_id,n.user_id";
+    $selectUsers = "SELECT u.id,u.email,u.first_name,u.last_name,c.course_name,c.course_number ".
+                    "FROM user_access ua INNER JOIN users u ON ua.user_id = u.id INNER JOIN courses c ON ua.course_id=c.id ".
+                    "WHERE ua.role='NOTETAKER' AND (ua.user_id, ua.course_id) NOT IN ($notesWithin7Days)";
     
+    $usersAndCourses = database_get_all($conn, $selectUsers, "", array());
+    
+    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/upload.html";
     $subject = 'No-Reply: NEXCHANGE - Reminder to Upload Notes';
-    $message = 'Hello '.$user['first_name'].' '.$user['last_name'].",\n\nThis is a reminder that you haven't uploaded any notes to NEXCHANGE in 7 days";
     
-    foreach ($users as $user) {
+    foreach ($usersAndCourses as $user) {
+        $message = 'Hello '.$user['first_name'].' '.$user['last_name'].
+            ",\n\nThis is a reminder that you haven't uploaded any notes to NEXCHANGE for a course you're registered in.".
+            "\n\nYou've reached $NOTETAKER_REMINDER_DAYS without uploading notes for ".$user['course_number'] . "(".$user['course_name'].").".
+            "\n\nYou can upload notes at: ".$link;
+            
+        //echo "Sending email to ".$user['email']. " because of ".$user['course_name'].PHP_EOL;
+        
         send_email($conn, $user['id'], $user['email'], $subject, $message);
     }
-    
-    echo "Emails sent.".PHP_EOL;
+    echo count($usersAndCourses)." reminders sent.".PHP_EOL;
 }
-echo "Email Task Ran.".PHP_EOL;
+echo "Reminder Email Task Ran.".PHP_EOL;
 echo "\\==================NEXCHANGE EMAIL TASK=================/".PHP_EOL;
 ?>
