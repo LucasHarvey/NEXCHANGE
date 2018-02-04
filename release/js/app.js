@@ -226,6 +226,9 @@ app._generateRequest = function(success, failure, options) {
     xmlhttp.addEventListener('readystatechange', function() {
         // Check if the XMLHttpRequest is finished and response is ready
         if (this.readyState === 4) {
+            
+            // Disable the loading spinner 
+            document.body.classList.remove("load");
 
             var response = this.response;
             //Check if the content type is json
@@ -234,12 +237,8 @@ app._generateRequest = function(success, failure, options) {
 
             // Check if the XMLHttpRequest is "OK"
             if (this.status >= 200 && this.status < 300) {
-                // Disable the loading spinner 
-                document.body.classList.remove("load");
                 success(response, this);
             } else {
-                // Disable the loading spinner 
-                document.body.classList.remove("load");
                 let failureFunc = function(resp) {
                     if (!options.disableAuthResult && (this.status == 401 || this.status == 403)) {
                         app.handleAuthError(resp);
