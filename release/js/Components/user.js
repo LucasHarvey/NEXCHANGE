@@ -60,7 +60,7 @@ app.user = {
                             text: "Okay",
                             // Callback for the modal which tells the user that password update failed
                             callback: function() {
-                                location.assign("./settings.html");
+                                location.assign("./settings");
                             }
                         };
                         
@@ -97,11 +97,11 @@ app.user = {
             app.store("authToken", null);
             app.store("navbar", null);
             app.store("login_nextLocation", null);
-            location.assign("./login.html");
+            location.assign("./login");
         }, function(data) {
             if (data.statusCode == 401 || data.statusCode == 403) {
                 console.warn("Already signed out...");
-                location.assign("./login.html");
+                location.assign("./login");
                 return;
             }
             new Modal("Error", "You could not be signed out because: " + MessageCode[data.messageCode], null, { text: "Okay" }).show();

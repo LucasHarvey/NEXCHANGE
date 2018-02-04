@@ -11,7 +11,7 @@ function notify_note_upload_email_task($conn, $users, $noteId){
     
     $users = database_get_all($conn, "SELECT u.id, u.email FROM users u INNER JOIN user_access ua ON ua.user_id = u.id WHERE ua.course_id=? AND role='STUDENT'", "s", $note['course_id']);
     
-    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/home.html";
+    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/home";
     
     $subject = 'No-Reply: NEXCHANGE - Notes Uploaded';
     $message = "New notes were uploaded by a note taker.\n\nNote Details\n\nName: ".$note['name'].
