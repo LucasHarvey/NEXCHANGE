@@ -190,7 +190,7 @@ app.manage = {
                 var button4 = this;
                 // TODO: clean courseName
                 new Modal("Delete Course",
-                    "Are you sure you want to delete the course named: " + courseName +
+                    "Are you sure you want to delete the course named: " + courseName.nescape() +
                     "<br>This <b>CANNOT</b> be undone." +
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='manage_deleteCoursePw'><p></p>", {
                         text: "Yes, DELETE Course",
