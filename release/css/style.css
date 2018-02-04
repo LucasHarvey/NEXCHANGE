@@ -548,6 +548,9 @@ body {
             justify-content: center;
 
     margin: 0;
+    
+    min-height: 100%!important;
+    overflow: hidden;
 }
 
 body>header {
@@ -1089,7 +1092,7 @@ td {
 	z-index: -1;
 }
 
-.inputfile + label {
+.inputFile+label {
  
     color: #FFFFFF;
     background-color: #3f5374;
@@ -1105,11 +1108,11 @@ td {
     text-align: center;
 }
 
-.inputfile + label:hover {
+.inputFile + label:hover {
     opacity: 0.85;
 }
 
-.inputfile:focus + label {
+.inputFile:focus + label {
 	outline: 1px dotted #000;
 	outline: -webkit-focus-ring-color auto 5px;
 }
