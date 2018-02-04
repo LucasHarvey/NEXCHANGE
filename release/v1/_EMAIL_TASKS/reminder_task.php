@@ -10,6 +10,7 @@ This script will send reminders to notetakers who have not uploaded any notes fo
 $NOTETAKER_REMINDER_DAYS = 7;
 echo "/==================NEXCHANGE EMAIL TASK=================\\".PHP_EOL;
 echo "Reminder Email Task Running...".PHP_EOL;
+echo "Date: ".datetime().PHP_EOL;
 if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! Only allow this script to run from the commandline.
                                 //We are not checking for credentials but we expect commandline is secure. If an intruder has cmd access
                                 //Everything is vulnerable
