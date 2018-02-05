@@ -352,7 +352,6 @@ button.warning, .button.warning {
     color: #EEEEEE;
 }
 
-/* Change the white to any color ;) */
 .login input:-webkit-autofill {
     background-color: rgba(89, 89, 89, 0.6);
 }
