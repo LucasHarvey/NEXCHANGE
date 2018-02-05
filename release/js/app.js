@@ -148,6 +148,8 @@ app.post = function(resource, data, success, failure) {
     // Set the xsrf token in header
     request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.setRequestHeader("content-type", "application/json");
+    // Enable the loading spinner 
+    document.body.classList.add("load");
     request.send(JSON.stringify(data || {}));
     return request;
 };
@@ -158,6 +160,8 @@ app.put = function(resource, data, success, failure, options) {
     // Set the xsrf token in header
     request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.setRequestHeader("content-type", "application/json");
+    // Enable the loading spinner 
+    document.body.classList.add("load");
     request.send(this._generateRequestBody(data));
     return request;
 };
@@ -174,6 +178,8 @@ app.delete = function(resource, data, success, failure, options) {
     // Set the xsrf token in header
     request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
     request.setRequestHeader("content-type", "application/json");
+    // Enable the loading spinner 
+    document.body.classList.add("load");
     request.send();
     return request;
 };
@@ -193,6 +199,8 @@ app.get = function(resource, data, success, failure, options) {
     }
     // Set the xsrf token in header
     request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
+    // Enable the loading spinner 
+    document.body.classList.add("load");
     request.send();
     return request;
 };
@@ -218,6 +226,9 @@ app._generateRequest = function(success, failure, options) {
     xmlhttp.addEventListener('readystatechange', function() {
         // Check if the XMLHttpRequest is finished and response is ready
         if (this.readyState === 4) {
+            
+            // Disable the loading spinner 
+            document.body.classList.remove("load");
 
             var response = this.response;
             //Check if the content type is json
