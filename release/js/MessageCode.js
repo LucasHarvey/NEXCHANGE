@@ -96,7 +96,7 @@ let MessageCode = {
     NoNotesForUser: "There are no notes available to you.",
     CourseExtensionUnauthorized: "Extension of course file provided is not allowed. Allowed extensions are: <ul><li>.csv</li></ul>",
     NoteExtensionUnauthorized: "Note extension is not allowed. Allowed extensions are: "
-    + "<ul><li>.pdf</li><li>.docx</li><li>.doc</li><li>.pptx</li><li>.ppt</li><li>.xlsx</li><li>.jpeg</li><li>.jpg</li><li>.png</li><li>.txt</li><li>zip</li></ul>",
+    + "<ul><li>.pdf</li><li>.docx</li><li>.doc</li><li>.pptx</li><li>.ppt</li><li>.xlsx</li><li>.csv</li><li>.jpeg</li><li>.jpg</li><li>.png</li><li>.txt</li><li>zip</li></ul>",
     NoFilesForNote: "No files are attached to this note package.",
     FileIsTooBig: "The selected file is too large.",
     UnknownFileUploadError: "An unknown error occured when uploading a file.",
