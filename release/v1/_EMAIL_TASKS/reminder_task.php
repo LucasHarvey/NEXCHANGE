@@ -35,7 +35,7 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
             
         //echo "Sending email to ".$user['email']. " because of ".$user['course_name'].PHP_EOL;
         
-        send_email($conn, 2, $user['id'], $user['email'], $subject, $message);
+        send_email($conn, 2, $user['id'], $user['email'], $subject, $message, true);
     }
     echo count($usersAndCourses)." reminders sent.".PHP_EOL;
 }
