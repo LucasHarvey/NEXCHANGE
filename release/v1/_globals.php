@@ -1,5 +1,4 @@
 <?php
-
 $GLOBALS['PAGE_SIZES'] = 20; //used for pagination
 $GLOBALS['NEXCHANGE_DOMAIN'] = "nexchange-git-zacky1.c9users.io"; //used for cookie access
 $GLOBALS['NEXCHANGE_SECRET'] = "F/|wL~[M%@r],d;xL+GMLB_8X?fx8xhpM1~5|*xU_?K[+f8<lzCio+'7'~kv[e<";
