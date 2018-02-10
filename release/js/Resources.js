@@ -37,7 +37,7 @@ let Resources = {
         },
         DELETEALL: function(successCallback, failureCallback) {
             return app.delete({
-                    location: "v1/auth_all.php"
+                    location: "v1/authall.php"
                 },
                 null,
                 successCallback,
@@ -183,7 +183,7 @@ let Resources = {
     },
     
     NotesEdit: {
-        location: "v1/notesEdit.php",
+        location: "v1/notesedit.php",
         POST: function(noteId, name, description, takenOn, files, successCallback, failureCallback, progressCallback) {
             if (!noteId || (!name && !description && !takenOn && !files)) return; //Nothing to change or no noteid
             var formData = new FormData();
@@ -210,7 +210,7 @@ let Resources = {
     },
 
     Files: {
-        location: "v1/noteFiles.php",
+        location: "v1/notefiles.php",
         GET: function(noteId, progressCallback, successCallback, failureCallback) {
             let data = { noteId: noteId };
             let options = {
@@ -283,7 +283,7 @@ let Resources = {
     },
 
     Navbar: {
-        location: "v1/_navbar.php",
+        location: "v1/navbar.php",
         GET: function(successCallback, failureCallback) {
             return app.get(Resources.Navbar, null, successCallback, failureCallback);
         }
