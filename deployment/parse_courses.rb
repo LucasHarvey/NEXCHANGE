@@ -4,6 +4,7 @@ require 'date'
 
 class CourseGroup
     attr_reader :teacher_name, :name, :number, :section_start, :section_end
+    attr_writer :section_end
     def initialize(tname, name, number, sec_start, sec_end)
         @teacher_name = tname
         @name = name
@@ -89,14 +90,14 @@ end
 
 courses_ranges = Array.new
 courses_ranges = unparsed_courses.group_by do |course|
-    [course.number, course.teacher_name, course.type[0], course.time_slot]
+    [course.number, course.teacher_name, course.section]
 end
 
-courses = Array.new
+sec_courses = Array.new
 courses_ranges.each do |key, value|
     if(!(value.kind_of?(Array)))
         course_group = CourseGroup.new(value.teacher_name, value.name, value.number, value.section, value.section)
-        courses.push(course_group)
+        sec_courses.push(course_group)
     else
         ordered_courses = value.sort_by do |course|
             begin
@@ -106,7 +107,33 @@ courses_ranges.each do |key, value|
             end
         end
         course_group = CourseGroup.new(ordered_courses[0].teacher_name, ordered_courses[0].name, ordered_courses[0].number, ordered_courses[0].section, ordered_courses.last.section)
-        courses.push(course_group)
+        sec_courses.push(course_group)
+    end
+end
+
+courses = Array.new
+current_courseGroup = sec_courses.shift
+
+for i in 0..sec_courses.length do
+    course = sec_courses[i]
+    
+    if(current_courseGroup.teacher_name == course.teacher_name && current_courseGroup.number == course.number)
+        if(current_courseGroup.section_end.to_i == course.section_end.to_i - 1)
+            current_courseGroup.section_end = course.section_end
+        else
+            courses.push(current_courseGroup)
+            current_courseGroup = course
+            i += 1
+        end
+    else
+        courses.push(current_courseGroup)
+        current_courseGroup = course
+        i += 1
+    end
+    
+    if(i + 1 >= sec_courses.length)
+        courses.push(current_courseGroup)
+        break
     end
 end
 
