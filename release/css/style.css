@@ -353,7 +353,8 @@ button.warning, .button.warning {
 }
 
 .login input:-webkit-autofill {
-    background-color: rgba(89, 89, 89, 0.6);
+    -webkit-box-shadow: 0 0 0px 1000px rgba(89, 89, 89, 0.6) inset;
+    -webkit-text-fill-color: #CCCCCC !important;
 }
 
 .login input::-webkit-input-placeholder {
