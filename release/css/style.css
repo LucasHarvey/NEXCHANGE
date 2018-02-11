@@ -357,6 +357,7 @@ button.warning, .button.warning {
     -webkit-text-fill-color: #CCCCCC !important;
 }
 
+
 .login input::-webkit-input-placeholder {
     color: #CCCCCC;
 }
