@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,generateDeleteConfirmationModal,debounce,location */
+/* global Resources,MessageCode,Modal,generateDeleteConfirmationModal,debounce,location,generatePTag */
 var app = app || {
     startup: [],
     afterStartup: []
