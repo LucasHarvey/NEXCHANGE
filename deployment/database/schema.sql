@@ -93,7 +93,7 @@ CREATE TABLE notefiles (
     note_id CHAR(36) NOT NULL,
     file_name VARCHAR(100) NOT NULL,
     storage_name VARCHAR(100) NOT NULL,
-    type VARCHAR(30),
+    type VARCHAR(350),
     size int(11),
     md5 CHAR(32) NOT NULL, -- MD5s are always 32 chars.
 
