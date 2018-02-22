@@ -23,7 +23,7 @@ $token = bin2hex(openssl_random_pseudo_bytes($length, $true));
 $update = "UPDATE users SET passresetcode=?, passresetcreated=NOW() WHERE id=? LIMIT 1";
 database_update($conn, $update, "ss", array($token, $user["id"]));
 
-include_once("../_EMAIL_TASKS/reset_password_task.php");
+include_once("./_EMAIL_TASKS/reset_password_task.php");
 reset_password_email($conn, $user['id'], $user['email'], $token);
 
 echoSuccess($conn, array("messageCode" => "PasswordResetRequested"));
