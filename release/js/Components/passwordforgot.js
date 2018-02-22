@@ -18,7 +18,7 @@ app.passwordForgot = {
             text: "Okay",
             callback: logoutFunction
         };
-        new Modal("Password Reset Requested", MessageCode[response.messageCode], successData, false).show();
+        new Modal("Password Reset Requested", MessageCode[response.payload.messageCode], successData, false).show();
     },
     
     failure: function(response){
