@@ -75,7 +75,7 @@ if(!$result){
 	// Delete the file from the server
 	if(file_exists($storageName))
 		unlink($storageName);
-	echoError($conn, 500, "UnknownFileUploadError");
+	echoError($conn, 500, "DatabaseInsertError");
 }
 
 $users_Notified = database_get_all($conn, 
