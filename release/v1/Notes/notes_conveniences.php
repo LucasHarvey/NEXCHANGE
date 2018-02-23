@@ -34,7 +34,7 @@ function moveFiles(){
 				
 				// Move the temporary file to the Files folder
 			    move_uploaded_file($tmp, $storageName);
-			    
+			
 			    // Ensure that file name is 100 characters or less
 			    if(strlen($fileName) > 100){
 		            $ext = getExtension($fileName);
@@ -43,6 +43,8 @@ function moveFiles(){
 		            // Rename the file by truncating the file name such that strlen($fileName . $ext) = 100
 		            $fileName = substr($fileName,0,$lenLeft) . $ext;
 			    }
+			    
+			    cleanFileName($fileName);
 			    
 			    // Add the name and md5 of the file to the succeeded array (using the original name)
 			    array_push($succeeded, array(
@@ -71,8 +73,20 @@ function moveFiles(){
 			    $storageName = uniqid().".zip";
 			}while(file_exists("./Files/".$storageName));
 			
-			// Keep the same name to insert into db before modifiying $storageName with rel path
-			$fileName = $storageName;
+			// Use the name of the first file as the note name for the zip
+			$fileName = $files['name'][0];
+			
+			// Cut the name to proper size to avoid extension being truncated
+			if(strlen($fileName) > 100){
+		            $ext = getExtension($fileName);
+		            // Calculate the amount of characters left excluding the extension
+		            $lenLeft = 100 - strlen($ext);
+		            // Rename the file by truncating the file name such that strlen($fileName . $ext) = 100
+		            $fileName = substr($fileName,0,$lenLeft) . $ext;
+			}
+			
+			// Clean the name to remove forbidden characters
+			$fileName = cleanFileName($fileName, true);
 			
 			// Add the proper directory (added here because we need to add the uuid in front of $storageName)
 			$storageName = "./Files/" . $storageName;
@@ -180,6 +194,19 @@ function getExtension($fileName){
     $ext = strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
     
     return ".".$ext;
+}
+
+function cleanFileName($fileName, $zip=false){
+	$fileDotSeparated = explode('.', $fileName); 
+    $newFileName = "";
+	for($i=0;$i<(count($fileDotSeparated)-1); $i++){
+		// Use the name of the first file as the zip name
+		$newFileName .= preg_replace("/[^a-zA-Z0-9._]+/", "", $fileDotSeparated[$i]);
+	}
+	if($zip){
+		return $newFileName .= ".zip";
+	}
+	return $newFileName . strtolower(end($fileDotSeparated)); 
 }
 
 
