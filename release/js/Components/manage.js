@@ -318,6 +318,13 @@ app.manage = {
         if (year == "") year = null;
         if (season == "allSemesters") season = null;
         var formattedSemester = "";
+        
+        if(season && !year){
+            new Modal("Error", MessageCode["MissingArgumentYear"], null, {
+                    text: "Okay"
+                }).show();
+                return;
+        }
 
         if (season || year) {
 
