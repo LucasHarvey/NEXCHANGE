@@ -77,7 +77,7 @@ app.home = {
             uploadNoteButton.onclick = function(e) {
                 var id = e.target.id.replace("upload_", "");
                 app.store("uploadNotesCourseId", id);
-                location.assign("./upload.html");
+                location.assign("./upload");
             };
             courseDiv.appendChild(uploadNoteButton);
         } else {
@@ -189,7 +189,7 @@ app.home = {
             editNoteBtn.addEventListener("click", function(e) {
                 let noteId = this.id.slice(0, -5);
                 app.store("editNoteNoteId", noteId);
-                location.assign("./edit.html");
+                location.assign("./edit");
             });
             articleSection.appendChild(editNoteBtn);
         }

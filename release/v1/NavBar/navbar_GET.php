@@ -10,27 +10,27 @@ function getNavbarItems($conn, $token = null){
     if(getUserPrivilege($token) == "ADMIN"){
         $signup = array(
             "content" => "SIGN UP NEW USER",
-            "url" => "./signup.html"
+            "url" => "./signup"
         );
         
         $userAccess = array(
             "content" => "GRANT USER ACCESS",
-            "url" => "./userAccess.html"
+            "url" => "./userAccess"
         );
         
         $addCourse = array(
             "content" => "ADD COURSES",
-            "url" => "./addCourses.html"
+            "url" => "./addCourses"
         );
         
         $manageNotes = array(
             "content" => "MANAGE SYSTEM",
-            "url" => "./manage.html"
+            "url" => "./manage"
         );
             
         $settings = array(
             "content" => "MY PROFILE",
-            "url" => "./settings.html"
+            "url" => "./settings"
         );
         
         return array($signup, $userAccess, $addCourse, $manageNotes, $settings);
@@ -42,14 +42,14 @@ function getNavbarItems($conn, $token = null){
     
     array_push($baseNavigation, array(
         "content" => "HOME",
-        "url" => "./home.html"
+        "url" => "./home"
     ));
     
     foreach ($userAccesses as $item){
         if($item["role"] == "NOTETAKER"){
             array_push($baseNavigation, array(
                 "content" => "UPLOAD NOTES",
-                "url" => "./upload.html"
+                "url" => "./upload"
             ));
             break;
         }
@@ -57,12 +57,12 @@ function getNavbarItems($conn, $token = null){
     
      array_push($baseNavigation, array(
         "content" => "MY COURSES",
-        "url" => "./courses.html"
+        "url" => "./courses"
     ));
     
     array_push($baseNavigation, array(
         "content" => "MY PROFILE",
-        "url" => "./settings.html"
+        "url" => "./settings"
     ));
     
     return $baseNavigation;

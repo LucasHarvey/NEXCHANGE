@@ -10,7 +10,7 @@ function temporary_password_email($conn, $userid, $email, $token){
         echoError(null, 500, "InternalServerError", "No token sent to temporary password task.");
     }
     
-    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/login.html";
+    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/login";
     
     $subject = 'No-Reply: NEXCHANGE Account Created';
     $message = "Your NEXCHANGE account was created!\n Your login ID is your student ID, and your temporary password is: $token\n You can login at: $link";
