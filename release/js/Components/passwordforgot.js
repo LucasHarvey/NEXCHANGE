@@ -12,7 +12,7 @@ app.passwordForgot = {
         document.getElementById('userData').addEventListener('submit', app.passwordForgot.submit);
         
         let logoutFunction = function() {
-            location.assign("./login.html");
+            location.assign("./login");
         };
         let successData = {
             text: "Okay",

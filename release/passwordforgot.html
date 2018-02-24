@@ -22,7 +22,7 @@
 
     <!-- Header -->
     <header class="header">
-        <a class="logo" href="./login.html"><img src="./img/jac_logo.png" alt="John Abbott Logo"></a>
+        <a class="logo" href="./login"><img src="./img/jac_logo.png" alt="John Abbott Logo"></a>
     </header>
 
     <div>
@@ -63,7 +63,7 @@
     <footer>
         <img src="./img/nexchange_official_logo.png" alt="Nexchange Logo">
         <div>
-            <small><a href="./license.html">&copy; Copyright 2018 Lucas Harvey All Rights Reserved</a></small>
+            <small><a href="./license">&copy; Copyright 2018 Lucas Harvey All Rights Reserved</a></small>
             <small>Created in collaboration with Zackary Therrien</small>
         </div>
     </footer>

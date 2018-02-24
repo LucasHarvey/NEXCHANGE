@@ -63,7 +63,7 @@ app.courses = {
             uploadNoteButton.onclick = function(e) {
                 var id = e.target.id.replace("upload_", "");
                 app.store("uploadNotesCourseId", id);
-                location.assign("./upload.html");
+                location.assign("./upload");
             };
             course.appendChild(uploadNoteButton);
         } else {
