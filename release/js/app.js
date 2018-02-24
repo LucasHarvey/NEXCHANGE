@@ -118,7 +118,7 @@ app.handleAuthError = function(response) {
                 app.store("login_nextLocation", null);
             }
             // Redirect the user to the login page
-            window.location = "./login.html";
+            window.location = "./login";
         };
         // Delete the user's JWT and xsrf token (this is necessary because of HTTPOnly)
         Resources.Auth.DELETE(f, f, true);
