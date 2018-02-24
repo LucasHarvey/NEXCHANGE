@@ -82,15 +82,16 @@ app.postNotes = {
         uploadDiv.innerText = '';
 
         if (successes.length) {
-            succeededDiv.innerHTML = '<p>Uploaded file'.pluralize(successes.length) + ':</p><ul>';
+            succeededDiv.innerHTML = '<p>Uploaded file'.pluralize(successes.length) + ':</p>';
+            let list = document.createElement("UL");
             for (var x = 0; x < successes.length; x++) {
                 let listItem = document.createElement('li');
                 let span = document.createElement('span');
                 span.innerText = successes[x].name; //+ " - MD5: " + successes[x].md5;
                 listItem.appendChild(span);
-                succeededDiv.appendChild(listItem);
+                list.appendChild(listItem);
             }
-            succeededDiv.innerHTML += "</ul>"
+            succeededDiv.appendChild(list);
         }
 
         uploadDiv.appendChild(succeededDiv);
