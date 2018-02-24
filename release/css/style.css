@@ -156,6 +156,8 @@ button.warning, .button.warning {
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column;
+            
+    max-width: 100%!important;
 }
 
 .userfield {
@@ -1124,6 +1126,9 @@ td {
 
 /* End of file input styling */
 
+.uploads {
+    max-width: 100%!important;
+}
 
 .uploadSuccess {
     border: 1px solid #CCCCCC;
@@ -1134,6 +1139,13 @@ td {
     font-weight: bold;
     margin-top: 0px;
     margin-bottom: 5px;
+}
+.uploadSuccess>ul>li {
+    height: auto;
+}
+
+.uploadSuccess>ul>li>span {
+    word-wrap:break-word;
 }
 
 /* 
