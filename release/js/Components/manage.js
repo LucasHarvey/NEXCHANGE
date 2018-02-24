@@ -68,7 +68,7 @@ app.manage = {
             article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
             article.description.appendChild(generatePTag("User Created On", (new Date(user.created)).toPrettyDate()));
             
-            article.button.innerHTML = "See Student Notes";
+            article.button.innerHTML = "View Student Notes";
             article.button.id = "UA" + i + "_" + user.id;
             article.button.onclick = function() {
                 var studentId = this.id.split("_")[1];
@@ -153,7 +153,7 @@ app.manage = {
             article.description.appendChild(generatePTag("Semester", course.semester));
             article.description.appendChild(generatePTag("Contains", course.notesAuthored + " note".pluralize(course.notesAuthored)));
 
-            article.button.innerHTML = "See Course Notes";
+            article.button.innerHTML = "View Course Notes";
             article.button.id = "UA" + i + "_" + course.id;
             article.button.onclick = function() {
                 var courseId = this.id.split("_")[1];
@@ -326,12 +326,12 @@ app.manage = {
                 return;
         }
 
-        if (season || year) {
+         if (season || year) {
 
-            if (isNaN(year) || year % 1 != 0 || year<0) {
-                new Modal("Error", year + " is not a valid year.", null, {
-                    text: "Okay"
-                }).show();
+             if (isNaN(year) || year % 1 != 0 || year<0) {
+                 new Modal("Error", year + " is not a valid year.", null, {
+                     text: "Okay"
+                 }).show();
                 return;
             }
 
