@@ -21,8 +21,8 @@ function notify_note_upload_email_task($conn, $users, $noteId){
     
     $resp = array();
     foreach ($users as $user) {
-        $re = send_email($conn, 1, $user['id'], $user['email'], $subject, $message);
-        array_push($resp, array($user['id'], $re));
+        send_email($conn, 1, $user['id'], $user['email'], $subject, $message, true);
+        array_push($resp, array($user['id'], true));
     }
     return $resp;
 }
