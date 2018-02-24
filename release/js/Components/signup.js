@@ -21,7 +21,7 @@ app.signup = {
             text: "Grant User Access",
             callback: function() {
                 app.store("userAccessLoginId", data.payload.loginId); //Prepopulate id field in user access
-                location.assign("userAccess.html");
+                location.assign("./userAccess");
             }
         };
         new Modal("User Created", modalContent, confirmButton, {

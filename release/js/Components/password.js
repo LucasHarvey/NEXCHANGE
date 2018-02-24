@@ -12,7 +12,7 @@ app.password = {
         
         
         let logoutFunction = function() {
-            location.assign("./login.html");
+            location.assign("./login");
         };
         let successData = {
             text: "Okay",
