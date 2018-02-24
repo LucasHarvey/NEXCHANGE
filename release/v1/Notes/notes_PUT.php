@@ -53,18 +53,27 @@ $succeeded = array();
 
 include_once("./Notes/notes_conveniences.php");
 
-//Verify all note extensions are allowed and file size is appropriate
-validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
+$fileName = "";
+$storageName = "";
+$fileType = "";
+$fileSize = "";
+$md5 = "";
+$succeeded = "";
+    
+if(!empty($_FILES['file'])){
+    //Verify all note extensions are allowed and file size is appropriate
+    validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
 
-// Move the note files onto the server and retrieve the note data
-$noteData = moveFiles();
-
-$fileName = $noteData[0];
-$storageName = $noteData[1];
-$fileType = $noteData[2];
-$fileSize = $noteData[3];
-$md5 = $noteData[4];
-$succeeded = $noteData[5];
+    // Move the note files onto the server and retrieve the note data
+    $noteData = moveFiles();
+    
+    $fileName = $noteData[0];
+    $storageName = $noteData[1];
+    $fileType = $noteData[2];
+    $fileSize = $noteData[3];
+    $md5 = $noteData[4];
+    $succeeded = $noteData[5];
+}
 
 // Update the note information 
 if(!empty($changes)){
@@ -97,23 +106,26 @@ if($note == null){
 	echoError($conn, 500, "DatabaseUpdateError");
 }
 
-// Retrieve the old storage name for the file
-$oldStorageName = retrieveStorageName($conn, $note["id"]);
+if(!empty($_FILES['file'])){
+    // Retrieve the old storage name for the file
+    $oldStorageName = retrieveStorageName($conn, $note["id"]);
+    
+    // Update the file information in the database
+    $result = updateNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
+    
+    // If the update failed, delete the most recent file
+    if(!$result){
+        if(file_exists($storageName))
+            unlink($storageName);
+        echoError($conn, 500, "DatabaseUpdateError");
+    } 
+    
+    // Delete the old file
+    if(!file_exists($oldStorageName) || !unlink($oldStorageName)){
+        echoError($conn, 404, "NoteFileDeleteFailure");
+    }
+}
 
-// Update the file information in the database
-$result = updateNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
-
-// If the update failed, delete the most recent file
-if(!$result){
-	// Delete the most recent file from the server
-    if(file_exists($storageName))
-        unlink($storageName);
-	echoError($conn, 500, "DatabaseUpdateError");
-} 
-
-// Delete the old file
-if(!file_exists($oldStorageName) || !unlink($oldStorageName));
-    echoError($conn, 404, "NoteFileDeleteFailure");
 
 if(!database_commit($conn)){
 	if(!database_rollback($conn)){
