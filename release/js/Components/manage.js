@@ -427,6 +427,23 @@ app.manage = {
             }
             app.manage._generateUserAccess(container, data.payload.useraccesses);
         }
+        
+        // Empty the search fields: 
+        document.getElementById('studentName').value = "";
+        document.getElementById('studentId').value = "";
+        document.getElementById('courseName').value = "";
+        document.getElementById("courseNumber").value = "";
+        document.getElementById("section").value = "";
+        document.getElementById("teacherFullName").value = "";
+        document.getElementById("season").selectedIndex = 0;
+        var yearInput = document.getElementById("year");
+        yearInput.value = "";
+        yearInput.placeholder = "All Years";
+        yearInput.readOnly = true;
+        yearInput.classList.add("noHighlight");
+        document.getElementById("ua_courseName").value = "";
+        document.getElementById("ua_courseNumber").value = "";
+        document.getElementById("ua_studentId").value = "";
     },
     
     searchFailure: function(response){
@@ -532,12 +549,12 @@ app.manage = {
             yearInput.placeholder = "All Years";
             yearInput.value = "";
             yearInput.readOnly = true;
-            yearInput.classList.toggle("noHighlight");
+            yearInput.classList.add("noHighlight");
         } else if (!yearInput.value) {
             yearInput.readOnly = false;
             yearInput.value = "";
             yearInput.placeholder = "Please enter a year";
-            yearInput.classList.toggle("noHighlight");
+            yearInput.classList.remove("noHighlight");
         }
 
     },
