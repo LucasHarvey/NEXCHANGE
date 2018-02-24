@@ -24,7 +24,7 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
     
     $usersAndCourses = database_get_all($conn, $selectUsers, "", array());
     
-    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/upload.html";
+    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/upload";
     $subject = 'No-Reply: NEXCHANGE - Reminder to Upload Notes';
     
     foreach ($usersAndCourses as $user) {

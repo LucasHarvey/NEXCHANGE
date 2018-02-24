@@ -81,7 +81,7 @@ app.editCourse = {
         new Modal("Course Updated", MessageCode["CourseEdited"], {
             text: "Back To Home Page",
             callback: function() {
-                location.assign("./signup.html");
+                location.assign("./signup");
             }
         }).show();
         
@@ -215,7 +215,7 @@ app.afterStartup.push(function editCourseAfterStartup() {
         app.editCourse.courseId = courseId;
         Resources.Courses.GET(courseId, app.editCourse.courseSuccess)
     } else {
-        window.location = "./signup.html";
+        window.location = "./signup";
     }
 });
 
