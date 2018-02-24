@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,getQueryParameterByName,generateDeleteConfirmationModal,debounce */
+/* global Resources,MessageCode,Modal,getQueryParameterByName,generateDeleteConfirmationModal,debounce,generatePTag */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -240,12 +240,33 @@ app.notes = {
         var nc = document.getElementById("notesContainer");
         while (nc.firstChild) nc.removeChild(nc.firstChild);
         app.notes.getNotes();
+    },
+    
+    addOptions: function(){
+        var opt1 = document.createElement("OPTION");
+        var opt2 = document.createElement("OPTION");
+        
+        opt1.name = "sortMethod";
+        opt1.value = "noteTakerAscending";
+        opt1.innerText = "Note Taker Last Name A-Z";
+        
+        opt2.name = "sortMethod";
+        opt2.value = "noteTakerDescending";
+        opt2.innerText = "Note Taker Last Name Z-A"
+        
+        document.getElementById("sortDrop").appendChild(opt1);
+        document.getElementById("sortDrop").appendChild(opt2);
+
     }
 };
 
 app.startup.push(function notesStartup() {
     app.notes.studentId = getQueryParameterByName("studentId");
     app.notes.courseId = getQueryParameterByName("courseId");
+    
+    if(!app.notes.studentId){
+       app.notes.addOptions();
+    }
     
     document.body.onscroll = debounce(app.notes.getNotesPaged, 250);
     document.getElementById("sortDrop").addEventListener('change', app.notes.getNotesNewSort);
