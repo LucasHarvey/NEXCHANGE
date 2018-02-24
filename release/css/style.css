@@ -48,6 +48,10 @@ input[type=radio]{
     height: 23px;
 }
 
+input[type=submit] {
+        -webkit-appearance:none;
+}
+
 input:disabled,textarea:disabled,select:disabled {
     opacity: 0.70;
 }
