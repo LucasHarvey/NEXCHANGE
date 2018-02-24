@@ -72,7 +72,7 @@ app.manage = {
             article.button.id = "UA" + i + "_" + user.id;
             article.button.onclick = function() {
                 var studentId = this.id.split("_")[1];
-                location.assign("./notes.html?studentId=" + studentId);
+                location.assign("./notes?studentId=" + studentId);
             };
             article.button2.innerHTML = "Delete Account";
             article.button2.className = "warning";
@@ -157,21 +157,21 @@ app.manage = {
             article.button.id = "UA" + i + "_" + course.id;
             article.button.onclick = function() {
                 var courseId = this.id.split("_")[1];
-                location.assign("./notes.html?courseId=" + courseId);
+                location.assign("./notes?courseId=" + courseId);
             };
             article.button2.innerHTML = "Grant User Access";
             article.button2.id = "Access" + i + "_" + course.id;
             article.button2.onclick = function() {
                 var courseId = this.id.split("_")[1];
                 app.store("grantAccessCourseId", courseId);
-                location.assign("userAccess.html");
+                location.assign("./userAccess");
             };
             
             article.button3.innerHTML = "Modify Course";
             article.button3.id = "Modify" + i + "_" + course.id;
             article.button3.onclick = function(){
                 var courseId = this.id.split("_")[1];
-                location.assign("./editCourse.html?courseId=" + courseId);
+                location.assign("./editCourse?courseId=" + courseId);
             };
             
             article.button4.innerHTML = "Delete Course";
@@ -273,7 +273,7 @@ app.manage = {
             article.button.onclick = function(e) {
                 var userId = this.id.split("_")[1];
                 var courseId = this.id.split("_")[2];
-                location.assign("./notes.html?studentId=" + userId + "&courseId=" + courseId);
+                location.assign("./notes?studentId=" + userId + "&courseId=" + courseId);
             };
             article.button2.innerHTML = "Revoke Access";
             article.button2.className = "warning";

@@ -121,7 +121,7 @@ app.editNote = {
             text: "Back To Home Page",
             callback: function() {
                 app.store("editNoteNoteId", null);
-                location.assign("./home.html");
+                location.assign("./home");
             }
         }).show();
     },
@@ -147,7 +147,7 @@ app.editNote = {
                     new Modal("Delete Note", MessageCode[response.payload.messageCode], null, {
                         text: "Okay",
                         callback: function() {
-                            location.assign("./home.html");
+                            location.assign("./home");
                             this.hide();
                         }
                     }).show();
@@ -229,6 +229,6 @@ app.afterStartup.push(function editNoteAfterStartup() {
         app.editNote.noteId = noteId;
         Resources.Notes.GET_id(noteId, app.editNote.getNote);
     } else {
-        location.assign("./home.html");
+        location.assign("./home");
     }
 });
