@@ -231,6 +231,14 @@ app.postCourseSearch = {
         if (season == "allSemesters") season = null;
         var formattedSemester = "";
         var thisYear = new Date().getFullYear();
+        
+        if(season && !year){
+            new Modal("Error", MessageCode["MissingArgumentYear"], null, {
+                    text: "Okay"
+                }).show();
+                return;
+        }
+        
         if (season || year) {
 
             if (isNaN(year) || year % 1 != 0 || year<0) {
