@@ -346,6 +346,15 @@ app.manage = {
             formattedSemester = season + year;
         }
         
+        app.manage.searchData = {
+            type: "course",
+            tname: teacherName,
+            cname: courseName,
+            cnumber: courseNumber,
+            sec: courseSection,
+            sem: formattedSemester
+        };
+        
         // Disable the search form
         document.getElementById("searchButton").disabled = true;
         document.getElementById("searchData").removeEventListener('submit', app.manage.search);
@@ -355,6 +364,16 @@ app.manage = {
     _searchStudent: function() {
         let name = document.getElementById("studentName").value;
         let studentId = document.getElementById("studentId").value;
+        
+        app.manage.searchData = {
+            type: "student",
+            name: name,
+            studendId: studentId,
+        };
+        
+        // Disable the search form
+        document.getElementById("searchButton").disabled = true;
+        document.getElementById("searchData").removeEventListener('submit', app.manage.search);
 
         Resources.Users.SEARCH(name, studentId, this.pagesLoaded, this.searchSuccess, this.searchFailure);
     },
@@ -362,6 +381,17 @@ app.manage = {
         let courseName = document.getElementById("ua_courseName").value;
         let courseNumber = document.getElementById("ua_courseNumber").value;
         let studentId = document.getElementById("ua_studentId").value;
+        
+        app.manage.searchData = {
+            type: "access",
+            studendId: studentId,
+            cname: courseName,
+            cnumber: courseNumber,
+        };
+        
+        // Disable the search form
+        document.getElementById("searchButton").disabled = true;
+        document.getElementById("searchData").removeEventListener('submit', app.manage.search);
 
         Resources.UserAccess.SEARCH(studentId, courseName, courseNumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
     },
@@ -422,30 +452,55 @@ app.manage = {
         
         this.pagesLoaded = 0;
         this.paginationEnd = false;
-        this.searchPaged(true);
+        this.submitSearch();
     },
     
-    searchPaged: function(forced){
-        let scrollPosition = document.body.scrollTop / ((document.body.scrollHeight - document.body.clientHeight) || 1) ;
-        if(forced === true || (scrollPosition > 0.9 && !app.manage.paginationEnd)){
-            let searchWhat = app.manage._getSearchType();
-            switch (searchWhat) {
-                case "student":
-                    app.manage._searchStudent();
-                    break;
-                case "course":
-                    app.manage._searchCourse();
-                    break;
-                case "useraccess":
-                    app.manage._searchAccess();
-                    break;
-            }
+    submitSearch: function(){
+        let searchWhat = app.manage._getSearchType();
+        switch (searchWhat) {
+            case "student":
+                app.manage._searchStudent();
+                break;
+            case "course":
+                app.manage._searchCourse();
+                break;
+            case "useraccess":
+                app.manage._searchAccess();
+                break;
         }
     },
-
+    
+    scrollSearch: function(event){
+        let scrollPosition = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) / ((document.body.scrollHeight - document.body.clientHeight) || 1);
+        if(scrollPosition > 0.9 && !app.manage.paginationEnd){
+            app.manage.searchPaged(app.manage.searchData);
+        }
+        
+    },
+    
+    searchPaged: function(data){
+        if(!data){
+            return;
+        }
+        switch(data.type){
+            case "course": 
+                Resources.Courses.SEARCH(data.tname, data.cname, data.cnumber, data.sec, data.sem, this.pagesLoaded, this.searchSuccess, this.searchFailure);
+                break;
+            case "access":
+                Resources.UserAccess.SEARCH(data.studentId, data.cname, data.cnumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
+                break;
+            case "student":
+                Resources.Users.SEARCH(data.name, data.studentId, this.pagesLoaded, this.searchSuccess, this.searchFailure);
+                break;
+            default:
+                break;
+        }
+    },
+    
     toggleSearchFields: function() {
         app.manage.pagesLoaded = 0;
         app.manage.paginationEnd = false;
+        app.manage.searchData = null;
         let searchOptions = document.getElementsByName("searchWhat");
         for (var i = 0; i < searchOptions.length; i++) {
             var inputRows = document.getElementsByClassName("searchWhat_" + searchOptions[i].value);
@@ -495,5 +550,5 @@ app.startup.push(function manageStartup() {
     document.getElementById("season").addEventListener("change", app.manage.updateYearInput);
     app.manage.updateYearInput();
     
-    document.body.onscroll = debounce(app.manage.searchPaged, 250);
+    document.body.onscroll = debounce(app.manage.scrollSearch, 250);
 });
