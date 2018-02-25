@@ -57,6 +57,7 @@ let MessageCode = {
     MissingSortingMethod: "No sorting method was selected.",
     MissingArgumentCourses: "Please select at least one course.",
     MissingArgumentYear: "Please select a year",
+    MissingArgumentYearCourseEdited: "Please select a year",
     MissingArgumentSeason: "Please select a season.",
     MissingArgumentYearExpiry: "Please select an expiry year.",
     MissingArgumentSeasonExpiry: "Please select an expiry season.",
