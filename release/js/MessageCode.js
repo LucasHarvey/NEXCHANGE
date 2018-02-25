@@ -105,7 +105,6 @@ let MessageCode = {
     + "<ul><li>.pdf</li><li>.docx</li><li>.doc</li><li>.pptx</li><li>.ppt</li><li>.xlsx</li><li>.csv</li><li>.jpeg</li><li>.jpg</li><li>.png</li><li>.txt</li><li>zip</li></ul>",
     NoFilesForNote: "No files are attached to this note package.",
     FileIsTooBig: "The selected file is too large.",
-    UnknownFileUploadError: "An unknown error occured when uploading a file.",
     NoteFileDeleteFailure: "A note file could not be deleted successfully.",
     DownloadConfirmationFailed: "The file download confirmation failed.",
     FileCorruptedFrontEnd: "The file you are attempting to download is corrupted.",
