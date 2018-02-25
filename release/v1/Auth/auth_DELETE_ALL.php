@@ -8,10 +8,13 @@ $userId = null;
     
 if($authed[0] === true){ //Is authorized??
     // Get the user ID and privilege from the old token
-    $userInfo = retrieveUserInfo();
-    $userId = $userInfo[0];
-    // Generate a new JWT and xsrfToken
-    $JWT = generateAuthToken($userInfo[0], $userInfo[1]);
+    $userInfo = retrieveUserInfo($authed[1]);
+    if($userInfo){
+        $userId = $userInfo[0];
+        // Generate a new JWT and xsrfToken
+        $JWT = generateAuthToken($userInfo[0], $userInfo[1]);
+    }
+    
 } elseif($authed[1] != null && isTokenExpired($authed[1])){ //was the token once valid
     echoError($conn, 401, "AuthenticationExpired");
 } else {
