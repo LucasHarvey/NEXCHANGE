@@ -28,6 +28,6 @@ if($user != null){
 }
 
 
-echoError($conn, 401, "AuthenticationFailed");
+echoError($conn, 401, "AuthenticationFailed", "PasswordPut");
 
 ?>
