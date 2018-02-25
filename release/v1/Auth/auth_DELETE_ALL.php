@@ -19,7 +19,7 @@ if($authed[0] === true){ //Is authorized??
 }
 
 // Get the iat time of the newest token
-$latestTokenIAT = retrieveIAT($JWT);
+$latestTokenIAT = getIATFromToken($JWT);
 
 database_update($conn, "UPDATE users SET most_recent_token_IAT=? WHERE id=?", "is", array($latestTokenIAT, $userId));
 

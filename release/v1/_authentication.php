@@ -95,9 +95,10 @@ function authorized($conn){
     }
     
     // Check that the JWT isn't expired
-    if(intval($decTokenPieces[1]["exp"]) < time())
-        return array(false, $token);
-
+    if(isTokenExpired($token) == true){
+        return array(false, $token); //false = token not valid. $token = token.
+    }
+    
     return array(
        true, $token
     );
@@ -154,11 +155,18 @@ function getUserFromToken($token){
     return null;
 }
 
+function getIATFromToken($token){
+    $payload = _getTokenPayload($token);
+    if($payload != null)
+        return $payload['iat'];
+    return null;
+}
+
 function isTokenExpired($token){
     $payload = _getTokenPayload($token);
     if($payload != null)
         return (intval($payload["exp"])) < time();
-    return null;
+    return false; //Not expired OR not valid.
 }
 
 function getUserPrivilege($token){
@@ -166,6 +174,13 @@ function getUserPrivilege($token){
     if($payload != null)
         return $payload['privilege'];
     return null;
+}
+
+function retrieveUserInfo($token){
+    $payload = _getTokenPayload($token);
+    if($payload != null)
+        return array($payload['sub'], $payload['privilege']);
+    return array(null,null);
 }
 
 function _getTokenPayload($token){
