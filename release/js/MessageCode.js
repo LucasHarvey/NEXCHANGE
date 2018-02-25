@@ -1,6 +1,7 @@
 let MessageCode = {
     UnknownResourceMethod: "The request method doesn't exist on the server. Contact ITS if this problem persists.",
     UnknownServerError: "A server error occured. Please contact ITS if this problem persists.",
+    InternalServerError: "An unknonw server error occurred. Please contact ITS if this problem persists.",
     JSONParseException: "Unable to parse a response from the server. Please contact ITS if this problem persists.",
     MalformedBody: "The request body was not formed properly. Contact ITS if this problem persists.",
     RequestTimedout: "A request took too long to process and has timed out. Ensure you have internet connectivity.",
@@ -21,6 +22,7 @@ let MessageCode = {
     UserUpdated: "Your settings have been updated successfully.",
     PasswordUpdateFailure: "Your password could not be updated. Please change it in the settings page.",
     PasswordResetRequested: "If the email entered matches the email on record, you will receive an email with the steps to reset your password.",
+    PasswordReset: "Password has been reset successfully",
     PasswordTooSmall: "Password must be 9 characters or more.",
     UserDeleted: "User deleted.",
     NoteDeleted: "Note has been deleted",
@@ -34,6 +36,7 @@ let MessageCode = {
     UserDownloadNotesDenied: "You have not been granted rights to download notes for this course.",
     UserAlreadyRegisteredInCourse: "This user is already signed up to be a notetaker or a student in this course.",
 
+    MissingArgument: "An argument is missing from the request. Make sure all fields were entered properly",
     MissingArgumentFirstName: "First name was left empty.",
     MissingArgumentLastName: "Last name was left empty.",
     MissingArgumentPassword: "Password was left empty.",
@@ -76,7 +79,9 @@ let MessageCode = {
     MissingArgumentCurrentPassword: "Please confirm current password.",
     NoFilesUploaded: "No file was uploaded.",
     ErrorParsingCourseFile: "Error parsing the courses.csv file uploaded... Make sure it is formatted properly.",
-
+    ErrorUploadingParsedCourseFile: "An error occurred while trying to upload the parsed course file to the database.",
+    
+    CourseDeleted: "The course has been deleted",
     UserRegistered: "has been signed up successfully. They have been sent an email with their credentials.",
     UserAlreadyExists: "The student ID is already registered to a user. Ensure the Student ID was entered correctly.",
     CourseAlreadyExists: "The course already exists.",
@@ -114,6 +119,8 @@ let MessageCode = {
     DatabaseDeleteError: "Error occurred while deleting from the database",
     DatabaseUpdateError: "Error occurred while updating an entry from the database",
     DatabaseDuplicationError: "This entry already exists in the database.",
+    DatabaseRollbackError: "A database error occurred. Contact ITS if this persists.",
+    DatabaseCommitError: "A database error occurred. Try again. Contact ITS if this persists.",
 
     //THIS IS REALLY A TRANSLATIONS PROBLEM
     AuthorizationFailedButton: "Okay",
