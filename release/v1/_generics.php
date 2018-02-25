@@ -30,9 +30,10 @@ if(!isset($NO_AUTH_CHECKS) || $NO_AUTH_CHECKS !== true){
     
     if($authed[0] === true){ //Is authorized??
         // Get the user ID and privilege from the old token
-        $userInfo = retrieveUserInfo();
-        // Generate a new JWT and xsrfToken
-        generateAuthToken($userInfo[0], $userInfo[1]);
+        $userInfo = retrieveUserInfo($authed[1]);
+        if($userInfo)
+            generateAuthToken($userInfo[0], $userInfo[1]);// Generate a new JWT and xsrfToken
+        
         $conn->close();
         return;
     }
