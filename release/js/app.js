@@ -15,6 +15,7 @@ app.start = function() {
         try {
             app.startup[i].call(app);
         } catch (e) {
+            app.logUi("Pre-startup error: : "+e.message);
             app.handleFailure({
                 status: 500,
                 messageCode: "StartupError"
@@ -26,6 +27,7 @@ app.start = function() {
         try {
             app.afterStartup[i].call(app);
         } catch (e) {
+            app.logUi("Startup error: "+e.message);
             app.handleFailure({
                 status: 500,
                 messageCode: "StartupError"
@@ -67,7 +69,7 @@ app.store = function(key, data) {
 };
 
 app.getStore = function(key) {
-    if (typeof(Storage) === "undefined") {
+    if (!app.storageEnabled()) {
         //Store cookies instead
         app.getCookie(key);
     } else {
@@ -77,7 +79,6 @@ app.getStore = function(key) {
 };
 
 app.getCookie = function(key) {
-    
     var name = key + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
     var ca = decodedCookie.split(';');
@@ -91,9 +92,7 @@ app.getCookie = function(key) {
         }
     }
     return null;
-
-
-}
+};
 
 app.handleFailure = function(response) {
     console.warn(response.status, response.messageCode);
@@ -266,10 +265,17 @@ app._processBlobResponse = function(response, callback) {
     reader.readAsText(response);
 };
 
+app.logUi = function(message){
+    if(Resources && Resources.Log){
+        Resources.Log.POST(message);
+    }
+}
+
 app._getResponse = function(responseBody) {
     try {
         return JSON.parse(responseBody);
     } catch (e) {
+        app.logUi("Cannot parse JSON: "+e.message);
         app.handleFailure({
             status: 500,
             messageCode: "JSONParseException"
