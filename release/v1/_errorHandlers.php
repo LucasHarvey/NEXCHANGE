@@ -7,7 +7,11 @@ function globalErrorHandler($errorNumber, $errorString, $errorFile, $errorLine){
 
 error_reporting(E_ALL);
 set_error_handler("globalErrorHandler");
-    
+
+function logFrontEnd($message){
+    error_log("FrontError: ".$message);
+}
+
 function echoError($conn, $status, $messageCode, $message = ""){
     error_log("EchoError: $status - $messageCode with M: $message", 0);
     $ignoreMsgCodes = ['AuthenticationExpired', 'AuthenticationFailed'];
