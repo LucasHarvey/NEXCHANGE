@@ -10,7 +10,7 @@ $currentPassword = $_JSON["currentPassword"];
 
 $user = database_get_row($conn, "SELECT passwordhash FROM users where id=?", "s", $user_id);
 if(!password_verify($currentPassword, $user['passwordhash'])){
-    echoError($conn, 403, "AuthenticationFailed");
+    echoError($conn, 403, "AuthenticationFailed", "UsersPut");
 }
 
 $allowedProps = array("password", "email");

@@ -37,7 +37,7 @@ if(!isset($NO_AUTH_CHECKS) || $NO_AUTH_CHECKS !== true){
         return;
     }
     if($authed[1] != null && isTokenExpired($authed[1])){ //was the token once valid
-        echoError($conn, 401, "AuthenticationExpired");
+        echoError($conn, 401, "AuthenticationExpired", "Generics");
     }
     echoError($conn, 401, "AuthorizationFailed");
 }
