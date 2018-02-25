@@ -146,42 +146,42 @@ function decodeToken($token){
     return $decTokenPieces;
 }
 
-function getUserFromToken($token){
+function getUserFromToken($token = null){
     $payload = _getTokenPayload($token);
     if($payload != null)
         return $payload['sub'];
     return null;
 }
 
-function getIATFromToken($token){
+function getIATFromToken($token = null){
     $payload = _getTokenPayload($token);
     if($payload != null)
         return $payload['iat'];
     return null;
 }
 
-function isTokenExpired($token){
+function isTokenExpired($token = null){
     $payload = _getTokenPayload($token);
     if($payload != null)
         return (intval($payload["exp"])) < time();
     return false; //Not expired OR not valid.
 }
 
-function getUserPrivilege($token){
+function getUserPrivilege($token = null){
     $payload = _getTokenPayload($token);
     if($payload != null)
         return $payload['privilege'];
     return null;
 }
 
-function retrieveUserInfo($token){
+function retrieveUserInfo($token = null){
     $payload = _getTokenPayload($token);
     if($payload != null)
         return array($payload['sub'], $payload['privilege']);
     return array(null,null);
 }
 
-function _getTokenPayload($token){
+function _getTokenPayload($token = null){
     if($token == null)
         $token = getAuthToken();
     if(!validateTokenAuthenticity($token))
