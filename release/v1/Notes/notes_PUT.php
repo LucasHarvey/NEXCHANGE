@@ -110,6 +110,9 @@ if(!empty($_FILES['file'])){
     // Retrieve the old storage name for the file
     $oldStorageName = retrieveStorageName($conn, $note["id"]);
     
+    if(!$oldStorageName)
+        echoError($conn, 404, "NoteNotFound");
+    
     // Update the file information in the database
     $result = updateNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
     
