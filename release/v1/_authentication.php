@@ -12,8 +12,6 @@ function generateAuthToken($userid, $privilege){
     $length = 16; 
     $true = true; 
     $xsrf = bin2hex(openssl_random_pseudo_bytes($length, $true));
-    // JSON encode the xsrf token to store it as a cookie
-    $xsrf = json_encode($xsrf);
     
     // The xsrfToken is used to prevent CSRF (Cross-Site Request Forgery)
     $payload = base64_encode(json_encode([
@@ -35,7 +33,7 @@ function generateAuthToken($userid, $privilege){
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
-    setcookie("xsrfToken", $xsrf, 0, "/", $GLOBALS['NEXCHANGE_DOMAIN'], $GLOBALS['NEXCHANGE_SECURED_SITE'], false);
+    setcookie("xsrfToken", json_encode($xsrf), 0, "/", $GLOBALS['NEXCHANGE_DOMAIN'], $GLOBALS['NEXCHANGE_SECURED_SITE'], false);
     
     return $token;
 }
@@ -120,7 +118,7 @@ function validateTokenAuthenticity($token){
     $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
     
     // Check if the token signature and the new signature are the same
-    return ($encTokenPieces[2] !== $signature);
+    return ($encTokenPieces[2] === $signature);
 }
 
 function decodeToken($token){
