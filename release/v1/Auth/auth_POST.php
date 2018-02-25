@@ -60,6 +60,6 @@ if(authenticate($conn)){
         "messageCode" => "UserAuthenticated",
     ));
 }
-echoError($conn, 401, "AuthenticationFailed");
+echoError($conn, 401, "AuthenticationFailed", "AuthPost");
 
 ?>
