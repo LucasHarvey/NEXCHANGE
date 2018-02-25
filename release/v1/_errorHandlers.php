@@ -10,8 +10,11 @@ set_error_handler("globalErrorHandler");
     
 function echoError($conn, $status, $messageCode, $message = ""){
     error_log("EchoError: $status - $messageCode with M: $message", 0);
-    $e = new Exception();
-    error_log(getExceptionTraceAsString($e));
+    $ignoreMsgCodes = ['AuthenticationExpired', 'AuthenticationFailed'];
+    if(!in_array($messageCode, $ignoreMsgCodes)){
+        $e = new Exception();
+        error_log(getExceptionTraceAsString($e));
+    }
     
     if($conn != null){ //would occur if error happened in a script without need of a DB...?!
         if($GLOBALS['NEXCHANGE_TRANSACTION']){
