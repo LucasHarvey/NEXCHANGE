@@ -1,7 +1,5 @@
 <?php
-  
 function generateAuthToken($userid, $privilege){
-
     $header = base64_encode(json_encode([
         "alg" => "HS256",
         "typ" => "JWT"
@@ -10,10 +8,12 @@ function generateAuthToken($userid, $privilege){
     // Create an expiry time
     $expiry = time() + $GLOBALS['NEXCHANGE_TOKEN_EXPIRY_MINUTES']*60;
     
-     // Create a new xsrf token
+    // Create a new xsrf token
     $length = 16; 
     $true = true; 
     $xsrf = bin2hex(openssl_random_pseudo_bytes($length, $true));
+    // JSON encode the xsrf token to store it as a cookie
+    $xsrf = json_encode($xsrf);
     
     // The xsrfToken is used to prevent CSRF (Cross-Site Request Forgery)
     $payload = base64_encode(json_encode([
@@ -23,26 +23,21 @@ function generateAuthToken($userid, $privilege){
         "privilege" => $privilege,
         "xsrfToken" => $xsrf
     ]));
-
+    
     $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
-
+    
     $token = $header . "." . $payload . "." . $signature;
     
     //fourth and fifth parameters once uploaded to server
     // Argument 3: The cookie will expire when the web browser closes
     // Arguments 6 and 7 are Secure and HTTPOnly respectively
-
     setcookie("authToken", $token, 0, "/", $GLOBALS['NEXCHANGE_DOMAIN'], $GLOBALS['NEXCHANGE_SECURED_SITE'], true);
-    
-    // JSON encode the xsrf token to store it as a cookie
-    $xsrf = json_encode($xsrf);
     
     // Set the cookie for xsrf token
     // HTTPOnly must be false to access the token on the client side
     setcookie("xsrfToken", $xsrf, 0, "/", $GLOBALS['NEXCHANGE_DOMAIN'], $GLOBALS['NEXCHANGE_SECURED_SITE'], false);
     
     return $token;
-    
 }
 
 function getAuthToken(){
@@ -58,12 +53,10 @@ function getAuthToken(){
     }
     
     return $token;
-    
 }
 
 function authorized($conn){
     $token = getAuthToken();
-    
     if(!validateTokenAuthenticity($token))
         return array(false, null);
     
@@ -101,7 +94,6 @@ function authorized($conn){
             
     }
     
-    
     // Check that the JWT isn't expired
     if(intval($decTokenPieces[1]["exp"]) < time())
         return array(false, $token);
@@ -111,66 +103,15 @@ function authorized($conn){
     );
 }
 
-
-function getUserFromToken(){
-    
-    $token = getAuthToken();
-    
-    if($token == null){
-        return null;
-    }
-    
-    $decTokenPieces = decodeToken($token);
-    
-    // Verify that the token is valid
-    $payload = $decTokenPieces[1];
-    
-    $userId = $payload["sub"];
-    
-    return $userId;
-}
-
-function isTokenExpired($token){
-    
-    if($token == null){
-        return true;
-    }
-    
-    $decTokenPieces = decodeToken($token);
-    
-    $payload = $decTokenPieces[1];
-    
-     // Check that the token is not expired
-    if(intval($payload["exp"]) < time())
-        return true;
-    
-    return false;
-}
-
-function getUserPrivilege($token = null){
-    
-    if(!$token)
-        $token = getAuthToken();
-    
-    if($token == null){
-        return false;
-    }
-    
-    $decTokenPieces = decodeToken($token);
-    
-    $payload = $decTokenPieces[1];
-    
-    $privilege = $payload["privilege"];
-    
-    return $privilege;
-}
-
 function validateTokenAuthenticity($token){
-    
-    if($token == null)
+    if($token == null || empty($token))
         return false;
     
     $encTokenPieces = explode(".", $token);
+    if(count($encTokenPieces) != 3){
+        error_log("validateTokenAuthenticity did not receive 3 token pieces... Received: ".$token);
+        return false;
+    }
     
     $header = $encTokenPieces[0];
     $payload = $encTokenPieces[1];
@@ -178,23 +119,13 @@ function validateTokenAuthenticity($token){
     $signature = base64_encode(hash_hmac("sha256", $header . "." . $payload, $GLOBALS['NEXCHANGE_SECRET'], true));
     
     // Check if the token signature and the new signature are the same
-    if($encTokenPieces[2] !== $signature)
-        return false;
-        
-    return true;
+    return ($encTokenPieces[2] !== $signature);
 }
 
-function retrieveIAT($token = null){
-    if(!$token)
-       $token = getAuthToken(); 
-    
-    $decTokenPieces = decodeToken($token);
-    $payload = $decTokenPieces[1];
-     
-    return intval($payload["iat"]);
- }
-
 function decodeToken($token){
+    if(!validateTokenAuthenticity($token))
+        return null;
+        
     // Explode the token into its three components
     $encTokenPieces = explode(".", $token);
     
@@ -216,15 +147,40 @@ function decodeToken($token){
     return $decTokenPieces;
 }
 
-function retrieveUserInfo(){
-    $token = getAuthToken();
+function getUserFromToken($token){
+    if($token == null)
+        $token = getAuthToken();
+    if(!validateTokenAuthenticity($token))
+        return null;
+        
     $decTokenPieces = decodeToken($token);
+    
     $payload = $decTokenPieces[1];
+    return $payload["sub"];
+}
 
-    return array(
-        $payload["sub"],
-        $payload["privilege"]
-        );
+function isTokenExpired($token){
+    if($token == null)
+        $token = getAuthToken();
+    if(!validateTokenAuthenticity($token))
+        return false;
+        
+    $decTokenPieces = decodeToken($token);
+    
+    $payload = $decTokenPieces[1];
+    return (intval($payload["exp"])) < time();
+}
+
+function getUserPrivilege($token){
+    if($token == null)
+        $token = getAuthToken();
+    if(!validateTokenAuthenticity($token))
+        return null;
+    
+    $decTokenPieces = decodeToken($token);
+    
+    $payload = $decTokenPieces[1];
+    return $payload["privilege"];
 }
 
 ?>
