@@ -1,5 +1,12 @@
 /* global app */
 let Resources = {
+    Log: {
+        location: "v1/uilog.php",
+        POST: function(message, successCallback, failureCallback){
+            let data = {message: message};
+            return app.post(Resources.Log, data, successCallback, failureCallback);
+        }
+    },
     Password: {
         location: "v1/password.php",
         POST: function(studentId, email, successCallback, failureCallback){
