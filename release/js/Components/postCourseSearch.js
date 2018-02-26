@@ -200,6 +200,12 @@ app.postCourseSearch = {
         yearInput.placeholder = "All Years";
         yearInput.readOnly = true;
         yearInput.classList.toggle("noHighlight");
+        
+        if(app.postCourseSearch.pagesLoaded == 1){
+            // Scroll the table back to the top
+            let elem = document.getElementById("tableResults");
+            elem.scrollTop = 0;
+        }
     },
     
     courseSearchFailure: function(response){
