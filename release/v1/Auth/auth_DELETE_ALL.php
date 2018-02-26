@@ -13,7 +13,7 @@ if($authed[0] === true){ //Is authorized??
     // Generate a new JWT and xsrfToken
     $JWT = generateAuthToken($userInfo[0], $userInfo[1]);
 } elseif($authed[1] != null && isTokenExpired($authed[1])){ //was the token once valid
-    echoError($conn, 401, "AuthenticationExpired");
+    echoError($conn, 401, "AuthenticationExpired", "AuthDeleteAll");
 } else {
     echoError($conn, 401, "AuthorizationFailed");
 }
