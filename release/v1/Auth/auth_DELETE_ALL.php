@@ -8,10 +8,13 @@ $userId = null;
     
 if($authed[0] === true){ //Is authorized??
     // Get the user ID and privilege from the old token
-    $userInfo = retrieveUserInfo();
-    $userId = $userInfo[0];
-    // Generate a new JWT and xsrfToken
-    $JWT = generateAuthToken($userInfo[0], $userInfo[1]);
+    $userInfo = retrieveUserInfo($authed[1]);
+    if($userInfo){
+        $userId = $userInfo[0];
+        // Generate a new JWT and xsrfToken
+        $JWT = generateAuthToken($userInfo[0], $userInfo[1]);
+    }
+    
 } elseif($authed[1] != null && isTokenExpired($authed[1])){ //was the token once valid
     echoError($conn, 401, "AuthenticationExpired", "AuthDeleteAll");
 } else {
@@ -19,7 +22,7 @@ if($authed[0] === true){ //Is authorized??
 }
 
 // Get the iat time of the newest token
-$latestTokenIAT = retrieveIAT($JWT);
+$latestTokenIAT = getIATFromToken($JWT);
 
 database_update($conn, "UPDATE users SET most_recent_token_IAT=? WHERE id=?", "is", array($latestTokenIAT, $userId));
 
