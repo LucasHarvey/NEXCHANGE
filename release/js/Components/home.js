@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,location,Blob,navigator */
+/* global Resources,MessageCode,Modal,location,Blob,navigator,debounce */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -363,7 +363,7 @@ app.afterStartup.push(function userHomeAfterStartup() {
     document.documentElement.scrollTop = 0;
     document.body.scrollTop = 0;
 
-    document.body.onscroll = app.home.getNotes;
+    document.body.onscroll = debounce(app.home.getNotes, 250);
     app.home.getCourses();
     
 
