@@ -74,7 +74,7 @@ let MessageCode = {
     // Settings error codes
     MissingArgumentEmail: "Email was left empty.",
     EmailNotValid: "The email address is not valid.",
-    NoChangesEmail: "The email address is not valid.",
+    NoChangesEmail: "Please enter a new email address.",
     MissingArgumentsPasswords: "Please fill out fields to change password.",
     PasswordsNoMatch: "Passwords do not match.",
     MissingArgumentCurrentPassword: "Please confirm current password.",
