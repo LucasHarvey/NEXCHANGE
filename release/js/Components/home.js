@@ -277,23 +277,22 @@ app.home = {
         var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         var downloadFunc;
         if(iOS){
+
             // IOS code
-    
             var url;
                 downloadFunc = function(resp, req){
                 var type = req.getResponseHeader("Content-Type");
                 var reader = new FileReader();
                 var out = new Blob([resp], {type: type});
-                reader.onload = function(e){
+                
+                reader.addEventListener('loadend', function(e) {
                     url = reader.result;
-                  window.location.href = url;
-                }
+                    document.getElementById(id).disabled = false;
+                    document.getElementById(id).innerText = "Download Notes";
+                    window.location.href = url;
+                });
             
                 reader.readAsDataURL(out);
-    
-                window.URL.revokeObjectURL(url);
-                document.getElementById(id).disabled = false;
-                document.getElementById(id).innerText = "Download Notes";
             };
         
         } else {
@@ -307,6 +306,8 @@ app.home = {
                 window.URL.revokeObjectURL(url);
                 document.getElementById(id).disabled = false;
                 document.getElementById(id).innerText = "Download Notes";
+                
+                app.home.getCourses();
             };
         }
         
@@ -330,11 +331,8 @@ app.home = {
                     }).show();
                     return;
                 }
-    
-                downloadFunc(resp, req);
                 
-                app.home.getCourses();
-    
+                downloadFunc(resp, req);
             
         };
         let progressFunction = function(evt) {
