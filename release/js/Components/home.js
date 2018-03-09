@@ -240,7 +240,7 @@ app.home = {
     },
     
     getNotes: function(forced) {
-        let scrollPosition = document.body.scrollTop / ((document.body.scrollHeight - document.body.clientHeight) || 1) ;
+        let scrollPosition = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) / ((document.body.scrollHeight - document.body.clientHeight) || 1);
         
         if(forced === true || (scrollPosition > 0.9 && !app.home.paginationEnd) ){
             let sorting = app.home.getSortMethod();
@@ -297,7 +297,7 @@ app.home = {
         
         } else {
             // normal code
-                downloadFunc = function(resp, req){
+            downloadFunc = function(resp, req){
                 let a = document.createElement("a");
                 let url = window.URL.createObjectURL(resp);
                 a.download = req.getResponseHeader("Content-Disposition").match("\"(.+)\"")[1];
@@ -310,8 +310,6 @@ app.home = {
                 app.home.getCourses();
             };
         }
-        
-        
         
         let successFunction = function(resp, req) {
             
@@ -352,12 +350,21 @@ app.home = {
 };
 
 app.startup.push(function userHomeStartup() {
+
     document.getElementById("sortDrop").addEventListener('change', app.home.getCourses);
     document.getElementById("hideDownloaded").addEventListener('change', app.home.getCourses);
     
-    document.body.onscroll = app.home.getNotes;
 });
 
 app.afterStartup.push(function userHomeAfterStartup() {
+    // Scroll to the top of the page
+    
+    window.pageYOffset = 0;
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    document.body.onscroll = app.home.getNotes;
     app.home.getCourses();
+    
+
 });
