@@ -1,7 +1,7 @@
 let MessageCode = {
     UnknownResourceMethod: "The request method doesn't exist on the server. Contact the Access Centre if this problem persists.",
     UnknownServerError: "A server error occured. Please contact the Access Centre if this problem persists.",
-    InternalServerError: "An unknonw server error occurred. Please contact the Access Centre if this problem persists.",
+    InternalServerError: "An unknown server error occurred. Please contact the Access Centre if this problem persists.",
     JSONParseException: "Unable to parse a response from the server. Please contact the Access Centre if this problem persists.",
     MalformedBody: "The request body was not formed properly. Contact the Access Centre if this problem persists.",
     RequestTimedout: "A request took too long to process and has timed out. Ensure you have internet connectivity.",
