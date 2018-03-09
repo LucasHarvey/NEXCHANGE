@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,location */
+/* global Resources,MessageCode,Modal,location,Blob,navigator */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -240,7 +240,7 @@ app.home = {
     },
     
     getNotes: function(forced) {
-        let scrollPosition = document.body.scrollTop / ((document.body.scrollHeight - document.body.clientHeight) || 1) ;
+        let scrollPosition = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) / ((document.body.scrollHeight - document.body.clientHeight) || 1);
         
         if(forced === true || (scrollPosition > 0.9 && !app.home.paginationEnd) ){
             let sorting = app.home.getSortMethod();
@@ -273,16 +273,44 @@ app.home = {
     },
     downloadNote: function(e) {
         let id = this.id;
-        let downloadFunc = function(resp, req){
-            let a = document.createElement("a");
-            let url = window.URL.createObjectURL(resp);
-            a.download = req.getResponseHeader("Content-Disposition").match("\"(.+)\"")[1];
-            a.href = url;
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.getElementById(id).disabled = false;
-            document.getElementById(id).innerText = "Download Notes";
-        };
+        
+        var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        var downloadFunc;
+        if(iOS){
+
+            // IOS code
+            var url;
+                downloadFunc = function(resp, req){
+                var type = req.getResponseHeader("Content-Type");
+                var reader = new FileReader();
+                var out = new Blob([resp], {type: type});
+                
+                reader.addEventListener('loadend', function(e) {
+                    url = reader.result;
+                    document.getElementById(id).disabled = false;
+                    document.getElementById(id).innerText = "Download Notes";
+                    window.location.href = url;
+                });
+            
+                reader.readAsDataURL(out);
+            };
+        
+        } else {
+            // normal code
+            downloadFunc = function(resp, req){
+                let a = document.createElement("a");
+                let url = window.URL.createObjectURL(resp);
+                a.download = req.getResponseHeader("Content-Disposition").match("\"(.+)\"")[1];
+                a.href = url;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.getElementById(id).disabled = false;
+                document.getElementById(id).innerText = "Download Notes";
+                
+                app.home.getCourses();
+            };
+        }
+        
         let successFunction = function(resp, req) {
             
                 var myRe = /\(([^\).]+)\)/gi;
@@ -301,11 +329,8 @@ app.home = {
                     }).show();
                     return;
                 }
-    
-                downloadFunc(resp, req);
                 
-                app.home.getCourses();
-    
+                downloadFunc(resp, req);
             
         };
         let progressFunction = function(evt) {
@@ -325,12 +350,21 @@ app.home = {
 };
 
 app.startup.push(function userHomeStartup() {
+
     document.getElementById("sortDrop").addEventListener('change', app.home.getCourses);
     document.getElementById("hideDownloaded").addEventListener('change', app.home.getCourses);
     
-    document.body.onscroll = app.home.getNotes;
 });
 
 app.afterStartup.push(function userHomeAfterStartup() {
+    // Scroll to the top of the page
+    
+    window.pageYOffset = 0;
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+
+    document.body.onscroll = app.home.getNotes;
     app.home.getCourses();
+    
+
 });
