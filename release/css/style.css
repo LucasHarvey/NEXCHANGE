@@ -389,14 +389,24 @@ button.warning, .button.warning {
     color: #595959;
 }
 
-.login #MODAL input {
+#MODAL #newPassword {
     border: 1px solid #CCCCCC;
     border-radius: 2px;
     color: #2D2D2D;
     background-color: rgba(204,204,204,0.4);
-    margin-left: 5px;
+    margin-left: 10px;
     
 }
+
+#MODAL #confirmPassword {
+    border: 1px solid #CCCCCC;
+    border-radius: 2px;
+    color: #2D2D2D;
+    background-color: rgba(204,204,204,0.4);
+    margin-left: 10px;
+    
+}
+
 .login #MODAL input::-webkit-input-placeholder {
     color: #777777;
 }
