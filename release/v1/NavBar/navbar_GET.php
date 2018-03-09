@@ -30,7 +30,7 @@ function getNavbarItems($conn, $token = null){
             
         $settings = array(
             "content" => "MY PROFILE",
-            "url" => "./settings"
+            "url" => "./profile"
         );
         
         return array($signup, $userAccess, $addCourse, $manageNotes, $settings);
@@ -62,7 +62,7 @@ function getNavbarItems($conn, $token = null){
     
     array_push($baseNavigation, array(
         "content" => "MY PROFILE",
-        "url" => "./settings"
+        "url" => "./profile"
     ));
     
     return $baseNavigation;

@@ -59,11 +59,11 @@ app.user = {
                             text: "Okay",
                             // Callback for the modal which tells the user that password update failed
                             callback: function() {
-                                location.assign("./settings");
+                                location.assign("./profile");
                             }
                         };
                         
-                        // The modal has a confirm button which redirects the user to "Settings"
+                        // The modal has a confirm button which redirects the user to "My Profile"
                         new Modal("Error", MessageCode["PasswordUpdateFailure"], successBtn, false).show();
                     });
                     
