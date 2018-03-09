@@ -19,8 +19,8 @@ let MessageCode = {
     NoChangesToMake: "No changes were made. Make sure you modified a field.",
     KeyNotFound: "Malformed request body.",
 
-    UserUpdated: "Your settings have been updated successfully.",
-    PasswordUpdateFailure: "Your password could not be updated. Please change it in the settings page.",
+    UserUpdated: "Your profile has been updated successfully.",
+    PasswordUpdateFailure: 'Your password could not be updated. Please change it in the "My Profile" page.',
     PasswordResetRequested: "If the email entered matches the email on record, you will receive an email with the steps to reset your password.",
     PasswordReset: "Password has been reset successfully.",
     PasswordTooSmall: "Password must be 9 characters or more.",
