@@ -128,7 +128,7 @@ app.notes = {
         if(noteData.sectionStart != noteData.sectionEnd){
             section += " to " + (noteData.sectionEnd + "").padStart(5, "0");
         }
-        let courseP = generatePTag("Notes taken for", noteData.course_name + "("+noteData.course_number + " : " + section +")", true);
+        let courseP = generatePTag("Notes taken for", noteData.course_name + " ("+noteData.course_number + " : " + section +")", true);
         articleSection.appendChild(courseP);
         
         let dateP = generatePTag("Notes taken on", new Date(noteData.taken_on.replace(/-/g, '\/')).toPrettyDate(), true);
