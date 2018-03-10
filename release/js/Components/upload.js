@@ -67,6 +67,27 @@ app.postNotes = {
     },
 
     uploadNotesSuccess: function(response) {
+        
+        // Clear the file input
+        var fileSelector = document.getElementById("file");
+        fileSelector.parentNode.removeChild((fileSelector));
+        
+        var newFileSelector = document.createElement("INPUT");
+        newFileSelector.type = "file";
+        newFileSelector.id = "file";
+        newFileSelector.name = "file[]";
+        newFileSelector.className = "inputFile";
+        newFileSelector.multiple = true;
+        newFileSelector.addEventListener("change", app.postNotes.updateFileLabel);
+        
+        var fileUserField = document.getElementById("fileUserField");
+        
+        var fileLabel = document.getElementById("fileLabel");
+        
+        fileUserField.insertBefore(newFileSelector, fileLabel);
+        
+        app.postNotes.updateFileLabel();
+
         app.postNotes.uploadInProgress = false;
         
         //Enable the form
@@ -221,12 +242,12 @@ app.postNotes = {
         var input = document.getElementById("file");
         var label = document.getElementById("fileLabel");
         
-        if(!this.files) {
+        if(input.files.length == 0) {
             label.innerText = "Select File(s)";
             return;
         }
         
-        label.innerText = this.files.length + " File".pluralize(this.files.length)+" Selected";
+        label.innerText = input.files.length + " File".pluralize(input.files.length)+" Selected";
     }
 
 };
