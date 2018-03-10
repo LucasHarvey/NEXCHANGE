@@ -109,6 +109,8 @@ app.editNote = {
         newFileSelector.id = "file";
         newFileSelector.name = "file[]";
         newFileSelector.className = "inputFile";
+        newFileSelector.multiple = true;
+        newFileSelector.addEventListener("change", app.editNote.updateFileLabel);
         
         var fileUserField = document.getElementById("fileUserField");
         
@@ -226,14 +228,7 @@ app.editNote = {
             return;
         }
         
-        if(input.files.length == 1){
-            label.innerText = "1 File Selected";
-            return;
-        }
-
-        if(input.files.length > 1){
-            label.innerText = input.files.length + " Files Selected";
-        }
+        label.innerText = input.files.length + " File".pluralize(input.files.length)+" Selected";
     }
 };
 
