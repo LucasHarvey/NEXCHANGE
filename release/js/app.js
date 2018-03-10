@@ -5,7 +5,8 @@ var app = app || {
 };
 //App.startup contains an array of functions that will be executed sequentially when the page is done loading
 app.DEFAULTS = {
-    REQUEST_TIMEOUT: 20 * 1000
+    REQUEST_TIMEOUT: 20 * 1000,
+    ALLOWED_EXTENSIONS: ['pdf','docx','doc','pptx','ppt','xlsx','csv','jpeg','jpg','png', 'txt', 'zip']
 };
 
 app.start = function() {
@@ -406,4 +407,10 @@ function debounce(func, wait, immediate) {
 		if (callNow) func.apply(context, args);
 	};
 };
+
+function getExtension(fileName){
+    var fileComponents = fileName.split(".");
+    var extension = fileComponents[fileComponents.length - 1];
+    return extension;
+}
 
