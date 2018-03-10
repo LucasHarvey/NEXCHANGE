@@ -56,7 +56,12 @@ app.editNote = {
         let files = document.getElementById('file').files;
         let oldDate = new Date(this.originalNote.taken_on.replace(/-/g, '\/'));
 
-        var changes = {};
+        var changes = {
+            name: null,
+            desc: null,
+            taken_on: null,
+            files: false
+        };
         if (newName != this.originalNote.name)
             changes.name = newName;
         if (newDesc != this.originalNote.description)
@@ -76,7 +81,7 @@ app.editNote = {
         document.getElementById('noteData').removeEventListener('submit', app.editNote.submitNote);
         document.getElementById("submit").disable = true;
 
-        if (changes != {}) {
+        if (changes.name != null || changes.desc != null || changes.taken_on != null || changes.files != false) {
             Resources.NotesEdit.POST(this.noteId, changes.name, changes.desc, changes.taken_on, files, this.successEdit, this.failureEdit, function(event) {
                 if (event.lengthComputable === true) {
                     let percent = Math.round((event.loaded / event.total) * 100);
@@ -84,10 +89,36 @@ app.editNote = {
                 }
             });
         } else {
+            app.editNote.uploadInProgress = false;
+        
+            // Enable the form
+            document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote);
+            document.getElementById("submit").disable = false;
             new Modal("No Changes", MessageCode["NoChangesToMake"], null, null, "Okay").show();
         }
+        
     },
     successEdit: function(response) {
+        
+        // Clear the file input
+        var fileSelector = document.getElementById("file");
+        fileSelector.parentNode.removeChild((fileSelector));
+        
+        var newFileSelector = document.createElement("INPUT");
+        newFileSelector.type = "file";
+        newFileSelector.id = "file";
+        newFileSelector.name = "file[]";
+        newFileSelector.className = "inputFile";
+        
+        var fileUserField = document.getElementById("fileUserField");
+        
+        var fileLabel = document.getElementById("fileLabel");
+        
+        fileUserField.insertBefore(newFileSelector, fileLabel);
+        
+        app.editNote.updateFileLabel();
+        
+        
         app.editNote.uploadInProgress = false;
         
         // Enable the form
@@ -190,17 +221,17 @@ app.editNote = {
         var input = document.getElementById("file");
         var label = document.getElementById("fileLabel");
         
-        if(!this.files) {
+        if(input.files.length == 0) {
             label.innerText = "Select File(s)";
             return;
         }
         
-        if(this.files.length == 1){
+        if(input.files.length == 1){
             label.innerText = "1 File Selected";
             return;
         }
 
-        if(this.files.length > 1){
+        if(input.files.length > 1){
             label.innerText = input.files.length + " Files Selected";
         }
     }
