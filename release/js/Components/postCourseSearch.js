@@ -157,15 +157,21 @@ app.postCourseSearch = {
         var courses = data.payload.courses;
         if (courses.length == 0) {
             app.postCourseSearch.paginationEnd = true;
-            document.getElementById('resultsTray').style.display = 'block';
-            var noResultsTray = document.getElementById("noResults");
-            noResultsTray.style.display = "block";
-            noResultsTray.innerHTML = "No ";
+            
             if(app.postCourseSearch.pagesLoaded >= 2){
-                noResultsTray.innerHTML += "More ";
+                document.getElementById('resultsTray').style.display = 'block';
+                var noResultsTray = document.getElementById("noResults");
+                noResultsTray.style.display = "block";
+                noResultsTray.innerHTML = "No More Results";
+                return;
+            } else {
+                document.getElementById('resultsTray').style.display = 'block';
+                var noResultsTray = document.getElementById("noResults");
+                app.postCourseSearch.noResults(noResultsTray);
+                noResultsTray.style.display = "block";
+                return;
             }
-            noResultsTray.innerHTML += "Results";
-            return;
+            
         }
 
         var resultsTable = document.getElementById("results");
@@ -208,6 +214,59 @@ app.postCourseSearch = {
         }
     },
     
+    //DO NOT USE FOR RESOURCES
+    noResults : function(container) {
+        //Used to indicate NO courses. not for errors. Errors uses modals.
+
+        let article = app.postCourseSearch._generateArticle();
+        article.header.innerText = "No Courses Found";
+        article.description.innerHTML = "<p>There are no search results.</p>";
+        article.button.parentNode.removeChild(article.button);
+        article.button2.parentNode.removeChild(article.button2);
+        container.appendChild(article.article);
+    },
+    
+    _generateArticle: function(numButtons) {
+        if(!numButtons) numButtons = 2;
+        let article = document.createElement("ARTICLE");
+
+        let articleHeader = document.createElement("HEADER");
+        let articleHeaderp = document.createElement("p");
+        articleHeaderp.className = "title";
+        articleHeader.appendChild(articleHeaderp);
+        article.appendChild(articleHeader);
+
+        let articleSection = document.createElement("SECTION");
+        article.appendChild(articleSection);
+
+        let descriptionP = document.createElement("P");
+        descriptionP.className = "description";
+        articleSection.appendChild(descriptionP);
+        
+        let buttonSection = document.createElement("SECTION");
+        buttonSection.className = "buttonfield";
+        articleSection.appendChild(buttonSection);
+        
+        var articleObject = {
+            section: articleSection,
+            article: article,
+            header: articleHeaderp,
+            description: descriptionP
+        }
+        
+        for(var i = 0; i<numButtons; i++){
+            let moreInfoBtn = document.createElement("BUTTON");
+            buttonSection.appendChild(moreInfoBtn);
+            var name = "button";
+            if(i != 0){
+                name += i+1;
+            }
+            articleObject[name] = moreInfoBtn;
+        };
+        
+        return articleObject;
+    },
+    
     courseSearchFailure: function(response){
         // Enable the form
         document.getElementById("submit").disabled = false;
@@ -219,8 +278,16 @@ app.postCourseSearch = {
     submitCourseSearch: function(event) {
         event.preventDefault();
         document.getElementById('resultsTray').style.display = 'none';
-
-        document.getElementById("noResults").style.display = "none";
+        
+        var noResultsTray = document.getElementById("noResults");
+        noResultsTray.style.display = "none";
+        
+        // Remove the article if present
+        var noResultChildren = noResultsTray.children;
+        for(var i=0; i<noResultChildren.length; i++){
+            noResultsTray.removeChild(noResultChildren[i]);
+        }
+        
         document.getElementById("noResults").innerHTML = "";
 
         document.getElementById("results").style.display = "none";
