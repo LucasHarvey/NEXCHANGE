@@ -123,7 +123,7 @@ app.editNote = {
                 app.store("editNoteNoteId", null);
                 location.assign("./home");
             }
-        }).show();
+        }, null, "Okay").show();
     },
     
     failureEdit: function(data){
