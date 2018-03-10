@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,location */
+/* global Resources,MessageCode,Modal,location,getExtension */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -74,14 +74,24 @@ app.editNote = {
             changes.files = true;
             document.getElementById("barContainer").style.display = "block";
         }
-        
-        app.editNote.uploadInProgress = true;
-        
-        // Disable the form
-        document.getElementById('noteData').removeEventListener('submit', app.editNote.submitNote);
-        document.getElementById("submit").disable = true;
+        for(var i=0; i<files.length; i++){
+            var extension = getExtension(files[i].name);
+            if(!app.DEFAULTS.ALLOWED_EXTENSIONS.includes(extension)){
+                new Modal("Error", MessageCode["NoteExtensionUnauthorized"], null, {
+                text: "Okay"
+                }).show();
+                return;
+            }
+        }
 
         if (changes.name != null || changes.desc != null || changes.taken_on != null || changes.files != false) {
+            
+            app.editNote.uploadInProgress = true;
+        
+            // Disable the form
+            document.getElementById('noteData').removeEventListener('submit', app.editNote.submitNote);
+            document.getElementById("submit").disable = true;
+            
             Resources.NotesEdit.POST(this.noteId, changes.name, changes.desc, changes.taken_on, files, this.successEdit, this.failureEdit, function(event) {
                 if (event.lengthComputable === true) {
                     let percent = Math.round((event.loaded / event.total) * 100);
@@ -89,11 +99,6 @@ app.editNote = {
                 }
             });
         } else {
-            app.editNote.uploadInProgress = false;
-        
-            // Enable the form
-            document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote);
-            document.getElementById("submit").disable = false;
             new Modal("No Changes", MessageCode["NoChangesToMake"], null, null, "Okay").show();
         }
         

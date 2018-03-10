@@ -1,4 +1,4 @@
-/* global Resources, MessageCode, datePolyFillStart */
+/* global Resources,MessageCode,datePolyFillStart,Modal,getExtension */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -189,6 +189,16 @@ app.postNotes = {
                 status: 400
             });
             return;
+        }
+        
+        for(var i=0; i<files.length; i++){
+            var extension = getExtension(files[i].name);
+            if(!app.DEFAULTS.ALLOWED_EXTENSIONS.includes(extension)){
+                new Modal("Error", MessageCode["NoteExtensionUnauthorized"], null, {
+                text: "Okay"
+                }).show();
+                return;
+            }
         }
 
         this.uploadInProgress = true;
