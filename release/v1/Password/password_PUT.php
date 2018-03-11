@@ -21,7 +21,7 @@ if($user != null){
     $value = password_hash($password, PASSWORD_BCRYPT);
     $insertParams = array($value, $user["id"], $code);
 
-    database_update($conn, "UPDATE users SET passwordhash=? WHERE id=? AND passresetcode=? LIMIT 1", "sss", $insertParams);
+    database_update($conn, "UPDATE users SET passwordhash=?,passresetcreated=DATE_SUB(passresetcreated, INTERVAL 15 MINUTE) WHERE id=? AND passresetcode=? LIMIT 1", "sss", $insertParams);
     echoSuccess($conn, array(
         "messageCode" => "PasswordReset"
     ));
