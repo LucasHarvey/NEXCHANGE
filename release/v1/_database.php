@@ -56,10 +56,10 @@ function database_prepare($dbh, $_query, $types, $params){
             
             return $query;
         }
-        $error = $dbh->error;
+        $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." | Query: ".$_query." | Params: ".var_export($params);
         echoError($dbh, 500, "DatabasePrepError", $error);
     }catch(Exception $e){
-        $error = $dbh->error;
+        $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." | Query: ".$_query." | Params: ".var_export($params);
         echoError($dbh, 500, "DatabaseError", $error);
     }
 }
@@ -76,6 +76,7 @@ function database_execute_no_fetch($queryHandle){
         return;
     }
     
+    $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." || NO QUERY (NO FETCH)";
     echoError($dbh, 500, "DatabaseExecuteError");
 }
 
@@ -97,7 +98,8 @@ function database_execute_single($queryHandle){
         return null; //Query returned no results.
     }
     
-    echoError($dbh, 500, "DatabaseExecuteError");
+    $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." || NO QUERY (SINGLE)";
+    echoError($dbh, 500, "DatabaseExecuteError", $error);
 }
 
 /*
@@ -119,7 +121,8 @@ function database_execute_fetch_all($queryHandle){
         return $finalResult;
     }
     
-    echoError($dbh, 500, "DatabaseExecuteError");
+    $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." || NO QUERY!";
+    echoError($dbh, 500, "DatabaseExecuteError", $error);
 }
 
 function database_handle_error($queryHandle){
@@ -164,7 +167,7 @@ function database_execute($dbh, $query, $types, $params, $throw = false){
     }catch(Exception $e){
         $stmt->close();
         if(!$throw){
-            $error = $dbh->error;
+            $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." | Query: ".$query." | Params: ".var_export($params);
             echoError($dbh, 500, "DatabaseError", $error); //Most likely a bad request. TBD
         }
         return false;
@@ -182,7 +185,7 @@ function database_insert($dbh, $query, $types, $params, $throw = false){
     }catch(Exception $e){
         $stmt->close();
         if(!$throw){
-            $error = $dbh->error;
+            $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." | Query: ".$query." | Params: ".var_export($params);
             echoError($dbh, 500, "DatabaseInsertError", $error); //Most likely a bad request. TBD
         }
         return false;
@@ -200,7 +203,7 @@ function database_update($dbh, $query, $types, $params, $throw = false){
     }catch(Exception $e){
         $stmt->close();
         if(!$throw){
-            $error = $dbh->error;
+            $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." | Query: ".$query." | Params: ".var_export($params);
             echoError($dbh, 500, "DatabaseUpdateError", $error); //Most likely a bad request. TBD
         }
         return false;
@@ -218,7 +221,7 @@ function database_delete($dbh, $query, $types, $params, $throw = true){
         }
     }catch(Exception $e){
         $stmt->close();
-        $error = $dbh->error;
+        $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." | Query: ".$query." | Params: ".var_export($params);
         if($throw){
             return $error;
         }
@@ -234,7 +237,7 @@ function database_get_row($dbh, $query, $types, $params){
         return $value;
     }catch(Exception $e){
         $stmt->close();
-        $error = $dbh->error;
+        $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." | Query: ".$query." | Params: ".var_export($params);
         echoError($dbh, 500, "DatabaseSelectError", $error); //Most likely a bad request. TBD
     }
 }
@@ -247,7 +250,7 @@ function database_get_all($dbh, $query, $types, $params){
         return $value;
     }catch(Exception $e){
         $stmt->close();
-        $error = $dbh->error;
+        $error = "Error: ".$dbh->error ." | ErrorNo: ".$dbh->errno." | Query: ".$query." | Params: ".var_export($params);
         echoError($dbh, 500, "DatabaseSelectError", $error); //Most likely a bad request. TBD
     }
 }
