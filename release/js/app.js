@@ -411,6 +411,6 @@ function debounce(func, wait, immediate) {
 function getExtension(fileName){
     var fileComponents = fileName.split(".");
     var extension = fileComponents[fileComponents.length - 1];
-    return extension;
+    return extension.toLowerCase();
 }
 
