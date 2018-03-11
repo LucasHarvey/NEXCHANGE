@@ -21,6 +21,7 @@ let MessageCode = {
 
     UserUpdated: "Your profile has been updated successfully.",
     PasswordUpdateFailure: 'Your password could not be updated. Please change it in the "My Profile" page.',
+    PasswordResetFailed: "The student ID and email do not match what we have in our databases.",
     PasswordResetRequested: "If the email entered matches the email on record, you will receive an email with the steps to reset your password.",
     PasswordReset: "Password has been reset successfully.",
     PasswordTooSmall: "Password must be 9 characters or more.",
