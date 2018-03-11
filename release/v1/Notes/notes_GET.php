@@ -74,9 +74,6 @@ function getSortQuery($_sortMethod, $_sortDirection, $hideDownloaded, $offset){
     }
     
     $sortDownloaded = "";
-    if($hideDownloaded === false){
-        $sortDownloaded = "nfd.lastDownloaded IS NULL DESC,";
-    }
     
     switch ($_sortMethod) {
         case "course":
