@@ -15,7 +15,11 @@ $email = $_JSON["email"];
 $select = "SELECT id,email FROM users WHERE login_id = ? AND email = ? AND privilege = 'USER' LIMIT 1";
 
 $user = database_get_row($conn, $select, "ss", array($studentId, $email));
-//TODO; user exists
+
+if($user == null){
+    echoError($conn, 404, "PasswordResetFailed");
+}
+
 $length = 20;
 $true = true;
 $token = bin2hex(openssl_random_pseudo_bytes($length, $true));
