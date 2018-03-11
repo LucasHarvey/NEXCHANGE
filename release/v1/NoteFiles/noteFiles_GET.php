@@ -1,6 +1,6 @@
 <?php
 
-function outputFileContent($storage_name, $type, $file_name, $size, $expectedMD5){
+function outputFileContent($conn, $storage_name, $type, $file_name, $size, $expectedMD5){
     
     if(!file_exists($storage_name)){
         echoError($conn, 404, "NoFilesForNote");
@@ -47,5 +47,5 @@ if(!$file){
 }
 
 database_insert($conn, "INSERT INTO notefile_downloads (notefile_id, user_id) VALUES (?,?)", "ss", array($file['id'], $user_id));
-outputFileContent($file["storage_name"], $file["type"], $file["file_name"], $file["size"], $file["md5"]);
+outputFileContent($conn, $file["storage_name"], $file["type"], $file["file_name"], $file["size"], $file["md5"]);
 ?>
