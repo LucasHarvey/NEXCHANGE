@@ -83,7 +83,7 @@ app.editCourse = {
             callback: function() {
                 location.assign("./signup");
             }
-        }).show();
+        }, null, "Okay").show();
         
     },
     
