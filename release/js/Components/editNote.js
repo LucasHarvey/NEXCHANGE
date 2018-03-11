@@ -52,9 +52,9 @@ app.editNote = {
         
         let newName = document.getElementById("noteName").value;
         let newDesc = document.getElementById("description").value;
-        let newDate = new Date(document.getElementById("date").value.replace(/-/g, '\/'));
+        let newDate = new Date(document.getElementById("date").value.replace(/-/g, '\/').replace(/T.+/, ''));
         let files = document.getElementById('file').files;
-        let oldDate = new Date(this.originalNote.taken_on.replace(/-/g, '\/'));
+        let oldDate = new Date(this.originalNote.taken_on.replace(/-/g, '\/').replace(/T.+/, ''));
 
         var changes = {
             name: null,
@@ -68,8 +68,10 @@ app.editNote = {
             changes.desc = newDesc;
         if (newDate.getFullYear() - oldDate.getFullYear() != 0 ||
             newDate.getMonth() - oldDate.getMonth() != 0 ||
-            newDate.getDate() - oldDate.getDate() != 0)
-            changes.taken_on = newDate;
+            newDate.getDate() - oldDate.getDate() != 0){
+                var dateToSubmit = app.dateFormatting.parseSubmissionDate(newDate);
+                changes.taken_on = dateToSubmit;
+        }
         if(files.length>0){
             changes.files = true;
             document.getElementById("barContainer").style.display = "block";
