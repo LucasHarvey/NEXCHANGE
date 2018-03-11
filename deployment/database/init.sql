@@ -1,5 +1,4 @@
 source deployment/database/schema.sql
-source deployment/database/upload_courses.sql
 
 -- ADD THE ADMIN USER
 -- Password is: THE_PASSWORD
