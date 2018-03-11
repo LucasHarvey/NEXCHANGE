@@ -24,14 +24,14 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
     
     $usersAndCourses = database_get_all($conn, $selectUsers, "", array());
     
-    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/upload";
+    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/login";
     $subject = 'No-Reply: NEXCHANGE - Reminder to Upload Notes';
     
     foreach ($usersAndCourses as $user) {
         $message = 'Hello '.$user['first_name'].' '.$user['last_name'].
             ",\n\nThis is a reminder that you haven't uploaded any notes to NEXCHANGE for a course you're registered in.".
             "\n\nYou've reached $NOTETAKER_REMINDER_DAYS without uploading notes for ".$user['course_number'] . " (".$user['course_name'].").".
-            "\n\nYou can upload notes at: ".$link;
+            "\n\nYou can login at: ".$link;
             
         //echo "Sending email to ".$user['email']. " because of ".$user['course_name'].PHP_EOL;
         

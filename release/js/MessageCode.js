@@ -4,7 +4,7 @@ let MessageCode = {
     InternalServerError: "An unknown server error occurred. Please contact the Access Centre if this problem persists.",
     JSONParseException: "Unable to parse a response from the server. Please contact the Access Centre if this problem persists.",
     MalformedBody: "The request body was not formed properly. Contact the Access Centre if this problem persists.",
-    RequestTimedout: "A request took too long to process and has timed out. Ensure you have internet connectivity.",
+    RequestTimedout: "A request took too long to process and has timed out. Please ensure you have internet connectivity.",
     UnknownFileUploadError: "An error occured while uploading a file. Contact the Access Centre if this problem persists.",
     OneFileAllowed: "Only one file per upload is allowed.",
     StartupError: "An error occurred during startup of a component.",
@@ -84,7 +84,7 @@ let MessageCode = {
     
     CourseDeleted: "The course has been deleted",
     UserRegistered: "has been signed up successfully. They have been sent an email with their credentials.",
-    UserAlreadyExists: "The student ID is already registered to a user. Ensure the Student ID was entered correctly.",
+    UserAlreadyExists: "The student ID is already registered to a user. Please ensure the Student ID was entered correctly.",
     CourseAlreadyExists: "The course already exists.",
     CourseCreated: "The course has been created successfully.",
     CoursesCreated: "The courses have been created successfully.",

@@ -9,13 +9,13 @@ function notify_note_upload_email_task($conn, $users, $noteId){
     
     $note = database_get_row($conn, "SELECT n.name, description, n.taken_on, c.course_name, c.course_number, n.course_id FROM notes n INNER JOIN courses c ON n.course_id = c.id WHERE n.id=?", "s", $noteId);
     
-    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/home";
+    $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/login";
     
     $subject = 'No-Reply: NEXCHANGE - Notes Uploaded';
     $message = "New notes were uploaded by a notetaker.\n\nNote Details\n\nName: ".$note['name'].
         "\nDescription: ".$note['description'].
         "\nTaken On: ".$note['taken_on'].
-        "\nFor: ".$note['course_name']." (".$note['course_number'].")\n\n You can view the notes at: $link";
+        "\nFor: ".$note['course_name']." (".$note['course_number'].")\n\n You can login at: $link";
     
     $resp = array();
     foreach ($users as $user) {
