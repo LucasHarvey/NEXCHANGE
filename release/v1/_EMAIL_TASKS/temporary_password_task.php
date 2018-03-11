@@ -13,7 +13,7 @@ function temporary_password_email($conn, $userid, $email, $token){
     $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/login";
     
     $subject = 'No-Reply: NEXCHANGE Account Created';
-    $message = "Your NEXCHANGE account was created!\n Your login ID is your student ID, and your temporary password is: $token\n You can login at: $link";
+    $message = "Your NEXCHANGE account was created!\nYour login ID is your student ID, and your temporary password is: $token\nYou can login at: $link";
     
     return send_email($conn, 4, $userid, $email, $subject, $message, false);
 }
