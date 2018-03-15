@@ -5,6 +5,7 @@ let MessageCode = {
     JSONParseException: "Unable to parse a response from the server. Please contact the Access Centre if this problem persists.",
     MalformedBody: "The request body was not formed properly. Contact the Access Centre if this problem persists.",
     RequestTimedout: "A request took too long to process and has timed out. Please ensure you have internet connectivity.",
+    NoInternet: "A request could not be sent. Please ensure you have internet connectivity.",
     UnknownFileUploadError: "An error occured while uploading a file. Contact the Access Centre if this problem persists.",
     OneFileAllowed: "Only one file per upload is allowed.",
     StartupError: "An error occurred during startup of a component.",
