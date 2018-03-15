@@ -1,4 +1,4 @@
-/* global MessageCode, Resources, Modal,flexibility */
+/* global MessageCode, Resources, Modal,flexibility,location,navigator */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -239,6 +239,15 @@ app._generateRequest = function(success, failure, options) {
             if (this.status >= 200 && this.status < 300) {
                 success(response, this);
             } else {
+                if(!navigator.onLine){
+                    var successBtn = {text: "Okay",
+                    callback: function(){
+                        location.reload();
+                    }};
+                    
+                    new Modal("Error", MessageCode["NoInternet"], successBtn, false).show();
+                    return;
+                }
                 let failureFunc = function(resp) {
                     if (!options.disableAuthResult && (this.status == 401 || this.status == 403)) {
                         app.handleAuthError(resp);
@@ -413,4 +422,5 @@ function getExtension(fileName){
     var extension = fileComponents[fileComponents.length - 1];
     return extension.toLowerCase();
 }
+
 
