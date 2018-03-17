@@ -224,10 +224,10 @@ app.notes = {
                 window.URL.revokeObjectURL(url);
                 document.getElementById(id).disabled = false;
                 document.getElementById(id).innerText = "Download Notes";
-                
-                app.home.getCourses();
             };
         }
+        
+        
         let successFunction = function(resp, req) {
             var myRe = /\(([^\).]+)\)/gi;
             var matches = [];
