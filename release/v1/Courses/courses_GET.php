@@ -37,7 +37,7 @@ if(array_key_exists("section", $_GET) && !empty($_GET['section'])){
     $whereCount = count(array_keys($whereStmt[1]));
     if($whereCount == 0){
         $selectQuery = $selectQuery . " WHERE";
-    }else{
+    }elseif($whereCount > 1){
         $selectQuery = $selectQuery . " AND";
     }
     $selectQuery = $selectQuery . " ? BETWEEN section_start AND section_end";
