@@ -97,6 +97,9 @@ app.getCookie = function(key) {
 
 app.handleFailure = function(response) {
     console.warn(response.status, response.messageCode);
+    if(response.requested != "/"+Resources.Log.location){
+        app.logUi(response);
+    }
     if (typeof Modal === "undefined") {
         return;
     }
