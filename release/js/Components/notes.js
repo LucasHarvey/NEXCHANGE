@@ -227,7 +227,6 @@ app.notes = {
             };
         }
         
-        
         let successFunction = function(resp, req) {
             var myRe = /\(([^\).]+)\)/gi;
             var matches = [];
