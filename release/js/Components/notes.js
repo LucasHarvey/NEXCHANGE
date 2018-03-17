@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,getQueryParameterByName,generateDeleteConfirmationModal,debounce,generatePTag */
+/* global Resources,MessageCode,Modal,getQueryParameterByName,generateDeleteConfirmationModal,debounce,generatePTag,navigator,Blob */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -191,16 +191,43 @@ app.notes = {
 
     downloadNote: function(e) {
         let id = this.id;
-        let downloadFunc = function(resp, req){
-            let a = document.createElement("a");
-            let url = window.URL.createObjectURL(resp);
-            a.download = req.getResponseHeader("Content-Disposition").match("\"(.+)\"")[1];
-            a.href = url;
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.getElementById(id).disabled = false;
-            document.getElementById(id).innerText = "Download Notes";
-        };
+        
+        var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        var downloadFunc;
+        if(iOS){
+
+            // IOS code
+            var url;
+                downloadFunc = function(resp, req){
+                var type = req.getResponseHeader("Content-Type");
+                var reader = new FileReader();
+                var out = new Blob([resp], {type: type});
+                
+                reader.addEventListener('loadend', function(e) {
+                    url = reader.result;
+                    document.getElementById(id).disabled = false;
+                    document.getElementById(id).innerText = "Download Notes";
+                    window.location.href = url;
+                });
+            
+                reader.readAsDataURL(out);
+            };
+        
+        } else {
+            // normal code
+            downloadFunc = function(resp, req){
+                let a = document.createElement("a");
+                let url = window.URL.createObjectURL(resp);
+                a.download = req.getResponseHeader("Content-Disposition").match("\"(.+)\"")[1];
+                a.href = url;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.getElementById(id).disabled = false;
+                document.getElementById(id).innerText = "Download Notes";
+                
+                app.home.getCourses();
+            };
+        }
         let successFunction = function(resp, req) {
             var myRe = /\(([^\).]+)\)/gi;
             var matches = [];
