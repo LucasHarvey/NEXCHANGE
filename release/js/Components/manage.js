@@ -66,7 +66,7 @@ app.manage = {
             article.description.appendChild(generatePTag("Student ID", user.studentId));
             article.description.appendChild(generatePTag("Email", user.email));
             article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
-            article.description.appendChild(generatePTag("User Created On", (new Date(user.created)).toPrettyDate()));
+            article.description.appendChild(generatePTag("User Created On", (new Date(user.created.replace(/-/g, '\/'))).toPrettyDate()));
             
             article.button.innerHTML = "View Student Notes";
             article.button.id = "UA" + i + "_" + user.id;
@@ -271,7 +271,7 @@ app.manage = {
             article.description.appendChild(generatePTag("Section".pluralize(section.length > 5), section));
             article.description.appendChild(generatePTag("Role", role));
             article.description.appendChild(generatePTag("Author of", ua.notesAuthored + " note".pluralize(ua.notesAuthored)));
-            article.description.appendChild(generatePTag("Created On", new Date(ua.created).toPrettyDate()));
+            article.description.appendChild(generatePTag("Created On", new Date(ua.created.replace(/-/g, '\/')).toPrettyDate()));
             article.description.appendChild(generatePTag("Expires On", new Date(ua.expires_on).toPrettyDate()));
 
             article.button.innerHTML = "View Notes";
