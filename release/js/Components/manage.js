@@ -254,17 +254,17 @@ app.manage = {
         for (var i = 0; i < useraccesses.length; i++) {
             let ua = useraccesses[i];
             let article = this._generateArticle();
-            article.header.innerText = ua.role.toProperCase() + " - " + ua.firstName + " " + ua.lastName;
-            //TODO clean all.
-            var section =  (ua.courseSectionStart + "").padStart(5, "0");
-            if(ua.courseSectionStart != ua.courseSectionEnd){
-                section += " to " + (ua.courseSectionEnd + "").padStart(5, "0");
-            }
             var role;
             if(ua.role == "NOTETAKER"){
                 role = ua.role.toProperCase();
             } else if (ua.role == "STUDENT"){
                 role = "Student in need of notes";
+            }
+            article.header.innerText = role + " - " + ua.firstName + " " + ua.lastName;
+            //TODO clean all.
+            var section =  (ua.courseSectionStart + "").padStart(5, "0");
+            if(ua.courseSectionStart != ua.courseSectionEnd){
+                section += " to " + (ua.courseSectionEnd + "").padStart(5, "0");
             }
             
             article.description.appendChild(generatePTag("Course", ua.courseNumber + " (" + ua.courseName + ")"));
