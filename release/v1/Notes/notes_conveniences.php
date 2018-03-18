@@ -170,16 +170,16 @@ function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fil
 		$insertTypes, $insertValues, true);
 }
 
-function validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE){
+function validateUploadedFiles($conn){
     foreach($_FILES["file"]["name"] as $key => $name){
         if($_FILES['file']['error'][$key] == 0) {
             $fileDotSeparated = explode('.', $name); //MUST be on 2 lines.
             $ext = strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
-            if(!in_array($ext, $allowed)){
+            if(!in_array($ext, $GLOBALS['ALLOWED_FILE_EXTENSIONS'])){
             	echoError($conn, 409, "NoteExtensionUnauthorized");
             }
             
-            if($_FILES['file']['size'][$key] > $MAX_SINGLE_FILE_SIZE){
+            if($_FILES['file']['size'][$key] > $GLOBALS['MAX_SINGLE_FILE_SIZE']){
                 echoError($conn, 409, "FileIsTooBig");
             }
         }else{
