@@ -134,7 +134,7 @@ app.notes = {
         let dateP = generatePTag("Notes taken on", new Date(noteData.taken_on.replace(/-/g, '\/')).toPrettyDate(), true);
         articleSection.appendChild(dateP);
 
-        let uploadDateP = generatePTag("Notes uploaded on", new Date(noteData.created).toPrettyDate(), true);
+        let uploadDateP = generatePTag("Notes uploaded on", new Date(noteData.created.replace(/-/g, '\/')).toPrettyDate(), true);
         articleSection.appendChild(uploadDateP);
 
         var numberDownloadCount = (parseInt(noteData.download_count) || 0);
