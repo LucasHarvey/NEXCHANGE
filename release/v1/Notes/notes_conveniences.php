@@ -170,12 +170,12 @@ function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fil
 		$insertTypes, $insertValues, true);
 }
 
-function validateUploadedFiles($conn, $allowed){
+function validateUploadedFiles($conn){
     foreach($_FILES["file"]["name"] as $key => $name){
         if($_FILES['file']['error'][$key] == 0) {
             $fileDotSeparated = explode('.', $name); //MUST be on 2 lines.
             $ext = strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
-            if(!in_array($ext, $allowed)){
+            if(!in_array($ext, $GLOBALS['ALLOWED_FILE_EXTENSIONS'])){
             	echoError($conn, 409, "NoteExtensionUnauthorized");
             }
             
