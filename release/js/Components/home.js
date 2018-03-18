@@ -286,10 +286,18 @@ app.home = {
                 var out = new Blob([resp], {type: type});
                 
                 reader.addEventListener('loadend', function(e) {
+                    
+                    // Detect if new window is blocked
                     url = reader.result;
+                    var newWin = window.open(url, '_blank');  
+                    
                     document.getElementById(id).disabled = false;
                     document.getElementById(id).innerText = "Download Notes";
-                    window.location.href = url;
+                    
+                    if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
+                        new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
+                        return;
+                    }
                 });
             
                 reader.readAsDataURL(out);
