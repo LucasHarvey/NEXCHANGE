@@ -5,4 +5,5 @@ $GLOBALS['NEXCHANGE_SECRET'] = "F/|wL~[M%@r],d;xL+GMLB_8X?fx8xhpM1~5|*xU_?K[+f8<
 $GLOBALS['NEXCHANGE_TOKEN_EXPIRY_MINUTES'] = 15; //number of minutes before expiry of JWT
 $GLOBALS['NEXCHANGE_SECURED_SITE'] = false; //important, if secured is FORCED you must add https to NEXCHANGE DOMAIN
 $GLOBALS['MAX_SINGLE_FILE_SIZE'] = 5 * 1024 * 1024; // 5 MB
+$GLOBALS['ALLOWED_FILE_EXTENSIONS'] = ['pdf','docx','doc','pptx','ppt','xlsx','csv','jpeg','jpg','png', 'txt', 'zip'];
 ?>
