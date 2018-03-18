@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 set_error_handler("globalErrorHandler");
 
 function logFrontEnd($message){
-    error_log("FrontError: ".$message);
+    error_log("FrontError: ".json_encode($message));
 }
 
 function echoError($conn, $status, $messageCode, $message = ""){
