@@ -34,15 +34,12 @@ if(!database_start_transaction($conn)){
 // Allowed file types
 $allowed = ['pdf','docx','doc','pptx','ppt','xlsx','csv','jpeg','jpg','png', 'txt', 'zip'];
 
-//Max file size
-$MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
-
 $succeeded = array();
 
 include_once("./Notes/notes_conveniences.php");
 
 //Verify all note extensions are allowed and file size is appropriate
-validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
+validateUploadedFiles($conn, $allowed);
 
 // Move the note files onto the server and retrieve the note data
 $noteData = moveFiles();
