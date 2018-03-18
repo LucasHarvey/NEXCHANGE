@@ -349,8 +349,8 @@ Date.prototype.toPrettyDate = (function(showTime) {
     var year = this.getFullYear();
 
     var time = ' at ' + (this.getHours() + "").padStart(2, "0") + ":" + (this.getMinutes() + "").padStart(2, "0");
-
-    return day + ' ' + monthNames[monthIndex] + ' ' + year + (showTime ? time : "");
+    
+    return monthNames[monthIndex] + ' ' + day + ' ' + year + (showTime ? time : "");
 });
 
 function getQueryParameterByName(name) {

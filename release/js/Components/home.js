@@ -170,7 +170,7 @@ app.home = {
 
         if (noteData.hasOwnProperty("lastDownloaded")) {
             article.className = noteData.lastDownloaded == null ? "newnote" : ""; //Show a halo on the new undownloaded note
-            let dateDownloaded = noteData.lastDownloaded == null ? "Never" : new Date(noteData.lastDownloaded).toPrettyDate(true);
+            let dateDownloaded = noteData.lastDownloaded == null ? "Never" : new Date(noteData.lastDownloaded.replace(/-/g, '\/')).toPrettyDate(true);
             let dateDP = document.createElement("P");
             dateDP.innerHTML = "Downloaded on: <span>" + dateDownloaded + "</span>";
             articleSection.appendChild(dateDP);
