@@ -380,7 +380,7 @@ app.manage = {
         app.manage.searchData = {
             type: "student",
             name: name,
-            studendId: studentId,
+            studentId: studentId,
         };
         
         // Disable the search form
@@ -396,7 +396,7 @@ app.manage = {
         
         app.manage.searchData = {
             type: "access",
-            studendId: studentId,
+            studentId: studentId,
             cname: courseName,
             cnumber: courseNumber,
         };
