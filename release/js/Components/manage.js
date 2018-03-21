@@ -65,9 +65,7 @@ app.manage = {
             
             article.description.appendChild(generatePTag("Student ID", user.studentId));
             article.description.appendChild(generatePTag("Email", user.email));
-            if(user.isNoteTaker){
-                article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
-            }
+            if(user.isNoteTaker) article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
             article.description.appendChild(generatePTag("User Created On", (new Date(user.created.replace(/-/g, '\/'))).toPrettyDate()));
             
             article.button.innerHTML = "View Student Notes";
