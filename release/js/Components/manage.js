@@ -529,7 +529,6 @@ app.manage = {
     toggleSearchFields: function() {
         app.manage.pagesLoaded = 0;
         app.manage.paginationEnd = false;
-        app.manage.searchData = null;
         let searchOptions = document.getElementsByName("searchWhat");
         for (var i = 0; i < searchOptions.length; i++) {
             var inputRows = document.getElementsByClassName("searchWhat_" + searchOptions[i].value);
