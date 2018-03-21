@@ -28,7 +28,10 @@ if(!empty($whereStmt[1])){
 }
 
 $notesCount = "(SELECT count(*) FROM notes WHERE user_id = u.id) as notesAuthored";
-$selectQuery = "SELECT id, login_id as 'studentId', first_name as 'firstName', last_name as 'lastName', email, created, $notesCount FROM users u ".$whereStmt[0] . " ORDER BY login_id ASC";
+$noteTakerCount = '(SELECT count(*) FROM user_access ua WHERE ua.user_id = u.id AND ua.role = "NOTETAKER")';
+$isNoteTaker = "IF($noteTakerCount>0,TRUE,FALSE) as isNoteTaker";
+
+$selectQuery = "SELECT id, login_id as 'studentId', first_name as 'firstName', last_name as 'lastName', email, u.created, $notesCount, $isNoteTaker FROM users u ".$whereStmt[0] . " ORDER BY login_id ASC";
 $selectQuery = $selectQuery. " LIMIT ".$GLOBALS['PAGE_SIZES']." OFFSET ". ($offset * $GLOBALS['PAGE_SIZES']);
 
 $users = database_get_all($conn, $selectQuery, $insertTypes, $insertVals);

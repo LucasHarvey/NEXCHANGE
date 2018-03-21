@@ -65,7 +65,9 @@ app.manage = {
             
             article.description.appendChild(generatePTag("Student ID", user.studentId));
             article.description.appendChild(generatePTag("Email", user.email));
-            article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
+            if(user.isNoteTaker){
+                article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
+            }
             article.description.appendChild(generatePTag("User Created On", (new Date(user.created.replace(/-/g, '\/'))).toPrettyDate()));
             
             article.button.innerHTML = "View Student Notes";
@@ -258,10 +260,9 @@ app.manage = {
             if(ua.role == "NOTETAKER"){
                 role = ua.role.toProperCase();
             } else if (ua.role == "STUDENT"){
-                role = "Student in need of notes";
+                role = "Student receiving notes";
             }
             article.header.innerText = role + " - " + ua.firstName + " " + ua.lastName;
-            //TODO clean all.
             var section =  (ua.courseSectionStart + "").padStart(5, "0");
             if(ua.courseSectionStart != ua.courseSectionEnd){
                 section += " to " + (ua.courseSectionEnd + "").padStart(5, "0");
@@ -270,7 +271,7 @@ app.manage = {
             article.description.appendChild(generatePTag("Course", ua.courseNumber + " (" + ua.courseName + ")"));
             article.description.appendChild(generatePTag("Section".pluralize(section.length > 5), section));
             article.description.appendChild(generatePTag("Role", role));
-            article.description.appendChild(generatePTag("Author of", ua.notesAuthored + " note".pluralize(ua.notesAuthored)));
+            if(ua.role=="NOTETAKER") article.description.appendChild(generatePTag("Author of", ua.notesAuthored + " note".pluralize(ua.notesAuthored)));
             article.description.appendChild(generatePTag("Created On", new Date(ua.created.replace(/-/g, '\/')).toPrettyDate()));
             article.description.appendChild(generatePTag("Expires On", new Date(ua.expires_on).toPrettyDate()));
 
