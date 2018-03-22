@@ -21,6 +21,10 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
     $selectUsers = "SELECT u.id,u.email,u.first_name,u.last_name,c.course_name,c.course_number ".
                     "FROM user_access ua INNER JOIN users u ON ua.user_id = u.id INNER JOIN courses c ON ua.course_id=c.id ".
                     "WHERE ua.role='NOTETAKER' AND (ua.user_id, ua.course_id) NOT IN ($notesWithin7Days)";
+                    
+    $selectUsers = "SELECT u.id,u.email,u.first_name,u.last_name,c.course_name,c.course_number ".
+                    "FROM user_access ua INNER JOIN users u ON ua.user_id = u.id INNER JOIN courses c ON ua.course_id=c.id ".
+                    "WHERE ua.role='NOTETAKER' AND (ua.user_id, ua.course_id) NOT IN ($notesWithin7Days) AND DATE_ADD(u.created, INTERVAL $NOTETAKER_REMINDER_DAYS DAY) < NOW()";
     
     $usersAndCourses = database_get_all($conn, $selectUsers, "", array());
     
