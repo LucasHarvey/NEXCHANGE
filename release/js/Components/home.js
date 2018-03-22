@@ -293,6 +293,7 @@ app.home = {
                     
                     document.getElementById(id).disabled = false;
                     document.getElementById(id).innerText = "Download Notes";
+                    app.home.getCourses();
                     
                     if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
                         new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
