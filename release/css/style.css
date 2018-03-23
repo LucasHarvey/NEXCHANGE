@@ -795,12 +795,6 @@ body>div>* {
     
 }
 
-@media all and (max-height: 600px){
-    body>footer {
-        display: none!important;
-    }
-}
-
 .main {
     -webkit-box-flex: 5;
         -ms-flex: 5 0px;
