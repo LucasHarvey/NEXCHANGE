@@ -281,7 +281,20 @@ app.home = {
         var newWin = window.open(url, '_blank');  
         
         this.disabled = false;
-        app.home.getCourses();
+        
+        var article = null;
+        let section = this.parentElement;
+        if(section){
+          article = section.parentElement;  
+        } 
+        if(article){
+            let lastDownloaded = article.children[1].children[2];
+            article.className = ""; //Show a halo on the new undownloaded note
+            if(lastDownloaded){
+                let dateDownloaded = new Date().toPrettyDate(true);
+                lastDownloaded.innerHTML = "Downloaded on: <span>" + dateDownloaded + "</span>";   
+            }
+        }
         
         if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
             new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
