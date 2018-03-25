@@ -27,9 +27,9 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
     $subject = 'No-Reply: NEXCHANGE - Reminder to Upload Notes';
     
     foreach ($usersAndCourses as $user) {
-        $message = 'Hello '.$user['first_name'].' '.$user['last_name'].
+        $message = 'Hello '.addslashes($user['first_name']).' '.addslashes($user['last_name']).
             ",\n\nThis is a reminder that you haven't uploaded any notes to NEXCHANGE for a course you're registered in.".
-            "\n\nYou've reached $NOTETAKER_REMINDER_DAYS days without uploading notes for ".$user['course_name']." (".$user['course_number'].").".
+            "\n\nYou've reached $NOTETAKER_REMINDER_DAYS days without uploading notes for ".addslashes($user['course_name'])." (".addslashes($user['course_number']).").".
             "\n\nYou can login at: ".$link;
             
         //echo "Sending email to ".$user['email']. " because of ".$user['course_name'].PHP_EOL;
