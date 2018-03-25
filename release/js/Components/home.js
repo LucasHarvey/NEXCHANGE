@@ -272,90 +272,22 @@ app.home = {
         app.home.getNotes(true);
     },
     downloadNote: function(e) {
-        let id = this.id;
-        
-        var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        var downloadFunc;
-        if(iOS){
-
-            // IOS code
-            var url;
-                downloadFunc = function(resp, req){
-                var type = req.getResponseHeader("Content-Type");
-                var reader = new FileReader();
-                var out = new Blob([resp], {type: type});
-                
-                reader.addEventListener('loadend', function(e) {
-                    
-                    // Detect if new window is blocked
-                    url = reader.result;
-                    var newWin = window.open(url, '_blank');  
-                    
-                    document.getElementById(id).disabled = false;
-                    document.getElementById(id).innerText = "Download Notes";
-                    app.home.getCourses();
-                    
-                    if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
-                        new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
-                        return;
-                    }
-                });
-            
-                reader.readAsDataURL(out);
-            };
-        
-        } else {
-            // normal code
-            downloadFunc = function(resp, req){
-                let a = document.createElement("a");
-                let url = window.URL.createObjectURL(resp);
-                a.download = req.getResponseHeader("Content-Disposition").match("\"(.+)\"")[1];
-                a.href = url;
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.getElementById(id).disabled = false;
-                document.getElementById(id).innerText = "Download Notes";
-                
-                app.home.getCourses();
-            };
-        }
-        
-        let successFunction = function(resp, req) {
-            
-                var myRe = /\(([^\).]+)\)/gi;
-                var matches = [];
-                var match;
-                while ((match = myRe.exec(req.getResponseHeader("Content-Description"))) !== null) {
-                    matches.push(match[1]);
-                }
-                if (matches[0] != matches[1]) {
-                    new Modal("File Corruption", MessageCode["FileCorruptedFrontEnd"], {
-                        text: "Download Anyway",
-                        callback: function(e){
-                            this.hide();
-                            downloadFunc(resp, req);
-                        }
-                    }).show();
-                    return;
-                }
-                
-                downloadFunc(resp, req);
-            
-        };
-        let progressFunction = function(evt) {
-            var percentComplete = Math.round((evt.loaded / evt.total) * 100);
-            document.getElementById(id).innerHTML = "Downloading... " + percentComplete + "%";
-            if (percentComplete >= 100) {
-                document.getElementById(id).disabled = false;
-                document.getElementById(id).innerHTML = "Download Notes";
-            }
-        };
-        this.innerText = "Downloading...";
         this.disabled = true;
+        let id = this.id;
+        let xsrf = app.getCookie("xsrfToken");
+        
+        let url = "./v1/NoteFiles/noteFiles_GET.php?noteId=" + id.slice(0, -4) + "&xsrfToken=" + xsrf;
 
-        Resources.Files.GET(this.id.slice(0, -4), progressFunction, successFunction);
-    },
-
+        var newWin = window.open(url, '_blank');  
+        
+        document.getElementById(id).disabled = false;
+        document.getElementById(id).innerText = "Download Notes";
+        app.home.getCourses();
+        
+        if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
+            new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
+        }
+    }
 };
 
 app.startup.push(function userHomeStartup() {
