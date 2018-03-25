@@ -194,7 +194,7 @@ app.notes = {
         let id = this.id;
         let xsrf = app.getCookie("xsrfToken");
         
-        let url = "./v1/NoteFiles/noteFiles_GET.php?noteId=" + id.substring(0, id.indexOf("_download")) + "&xsrfToken=" + xsrf;
+        let url = "./v1/download.php?noteId=" + id.substring(0, id.indexOf("_download")) + "&xsrfToken=" + xsrf;
         
         var newWin = window.open(url, '_blank');  
         
