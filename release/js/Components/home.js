@@ -172,6 +172,7 @@ app.home = {
             article.className = noteData.lastDownloaded == null ? "newnote" : ""; //Show a halo on the new undownloaded note
             let dateDownloaded = noteData.lastDownloaded == null ? "Never" : new Date(noteData.lastDownloaded.replace(/-/g, '\/')).toPrettyDate(true);
             let dateDP = document.createElement("P");
+            dateDP.id = noteData.id + "_downloadDate";
             dateDP.innerHTML = "Downloaded on: <span>" + dateDownloaded + "</span>";
             articleSection.appendChild(dateDP);
         }
@@ -276,7 +277,7 @@ app.home = {
         let id = this.id;
         let xsrf = app.getCookie("xsrfToken");
         
-        let url = "./v1/NoteFiles/noteFiles_GET.php?noteId=" + id.slice(0, -4) + "&xsrfToken=" + xsrf;
+        let url = "./v1/download.php?noteId=" + id.slice(0, -4) + "&xsrfToken=" + xsrf;
 
         var newWin = window.open(url, '_blank');  
         
@@ -288,12 +289,15 @@ app.home = {
           article = section.parentElement;  
         } 
         if(article){
-            let lastDownloaded = article.children[1].children[2];
             article.className = ""; //Show a halo on the new undownloaded note
-            if(lastDownloaded){
-                let dateDownloaded = new Date().toPrettyDate(true);
-                lastDownloaded.innerHTML = "Downloaded on: <span>" + dateDownloaded + "</span>";   
-            }
+        }
+        
+        let downloadDate = document.getElementById(id.slice(0, -4) + "_downloadDate");
+        
+        if(downloadDate){
+            let dateDownloaded = new Date().toPrettyDate(true);
+            downloadDate.innerHTML = "Downloaded on: <span>" + dateDownloaded + "</span>";   
+
         }
         
         if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
