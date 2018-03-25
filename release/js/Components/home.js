@@ -280,8 +280,7 @@ app.home = {
 
         var newWin = window.open(url, '_blank');  
         
-        document.getElementById(id).disabled = false;
-        document.getElementById(id).innerText = "Download Notes";
+        this.disabled = false;
         app.home.getCourses();
         
         if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
