@@ -195,12 +195,11 @@ app.notes = {
         let xsrf = app.getCookie("xsrfToken");
         
         let url = "./v1/NoteFiles/noteFiles_GET.php?noteId=" + id.substring(0, id.indexOf("_download")) + "&xsrfToken=" + xsrf;
-
+        
         var newWin = window.open(url, '_blank');  
         
-        document.getElementById(id).disabled = false;
-        document.getElementById(id).innerText = "Download Notes";
-        app.home.getCourses();
+        this.disabled = false;
+        app.notes.getNotesNewSort();
         
         if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
             new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
