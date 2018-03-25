@@ -12,10 +12,10 @@ function notify_note_upload_email_task($conn, $users, $noteId){
     $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/login";
     
     $subject = 'No-Reply: NEXCHANGE - Notes Uploaded';
-    $message = "New notes were uploaded by a notetaker.\n\nNote Details\n\nName: ".$note['name'].
-        "\nDescription: ".$note['description'].
-        "\nTaken On: ".$note['taken_on'].
-        "\nFor: ".$note['course_name']." (".$note['course_number'].")\n\n You can login at: $link";
+    $message = "New notes were uploaded by a notetaker.\n\nNote Details\n\nName: ".addslashes($note['name']).
+        "\nDescription: ".addslashes($note['description']).
+        "\nTaken On: ".addslashes($note['taken_on']).
+        "\nFor: ".addslashes($note['course_name'])." (".addslashes($note['course_number']).")\n\n You can login at: $link";
     
     $resp = array();
     foreach ($users as $user) {
