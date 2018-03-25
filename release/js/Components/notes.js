@@ -199,7 +199,6 @@ app.notes = {
         var newWin = window.open(url, '_blank');  
         
         this.disabled = false;
-        app.notes.getNotesNewSort();
         
         if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
             new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
