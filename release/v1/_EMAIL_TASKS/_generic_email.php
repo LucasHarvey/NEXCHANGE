@@ -1,6 +1,6 @@
 <?php
 function send_email($conn, $notificationCode, $userid, $to, $subject, $message, $async = false){
-    $headers = "From: no-reply.nexchange@johnabbott.qc.ca\r\n";
+    $headers = "From: no-reply.nexchange@johnabbott.qc.ca\r\nContent-type: text/plain\r\n";
     
     if(!$async){
         if(mail($to, $subject, $message, $headers)){

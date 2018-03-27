@@ -6,6 +6,6 @@ $message = $argv[3];
 $subject = html_entity_decode($subject);
 $message = html_entity_decode($message);
         
-$headers = "From: no-reply.nexchange@johnabbott.qc.ca\r\n";
+$headers = "From: no-reply.nexchange@johnabbott.qc.ca\r\nContent-type: text/plain\r\n";
 mail($to, $subject, $message, $headers);
 ?>
