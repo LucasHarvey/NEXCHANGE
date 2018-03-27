@@ -216,18 +216,6 @@ let Resources = {
         }
     },
 
-    Files: {
-        location: "v1/notefiles.php",
-        GET: function(noteId, progressCallback, successCallback, failureCallback) {
-            let data = { noteId: noteId };
-            let options = {
-                onprogress: progressCallback,
-                responseType: "blob"
-            };
-            return app.get(Resources.Files, data, successCallback, failureCallback, options);
-        }
-    },
-
     Courses: {
         location: "v1/courses.php",
         GET: function(id, successCallback, failureCallback) {
