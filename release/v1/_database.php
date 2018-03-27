@@ -12,7 +12,7 @@ function database_connect(){
     $database = "nexchange";
     
     try{
-        $dbh = new mysqli("p:".$servername, $username, $password, $database, $dbport);
+        $dbh = new mysqli($servername, $username, $password, $database, $dbport);
         if($dbh->connect_error){
             echoError(null, 500, "DatabaseConnectError", $dbh->connect_error);
         }
