@@ -36,7 +36,7 @@ if(!$oldFile)
 $storageName = $oldFile["storage_name"];
 
 // Delete the old file
-if(!file_exists($storageName) || !unlink($storageName))
+if(!file_exists("./Files/".$storageName) || !unlink("./Files/".$storageName))
     echoError($conn, 404, "NoteFileDeleteFailure");
 
 database_delete($conn, "DELETE FROM notes WHERE id=?".$whereClause." LIMIT 1", $deleteType, $deleteVals);

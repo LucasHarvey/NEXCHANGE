@@ -95,8 +95,8 @@ $note = database_get_row($conn, "SELECT id, name, description, taken_on, created
 
 if($note == null){
     // Delete the file from the server
-    if(file_exists($storageName))
-		unlink($storageName);
+    if(file_exists("./Files/".$storageName))
+		unlink("./Files/".$storageName);
 	echoError($conn, 500, "DatabaseUpdateError");
 }
 
@@ -112,13 +112,13 @@ if(!empty($_FILES['file'])){
     
     // If the update failed, delete the most recent file
     if(!$result){
-        if(file_exists($storageName))
-            unlink($storageName);
+        if(file_exists("./Files/".$storageName))
+            unlink("./Files/".$storageName);
         echoError($conn, 500, "DatabaseUpdateError");
     } 
     
     // Delete the old file
-    if(!file_exists($oldStorageName) || !unlink($oldStorageName)){
+    if(!file_exists("./Files/".$oldStorageName) || !unlink("./Files/".$oldStorageName)){
         echoError($conn, 404, "NoteFileDeleteFailure");
     }
 }
