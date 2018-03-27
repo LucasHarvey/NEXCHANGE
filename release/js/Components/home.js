@@ -172,6 +172,7 @@ app.home = {
             article.className = noteData.lastDownloaded == null ? "newnote" : ""; //Show a halo on the new undownloaded note
             let dateDownloaded = noteData.lastDownloaded == null ? "Never" : new Date(noteData.lastDownloaded.replace(/-/g, '\/')).toPrettyDate(true);
             let dateDP = document.createElement("P");
+            dateDP.id = noteData.id + "_downloadDate";
             dateDP.innerHTML = "Downloaded on: <span>" + dateDownloaded + "</span>";
             articleSection.appendChild(dateDP);
         }
@@ -272,90 +273,37 @@ app.home = {
         app.home.getNotes(true);
     },
     downloadNote: function(e) {
+        this.disabled = true;
         let id = this.id;
+        let xsrf = app.getCookie("xsrfToken");
         
-        var iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-        var downloadFunc;
-        if(iOS){
+        let url = "./v1/download.php?noteId=" + id.slice(0, -4) + "&xsrfToken=" + xsrf;
 
-            // IOS code
-            var url;
-                downloadFunc = function(resp, req){
-                var type = req.getResponseHeader("Content-Type");
-                var reader = new FileReader();
-                var out = new Blob([resp], {type: type});
-                
-                reader.addEventListener('loadend', function(e) {
-                    
-                    // Detect if new window is blocked
-                    url = reader.result;
-                    var newWin = window.open(url, '_blank');  
-                    
-                    document.getElementById(id).disabled = false;
-                    document.getElementById(id).innerText = "Download Notes";
-                    app.home.getCourses();
-                    
-                    if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
-                        new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
-                        return;
-                    }
-                });
-            
-                reader.readAsDataURL(out);
-            };
+        var newWin = window.open(url, '_blank');  
         
-        } else {
-            // normal code
-            downloadFunc = function(resp, req){
-                let a = document.createElement("a");
-                let url = window.URL.createObjectURL(resp);
-                a.download = req.getResponseHeader("Content-Disposition").match("\"(.+)\"")[1];
-                a.href = url;
-                a.click();
-                window.URL.revokeObjectURL(url);
-                document.getElementById(id).disabled = false;
-                document.getElementById(id).innerText = "Download Notes";
-                
-                app.home.getCourses();
-            };
+        this.disabled = false;
+        
+        var article = null;
+        let section = this.parentElement;
+        if(section){
+          article = section.parentElement;  
+        } 
+        if(article){
+            article.className = ""; //Show a halo on the new undownloaded note
         }
         
-        let successFunction = function(resp, req) {
-            
-                var myRe = /\(([^\).]+)\)/gi;
-                var matches = [];
-                var match;
-                while ((match = myRe.exec(req.getResponseHeader("Content-Description"))) !== null) {
-                    matches.push(match[1]);
-                }
-                if (matches[0] != matches[1]) {
-                    new Modal("File Corruption", MessageCode["FileCorruptedFrontEnd"], {
-                        text: "Download Anyway",
-                        callback: function(e){
-                            this.hide();
-                            downloadFunc(resp, req);
-                        }
-                    }).show();
-                    return;
-                }
-                
-                downloadFunc(resp, req);
-            
-        };
-        let progressFunction = function(evt) {
-            var percentComplete = Math.round((evt.loaded / evt.total) * 100);
-            document.getElementById(id).innerHTML = "Downloading... " + percentComplete + "%";
-            if (percentComplete >= 100) {
-                document.getElementById(id).disabled = false;
-                document.getElementById(id).innerHTML = "Download Notes";
-            }
-        };
-        this.innerText = "Downloading...";
-        this.disabled = true;
+        let downloadDate = document.getElementById(id.slice(0, -4) + "_downloadDate");
+        
+        if(downloadDate){
+            let dateDownloaded = new Date().toPrettyDate(true);
+            downloadDate.innerHTML = "Downloaded on: <span>" + dateDownloaded + "</span>";   
 
-        Resources.Files.GET(this.id.slice(0, -4), progressFunction, successFunction);
-    },
-
+        }
+        
+        if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
+            new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
+        }
+    }
 };
 
 app.startup.push(function userHomeStartup() {
