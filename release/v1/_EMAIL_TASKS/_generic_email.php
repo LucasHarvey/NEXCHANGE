@@ -10,7 +10,11 @@ function send_email($conn, $notificationCode, $userid, $to, $subject, $message, 
         return false;
     }else{
         database_insert($conn, "INSERT INTO log_notifications_sent (user_id, notification_code) values (?,?)", "si", array($userid, 10 + $notificationCode));
-        execInBackground("php _EMAIL_TASKS/_background_email.php $to \"$subject\" \"$message\"");
+        //Replace all single quotes with escaped quote.
+        $subject = htmlentities($subject);
+        $message = htmlentities($message);
+        
+        execInBackground("php _EMAIL_TASKS/_background_email.php $to '$subject' '$message'");
     }
 }
 
