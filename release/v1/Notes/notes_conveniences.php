@@ -30,10 +30,10 @@ function moveFiles(){
 	    		}while(file_exists("./Files/".$storageName));
 				
 				// Add the proper directory
-				$storageName = "./Files/" . $storageName;
+				$relPath = "./Files/" . $storageName;
 				
 				// Move the temporary file to the Files folder
-			    move_uploaded_file($tmp, $storageName);
+			    move_uploaded_file($tmp, $relPath);
 			
 			    // Ensure that file name is 100 characters or less
 			    if(strlen($fileName) > 100){
@@ -88,10 +88,10 @@ function moveFiles(){
 			// Clean the name to remove forbidden characters
 			$fileName = cleanFileName($fileName, true);
 			
-			// Add the proper directory (added here because we need to add the uuid in front of $storageName)
-			$storageName = "./Files/" . $storageName;
+			// Add the proper directory 
+			$relPath = "./Files/" . $storageName;
 			
-			if ($zip->open($storageName, ZipArchive::CREATE) === TRUE){
+			if ($zip->open($relPath, ZipArchive::CREATE) === TRUE){
 			    
 			    // Add files to the zip file
 			    foreach($files['name'] as $key => $name){
@@ -115,9 +115,9 @@ function moveFiles(){
 			}
 				
 			// Get the file size of the zip
-			$fileSize = filesize($storageName);
+			$fileSize = filesize($relPath);
 			$fileType = "zip";
-			$md5 = md5_file($storageName);
+			$md5 = md5_file($relPath);
 			
 			$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5, $succeeded);
 			
