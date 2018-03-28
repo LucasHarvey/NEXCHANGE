@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,location,getExtension */
+/* global Resources,MessageCode,datePolyFillStart,Modal,location,getExtension */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -274,6 +274,7 @@ app.startup.push(function editNoteStartup() {
 
 app.afterStartup.push(function editNoteAfterStartup() {
     let noteId = app.getStore("editNoteNoteId");
+    datePolyFillStart();
     if (noteId) {
         app.editNote.noteId = noteId;
         Resources.Notes.GET_id(noteId, app.editNote.getNote);
