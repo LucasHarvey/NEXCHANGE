@@ -55,6 +55,14 @@ app.editNote = {
         let newDate = new Date(document.getElementById("date").value.replace(/-/g, '\/').replace(/T.+/, ''));
         let files = document.getElementById('file').files;
         let oldDate = new Date(this.originalNote.taken_on.replace(/-/g, '\/').replace(/T.+/, ''));
+        
+        if(!newDate){
+            app.handleFailure({
+                messageCode: "MissingArgumentDate",
+                status: 400
+            });
+            return;
+        }
 
         var changes = {
             name: undefined,
@@ -69,6 +77,14 @@ app.editNote = {
         if (newDate.getFullYear() - oldDate.getFullYear() != 0 ||
             newDate.getMonth() - oldDate.getMonth() != 0 ||
             newDate.getDate() - oldDate.getDate() != 0){
+                var validatedDate = app.dateFormatting.isPastDate(newDate);
+                if (!validatedDate) {
+                    app.handleFailure({
+                        messageCode: "DateNotValid",
+                        status: 400
+                    });
+                    return;
+                }
                 var dateToSubmit = app.dateFormatting.parseSubmissionDate(newDate);
                 changes.taken_on = dateToSubmit;
         }
