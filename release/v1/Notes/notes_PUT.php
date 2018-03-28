@@ -34,6 +34,18 @@ foreach($_POST as $key => $value ){
     }
 }
 
+if(in_array("name", array_keys($changes))){
+    if($changes["name"] == ""){
+        echoError($conn, 400, "MissingArgumentNoteName");
+    }
+}
+
+if(in_array("taken_on", array_keys($changes))){
+    if($changes["taken_on"] == ""){
+        echoError($conn, 400, "MissingArgumentTakenOn");
+    }
+}
+
 // Ensure that changes can be made
 if(empty($changes) && empty($_FILES['file'])){ //No legal changes can be made
     echoError($conn, 400, "NoChangesToMake");

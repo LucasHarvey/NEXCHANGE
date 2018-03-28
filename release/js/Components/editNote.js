@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,location,getExtension */
+/* global Resources,MessageCode,datePolyFillStart,Modal,location,getExtension */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -55,11 +55,19 @@ app.editNote = {
         let newDate = new Date(document.getElementById("date").value.replace(/-/g, '\/').replace(/T.+/, ''));
         let files = document.getElementById('file').files;
         let oldDate = new Date(this.originalNote.taken_on.replace(/-/g, '\/').replace(/T.+/, ''));
+        
+        if(!newDate){
+            app.handleFailure({
+                messageCode: "MissingArgumentDate",
+                status: 400
+            });
+            return;
+        }
 
         var changes = {
-            name: null,
-            desc: null,
-            taken_on: null,
+            name: undefined,
+            desc: undefined,
+            taken_on: undefined,
             files: false
         };
         if (newName != this.originalNote.name)
@@ -69,6 +77,14 @@ app.editNote = {
         if (newDate.getFullYear() - oldDate.getFullYear() != 0 ||
             newDate.getMonth() - oldDate.getMonth() != 0 ||
             newDate.getDate() - oldDate.getDate() != 0){
+                var validatedDate = app.dateFormatting.isPastDate(newDate);
+                if (!validatedDate) {
+                    app.handleFailure({
+                        messageCode: "DateNotValid",
+                        status: 400
+                    });
+                    return;
+                }
                 var dateToSubmit = app.dateFormatting.parseSubmissionDate(newDate);
                 changes.taken_on = dateToSubmit;
         }
@@ -86,7 +102,7 @@ app.editNote = {
             }
         }
 
-        if (changes.name != null || changes.desc != null || changes.taken_on != null || changes.files != false) {
+        if (changes.name != undefined || changes.desc != undefined || changes.taken_on != undefined || changes.files != false) {
             
             app.editNote.uploadInProgress = true;
         
@@ -258,6 +274,7 @@ app.startup.push(function editNoteStartup() {
 
 app.afterStartup.push(function editNoteAfterStartup() {
     let noteId = app.getStore("editNoteNoteId");
+    datePolyFillStart();
     if (noteId) {
         app.editNote.noteId = noteId;
         Resources.Notes.GET_id(noteId, app.editNote.getNote);
