@@ -82,7 +82,7 @@ app.manage = {
                 var studentId = this.dataset.studentId;
                 var button2 = this;
                 new Modal("Delete Account",
-                    "Are you sure you want to delete the user account for Student ID: " + studentId +
+                    "Are you sure you want to delete the user account for Student ID: " + studentId + " ?" +
                     "<br>This <b>CANNOT</b> be undone." +
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='manage_deleteAccountPw'><p class='error'></p>", {
                         text: "Yes, DELETE Account",
@@ -183,7 +183,7 @@ app.manage = {
                 var courseId = this.id.split("_")[1];
                 var button4 = this;
                 new Modal("Delete Course",
-                    "Are you sure you want to delete the course named: " + courseName.nescape() +
+                    "Are you sure you want to delete the course named: " + courseName.nescape() + " ?" +
                     "<br>This <b>CANNOT</b> be undone." +
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='manage_deleteCoursePw'><p></p>", {
                         text: "Yes, DELETE Course",
