@@ -196,7 +196,7 @@ let Resources = {
             var formData = new FormData();
             formData.append("noteId", noteId);
             if (name) formData.append("name", name);
-            if (description) formData.append("description", description);
+            if(description != undefined) formData.append("description", description);
             if (takenOn) formData.append("takenOn", takenOn);
             if(files){
                 for (var i = 0; i < files.length; i++) {
