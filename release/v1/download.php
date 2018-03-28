@@ -23,7 +23,12 @@ function outputFileContent($storage_name, $file_name, $type, $size){
 }
 
 if (!isset($_GET['xsrfToken'])) {
-    $conn -> close();
+    http_response_code(400);
+    die();
+}
+
+// validate filename input
+if (!isset($_GET['noteId'])) {
     http_response_code(400);
     die();
 }
@@ -33,13 +38,6 @@ include_once "./_modified_generics.php";
 $conn = database_connect();
 
 $user_id = getUserFromToken();
-
-// validate filename input
-if (!isset($_GET['noteId'])) {
-    $conn -> close();
-    http_response_code(400);
-    die();
-}
 
 $note_id = $_GET["noteId"];
 
