@@ -57,9 +57,9 @@ app.editNote = {
         let oldDate = new Date(this.originalNote.taken_on.replace(/-/g, '\/').replace(/T.+/, ''));
 
         var changes = {
-            name: null,
-            desc: null,
-            taken_on: null,
+            name: undefined,
+            desc: undefined,
+            taken_on: undefined,
             files: false
         };
         if (newName != this.originalNote.name)
@@ -86,7 +86,7 @@ app.editNote = {
             }
         }
 
-        if (changes.name != null || changes.desc != null || changes.taken_on != null || changes.files != false) {
+        if (changes.name != undefined || changes.desc != undefined || changes.taken_on != undefined || changes.files != false) {
             
             app.editNote.uploadInProgress = true;
         
