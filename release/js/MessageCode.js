@@ -47,6 +47,7 @@ let MessageCode = {
     MissingArgumentPasswords: "Password(s) left empty.",
     MissingArgumentStudentId: "Student ID was left empty.",
     MissingArgumentNoteName: "Note name was left empty.",
+    MissingArgumentTakenOn: "The date the notes were take on was left empty.",
     MissingArgumentCourseName: "Course name was left empty.",
     MissingArgumentCourseNumber: "Course Code was left empty.",
     MissingArgumentSection: "Section was left empty.",
