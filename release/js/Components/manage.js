@@ -269,7 +269,7 @@ app.manage = {
             article.description.appendChild(generatePTag("Course", ua.courseNumber + " (" + ua.courseName + ")"));
             article.description.appendChild(generatePTag("Section".pluralize(section.length > 5), section));
             article.description.appendChild(generatePTag("Role", role));
-            if(ua.role=="NOTETAKER") article.description.appendChild(generatePTag("Author of", ua.notesAuthored + " note".pluralize(ua.notesAuthored)));
+            if(ua.role=="NOTETAKER") article.description.appendChild(generatePTag("Author of", ua.notesAuthored + " note".pluralize(ua.notesAuthored) + " (for this class)"));
             article.description.appendChild(generatePTag("Created On", new Date(ua.created.replace(/-/g, '\/')).toPrettyDate()));
             article.description.appendChild(generatePTag("Expires On", new Date(ua.expires_on).toPrettyDate()));
 
