@@ -63,6 +63,13 @@ app.editNote = {
             });
             return;
         }
+        if(files.length > 20) {
+            app.handleFailure({
+                messageCode: "TooManyFiles",
+                status: 400
+            });
+            return;
+        }
 
         var changes = {
             name: undefined,
