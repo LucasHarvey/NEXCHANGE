@@ -115,11 +115,13 @@ app.notes = {
 
         let articleSection = document.createElement("SECTION");
         article.appendChild(articleSection);
-
-        let descriptionP = document.createElement("P");
-        descriptionP.innerText = noteData.description;
-        descriptionP.className = "description";
-        articleSection.appendChild(descriptionP);
+        
+        if(noteData.description){
+            let descriptionP = document.createElement("P");
+            descriptionP.innerText = noteData.description;
+            descriptionP.className = "description";
+            articleSection.appendChild(descriptionP);            
+        }
 
         let authorP = generatePTag("Notes taken by", noteData.user_name || "Anonymous", true);
         articleSection.appendChild(authorP);
