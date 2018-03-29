@@ -158,11 +158,11 @@ app.home = {
         let articleSection = document.createElement("SECTION");
         article.appendChild(articleSection);
         
-
-        let descriptionP = document.createElement("P");
-        descriptionP.innerText = noteData.description;
-        articleSection.appendChild(descriptionP);
-        
+        if(noteData.description){
+            let descriptionP = document.createElement("P");
+            descriptionP.innerText = noteData.description;
+            articleSection.appendChild(descriptionP);
+        }
 
         let dateP = document.createElement("P");
         dateP.innerHTML = "Notes taken on: <span>" + new Date(noteData.taken_on.replace(/-/g, '\/')).toPrettyDate() + "</span>";
