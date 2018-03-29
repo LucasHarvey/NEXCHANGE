@@ -13,7 +13,7 @@ function notify_note_upload_email_task($conn, $users, $noteId){
     
     $subject = 'No-Reply: NEXCHANGE - Notes Uploaded';
     $message = "New notes were uploaded by a notetaker.\n\nNote Details\n\nName: ".$note['name'].
-        ($note['description'] ? "\nDescription: ".$note['description'] : "").
+        "\nDescription: ".$note['description'].
         "\nTaken On: ".$note['taken_on'].
         "\nFor: ".$note['course_name']." (".$note['course_number'].")\n\n You can login at: $link";
     
