@@ -129,7 +129,17 @@ app.postNotes = {
 
         let files = document.getElementById('file').files;
         if (files.length == 0) {
-            app.handleFailure({ messageCode: "NoNoteFilesUploaded" });
+            app.handleFailure({ 
+                messageCode: "NoNoteFilesUploaded",
+                status: 400
+            });
+            return;
+        }
+        if(files.length > 20) {
+            app.handleFailure({
+                messageCode: "TooManyFiles",
+                status: 400
+            });
             return;
         }
         let name = document.getElementById('noteName').value;
