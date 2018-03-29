@@ -41,7 +41,7 @@ app.notes = {
         app.notes.getNotesPaged(true);
     },
     getNotesPaged: function(forced){
-        let scrollPosition = document.body.scrollTop / ((document.body.scrollHeight - document.body.clientHeight) || 1) ;
+        let scrollPosition = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) / ((document.body.scrollHeight - document.body.clientHeight) || 1);
         if(forced === true || (scrollPosition > 0.9 && !app.notes.paginationEnd)){
             let sorting = app.notes.getSortMethod();
             let sortMethod = sorting[0];
@@ -55,13 +55,7 @@ app.notes = {
     },
     getNotesSuccess: function(data) {
         var notes = data.payload.notes;
-        var previous = notes.length;
-        if(app.notes.pagesLoaded != 0){
-            var previousValue = parseInt(document.querySelector("#notesSearchHeader > span").innerHTML);
-            if(!isNaN(previousValue))
-                previous += previousValue
-        }
-        document.getElementById("notesSearchHeader").innerHTML = "Search Results: <span>" + previous + "</span> note".pluralize(previous) + " found.";
+        document.getElementById("notesSearchHeader").innerHTML = "Search Results: <span>" + data.payload.noteCount + "</span> note".pluralize(data.payload.noteCount) + " found.";
 
         if (notes.length == 0) {
             app.notes.paginationEnd = true;
