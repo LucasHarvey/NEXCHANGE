@@ -73,23 +73,21 @@ function getSortQuery($_sortMethod, $_sortDirection, $hideDownloaded, $offset){
         $sortDirection = " ASC";
     }
     
-    $sortDownloaded = "";
-    
     switch ($_sortMethod) {
         case "course":
-            $sortMethod = " ORDER BY $sortDownloaded c.course_name";
+            $sortMethod = " ORDER BY c.course_name";
             break;
         case "noteName": 
-            $sortMethod = " ORDER BY $sortDownloaded n.name";
+            $sortMethod = " ORDER BY n.name";
             break;
         case "author":
-            $sortMethod = " ORDER BY $sortDownloaded u.last_name";
+            $sortMethod = " ORDER BY u.last_name";
             break;
         case "taken_on": 
-            $sortMethod = " ORDER BY $sortDownloaded n.taken_on";
+            $sortMethod = " ORDER BY n.taken_on";
             break;
         default:
-            $sortMethod = " ORDER BY $sortDownloaded n.created";
+            $sortMethod = " ORDER BY n.created";
     }
     
     return $sortMethod . $sortDirection . " LIMIT ".$GLOBALS['PAGE_SIZES']." OFFSET ". ($offset * $GLOBALS['PAGE_SIZES']);
