@@ -60,7 +60,7 @@ app.home = {
         var courseHeader = document.createElement('HEADER');
         courseHeader.className = "courseHeader";
         var courseHeaderText = document.createElement("SPAN");
-        courseHeaderText.innerHTML = "<span>" + course.courseName + "</span>" + "<span> (" + app.dateFormatting.formatSemester(course.semester) + ")</span>";
+        courseHeaderText.innerHTML = "<span class='courseHTitle'>" + course.courseName + "</span>" + "<span class='courseHSemester'>(" + app.dateFormatting.formatSemester(course.semester) + ")</span>";
         courseHeader.appendChild(courseHeaderText);
         courseHeaderText.onclick = app.home.__toggleCourse;
         var courseHeaderDropDown = document.createElement("IMG");
