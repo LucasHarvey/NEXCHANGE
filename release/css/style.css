@@ -915,6 +915,7 @@ article span {
     background-color: #3f5374;
     padding: 5px 10px;
     height: 30px;
+    max-width: 100%;
     
     display: -webkit-box;
     
@@ -930,16 +931,28 @@ article span {
 .courseHeader>span {
     color: #ffffff;
     line-height: 30px;
+    width: calc(100% - 30px); /*MAGIC NUMBER: 30px FROM COURSEHEADER IMG*/
     cursor: pointer;
-    -webkit-box-flex: 1;
-        -ms-flex: 1;
-            flex: 1;
+    
+    display: inline-flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
 }
+.courseHeader .courseHTitle {
+    white-space: pre;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 5px;
+}
+.courseHeader .courseHSemester {
+    white-space:nowrap;
+}
+
 
 .courseHeader>img {
     cursor: pointer;
     height: 30px;
-    width: 30px;
+    width: 30px; /*If modified modify course header>span width*/
     vertical-align: middle;
 }
 
