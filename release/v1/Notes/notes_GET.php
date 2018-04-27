@@ -23,7 +23,7 @@ $notetakerNotes = getNotesForNotetaker($conn, $user_id, $sortMethod, $sortDirect
 echoSuccess($conn, array("notes" => array_merge($studentNotes, $notetakerNotes)));
 
 function getNoteById($conn, $noteId){
-    $selectQuery = "SELECT n.id, n.name, n.description, n.taken_on, n.created, u.first_name, u.last_name, c.id as courseId, c.course_name as courseName ".
+    $selectQuery = "SELECT n.id, n.name, n.description, n.taken_on, n.created, c.id as courseId, c.course_name as courseName ".
                    "FROM notes n INNER JOIN users u ON n.user_id=u.id INNER JOIN courses c ON n.course_id=c.id ".
                    "WHERE n.id=?";
     return database_get_row($conn, $selectQuery, "s", $noteId);
@@ -48,7 +48,7 @@ function getNotesForStudent($conn, $userId, $_sortMethod, $_sortDirection, $hide
     
     //Entire query including modifications: 5 hours of work.
     $selectQuery = "SELECT  n.id, n.name, n.description, n.taken_on, n.created, nfd.lastDownloaded, ".
-                            "u.first_name, u.last_name, c.id as courseId, c.course_name as courseName, c.semester as semester, ua.role ".
+                            "c.id as courseId, c.course_name as courseName, c.semester as semester, ua.role ".
                     "FROM notes n LEFT JOIN users u ON n.user_id=u.id INNER JOIN courses c ON n.course_id=c.id ".
                         "INNER JOIN user_access ua ON ua.course_id=n.course_id ".
                             "INNER JOIN notefiles nf ON n.id=nf.note_id ".
@@ -81,9 +81,6 @@ function getSortQuery($_sortMethod, $_sortDirection, $hideDownloaded, $offset){
             break;
         case "noteName": 
             $sortMethod = " ORDER BY $sortDownloaded n.name";
-            break;
-        case "author":
-            $sortMethod = " ORDER BY $sortDownloaded u.last_name";
             break;
         case "taken_on": 
             $sortMethod = " ORDER BY $sortDownloaded n.taken_on";
