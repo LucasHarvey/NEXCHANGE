@@ -78,7 +78,7 @@ app.editCourse = {
         document.getElementById("season").selectedIndex = index;
         document.getElementById("year").value = data.payload.semester.substring(1);
         
-        new Modal("Course Updated", MessageCode["CourseEdited"], {
+        new Modal("Course Updated", MessageCode("CourseEdited"), {
             text: "Back To Home Page",
             callback: function() {
                 location.assign("./signup");
@@ -111,48 +111,48 @@ app.editCourse = {
         var thisYear = new Date().getFullYear();
         
         if(!newCourseName){
-            new Modal("Error", MessageCode["MissingArgumentCourseName"], null, {
+            new Modal("Error", MessageCode("MissingArgumentCourseName"), null, {
                     text: "Okay"
                 }).show();
             return;
         }
         
         if(!newCourseNumber){
-            new Modal("Error", MessageCode["MissingArgumentCourseNumber"], null, {
+            new Modal("Error", MessageCode("MissingArgumentCourseNumber"), null, {
                     text: "Okay"
                 }).show();
             return;
         }
         
         if(!newSectionStart){
-            new Modal("Error", MessageCode["MissingArgumentSection"], null, {
+            new Modal("Error", MessageCode("MissingArgumentSection"), null, {
                     text: "Okay"
                 }).show();
             return;
         }
         if(!newSectionEnd){
-            new Modal("Error", MessageCode["MissingArgumentSection"], null, {
+            new Modal("Error", MessageCode("MissingArgumentSection"), null, {
                     text: "Okay"
                 }).show();
             return;
         }
         
         if(!newTeacherFullName){
-            new Modal("Error", MessageCode["MissingArgumentTeacher"], null, {
+            new Modal("Error", MessageCode("MissingArgumentTeacher"), null, {
                     text: "Okay"
                 }).show();
             return;
         }
         
         if(!newSeason){
-            new Modal("Error", MessageCode["MissingArgumentSeason"], null, {
+            new Modal("Error", MessageCode("MissingArgumentSeason"), null, {
                 text: "Okay"
             }).show();
             return;
         }
         
         if(!newYear){
-            new Modal("Error", MessageCode["MissingArgumentYear"], null, {
+            new Modal("Error", MessageCode("MissingArgumentYear"), null, {
                 text: "Okay"
             }).show();
             return;
@@ -196,7 +196,7 @@ app.editCourse = {
         if (changes != {}) {
             Resources.Courses.PUT(app.editCourse.courseId, changes.teacherFullName, changes.courseName, changes.courseNumber, changes.sectionStart, changes.sectionEnd, changes.semester, this.successCourseEdit, this.failureCourseEdit);
         } else {
-            new Modal("No Changes", MessageCode["NoChangesToMake"], null, null, "Okay").show();
+            new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();
         }
     }
 

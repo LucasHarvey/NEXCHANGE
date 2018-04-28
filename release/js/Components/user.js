@@ -64,7 +64,7 @@ app.user = {
                         };
                         
                         // The modal has a confirm button which redirects the user to "My Profile"
-                        new Modal("Error", MessageCode["PasswordUpdateFailure"], successBtn, false).show();
+                        new Modal("Error", MessageCode("PasswordUpdateFailure"), successBtn, false).show();
                     });
                     
                     // Hide the "Change Password" modal
