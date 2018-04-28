@@ -82,7 +82,7 @@ app.user = {
     },
     failure: function(data) {
         document.getElementById("errorTray").style.display = 'block';
-        document.getElementById("errorTray").innerHTML = MessageCode[data.messageCode] + "<br>";
+        document.getElementById("errorTray").innerHTML = MessageCode(data.messageCode) + "<br>";
         
         // Enable the form
         document.getElementById("button_login").disabled = false;
@@ -102,7 +102,7 @@ app.user = {
                 location.assign("./login");
                 return;
             }
-            new Modal("Error", "You could not be signed out because: " + MessageCode[data.messageCode], null, { text: "Okay" }).show();
+            new Modal("Error", "You could not be signed out because: " + MessageCode(data.messageCode), null, { text: "Okay" }).show();
         });
     },
     login: function(e) {
