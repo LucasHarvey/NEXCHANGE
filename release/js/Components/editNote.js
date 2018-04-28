@@ -102,7 +102,7 @@ app.editNote = {
         for(var i=0; i<files.length; i++){
             var extension = getExtension(files[i].name);
             if(!app.DEFAULTS.ALLOWED_EXTENSIONS.includes(extension)){
-                new Modal("Error", MessageCode["NoteExtensionUnauthorized"], null, {
+                new Modal("Error", MessageCode("NoteExtensionUnauthorized"), null, {
                 text: "Okay"
                 }).show();
                 return;
@@ -124,7 +124,7 @@ app.editNote = {
                 }
             });
         } else {
-            new Modal("No Changes", MessageCode["NoChangesToMake"], null, null, "Okay").show();
+            new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();
         }
         
     },
@@ -207,7 +207,7 @@ app.editNote = {
                 
                 Resources.Notes.DELETE(app.editNote.noteId, function(response) {
                     app.store("editNoteNoteId", null);
-                    new Modal("Delete Note", MessageCode[response.payload.messageCode], null, {
+                    new Modal("Delete Note", MessageCode(response.payload.messageCode), null, {
                         text: "Okay",
                         callback: function() {
                             location.assign("./home");
