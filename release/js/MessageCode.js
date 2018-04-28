@@ -1,5 +1,6 @@
 function MessageCode(code){
     let MessageCode_Codes = {
+        MessageCodeNotFound: "The message code translation was not found. Contact the Access Centre if this problem persists.",
         UnknownResourceMethod: "The request method doesn't exist on the server. Contact the Access Centre if this problem persists.",
         UnknownServerError: "A server error occured. Please contact the Access Centre if this problem persists.",
         InternalServerError: "An unknown server error occurred. Please contact the Access Centre if this problem persists.",
@@ -138,6 +139,7 @@ function MessageCode(code){
     if(!MessageCode_Codes.hasOwnProperty(code)){
         if(window.app){
             window.app.logUi("MessageCode not found! Code: '"+code+"'");
+            return MessageCode_Codes["MessageCodeNotFound"];
         }
     }
     return MessageCode_Codes[code];
