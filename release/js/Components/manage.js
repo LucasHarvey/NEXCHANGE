@@ -258,7 +258,7 @@ app.manage = {
             if(ua.role == "NOTETAKER"){
                 role = ua.role.toProperCase();
             } else if (ua.role == "STUDENT"){
-                role = "Student receiving notes";
+                role = "Student Receiving Notes";
             }
             article.header.innerText = role + " - " + ua.firstName + " " + ua.lastName;
             var section =  (ua.courseSectionStart + "").padStart(5, "0");
