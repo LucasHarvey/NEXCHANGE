@@ -47,7 +47,7 @@ app.useraccess = {
         let previousAccess= response.payload.previousAccess;
 
         if (courses.length == 0 && previousAccess.length == 0) {
-            new Modal("Error", MessageCode["UserAccessNotUpdated"], null, {
+            new Modal("Error", MessageCode("UserAccessNotUpdated"), null, {
                 text: "Okay"
             }).show();
             return;
@@ -131,14 +131,14 @@ app.useraccess = {
         var formattedExpiryDate = "";
 
         if (!yearExpiry) {
-            new Modal("Error", MessageCode["MissingArgumentYearExpiry"], null, {
+            new Modal("Error", MessageCode("MissingArgumentYearExpiry"), null, {
                 text: "Okay"
             }).show();
             return;
         }
 
         if (!seasonExpiry) {
-            new Modal("Error", MessageCode["MissingArgumentSeasonExpiry"], null, {
+            new Modal("Error", MessageCode("MissingArgumentSeasonExpiry"), null, {
                 text: "Okay"
             }).show();
             return;

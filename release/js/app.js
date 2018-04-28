@@ -248,7 +248,7 @@ app._generateRequest = function(success, failure, options) {
                         location.reload();
                     }};
                     
-                    new Modal("Error", MessageCode["NoInternet"], successBtn, false).show();
+                    new Modal("Error", MessageCode("NoInternet"), successBtn, false).show();
                     return;
                 }
                 let failureFunc = function(resp) {
