@@ -325,7 +325,7 @@ app.manage = {
         var formattedSemester = "";
         
         if(season && !year){
-            new Modal("Error", MessageCode["MissingArgumentYear"], null, {
+            new Modal("Error", MessageCode("MissingArgumentYear"), null, {
                     text: "Okay"
                 }).show();
                 return;
@@ -348,7 +348,7 @@ app.manage = {
             }
 
             if (!app.dateFormatting.isPastSemester(season, year)) {
-                new Modal("Error", MessageCode["FutureSemester"], null, {
+                new Modal("Error", MessageCode("FutureSemester"), null, {
                     text: "Okay"
                 }).show();
                 return;

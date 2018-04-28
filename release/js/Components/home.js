@@ -301,7 +301,7 @@ app.home = {
         }
         
         if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
-            new Modal("Error", MessageCode["PopUpBlocked"], null, null, "Okay").show();
+            new Modal("Error", MessageCode("PopUpBlocked"), null, null, "Okay").show();
         }
     }
 };

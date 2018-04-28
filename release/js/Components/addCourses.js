@@ -74,7 +74,7 @@ app.addCourses = {
         // Empty the course input fields: 
         app.addCourses.reset();
         
-        new Modal("Courses Added", MessageCode["CoursesCreated"] + "<br>" + data.payload.output, null, {
+        new Modal("Courses Added", MessageCode("CoursesCreated") + "<br>" + data.payload.output, null, {
                     text: "Okay"
                 }).show();
     },
@@ -106,14 +106,14 @@ app.addCourses = {
         var formattedSemester = "";
         
         if(!season){
-            new Modal("Error", MessageCode["MissingArgumentSeason"], null, {
+            new Modal("Error", MessageCode("MissingArgumentSeason"), null, {
                 text: "Okay"
             }).show();
             return;
         }
         
         if(!year){
-            new Modal("Error", MessageCode["MissingArgumentYear"], null, {
+            new Modal("Error", MessageCode("MissingArgumentYear"), null, {
                 text: "Okay"
             }).show();
             return;
