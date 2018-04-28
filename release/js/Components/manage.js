@@ -125,7 +125,7 @@ app.manage = {
     },
     
     _deleteAccountFailure: function(data){
-        new Modal("Not Authorized", MessageCode[data.messageCode], null, null, "Okay").show();
+        new Modal("Not Authorized", MessageCode(data.messageCode), null, null, "Okay").show();
     },
     _generateCourses: function(container, courses) {
         if (courses.length == 0) {
@@ -239,7 +239,7 @@ app.manage = {
     },
     
     _deleteCourseFailure: function(data){
-        new Modal("Error", MessageCode[data.messageCode], null, null, "Okay").show();
+        new Modal("Error", MessageCode(data.messageCode), null, null, "Okay").show();
     },
     
     _generateUserAccess: function(container, useraccesses) {

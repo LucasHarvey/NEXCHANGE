@@ -103,7 +103,7 @@ app.handleFailure = function(response) {
     if (typeof Modal === "undefined") {
         return;
     }
-    new Modal("Error", MessageCode[response.messageCode], null, {
+    new Modal("Error", MessageCode(response.messageCode), null, {
         text: "Okay"
     }).show();
 };
@@ -132,17 +132,17 @@ app.handleAuthError = function(response) {
     }
     if (response.messageCode == "AuthorizationFailed") {
         let successData = {
-            text: MessageCode[response.messageCode + "Button"],
+            text: MessageCode(response.messageCode + "Button"),
             callback: logoutFunction
         };
-        new Modal("Not Authorized", MessageCode[response.messageCode], successData, false).show();
+        new Modal("Not Authorized", MessageCode(response.messageCode), successData, false).show();
         return;
     }
     let successData = {
-        text: MessageCode[response.messageCode + "Button"],
+        text: MessageCode(response.messageCode + "Button"),
         callback: logoutFunction
     };
-    new Modal("Not Authenticated", MessageCode[response.messageCode], successData, false).show();
+    new Modal("Not Authenticated", MessageCode(response.messageCode), successData, false).show();
 };
 
 app.post = function(resource, data, success, failure) {
