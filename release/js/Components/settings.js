@@ -18,7 +18,7 @@ app.settings = {
         document.getElementById('userData').addEventListener('submit', app.settings.saveChanges);
 
         // Do not allow the user to dismiss the modal
-        new Modal("User Updated", MessageCode[data.payload.messageCode], {
+        new Modal("User Updated", MessageCode(data.payload.messageCode), {
             text: "Okay",
             callback: function() {
                 window.location.reload();
@@ -193,7 +193,7 @@ app.settings = {
             // Enable the "Logout everywhere" button
             document.getElementById("logoutEverywhere").disabled = false;
 
-            new Modal("User Unauthenticated", MessageCode[response.payload.messageCode], null, {
+            new Modal("User Unauthenticated", MessageCode(response.payload.messageCode), null, {
                 text: "Okay"
             }).show();
         }, function(response){
