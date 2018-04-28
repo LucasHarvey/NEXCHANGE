@@ -125,7 +125,7 @@ app.manage = {
     },
     
     _deleteAccountFailure: function(data){
-        new Modal("Not Authorized", MessageCode[data.messageCode], null, null, "Okay").show();
+        new Modal("Not Authorized", MessageCode(data.messageCode), null, null, "Okay").show();
     },
     _generateCourses: function(container, courses) {
         if (courses.length == 0) {
@@ -239,7 +239,7 @@ app.manage = {
     },
     
     _deleteCourseFailure: function(data){
-        new Modal("Error", MessageCode[data.messageCode], null, null, "Okay").show();
+        new Modal("Error", MessageCode(data.messageCode), null, null, "Okay").show();
     },
     
     _generateUserAccess: function(container, useraccesses) {
@@ -325,7 +325,7 @@ app.manage = {
         var formattedSemester = "";
         
         if(season && !year){
-            new Modal("Error", MessageCode["MissingArgumentYear"], null, {
+            new Modal("Error", MessageCode("MissingArgumentYear"), null, {
                     text: "Okay"
                 }).show();
                 return;
@@ -348,7 +348,7 @@ app.manage = {
             }
 
             if (!app.dateFormatting.isPastSemester(season, year)) {
-                new Modal("Error", MessageCode["FutureSemester"], null, {
+                new Modal("Error", MessageCode("FutureSemester"), null, {
                     text: "Okay"
                 }).show();
                 return;
