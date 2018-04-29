@@ -58,6 +58,18 @@ CREATE TABLE courses (
     CONSTRAINT UC_Course UNIQUE (teacher_fullname,course_name,course_number,section_start,section_end,semester)
 );
 
+CREATE TABLE course_times (
+    id CHAR(36) NOT NULL,
+    course_id CHAR(36) NOT NULL,
+    
+    days_of_week CHAR(5) NOT NULL,
+    time_start CHAR(4) NOT NULL,
+    time_end CHAR(4) NOT NULL,
+    
+    PRIMARY KEY (id),
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+);
+
 -- User access denotes the courses a student or a note taker is allowed to do stuff for
 CREATE TABLE user_access (
     user_id CHAR(36) NOT NULL,
