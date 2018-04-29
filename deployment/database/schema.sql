@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS notes;
 DROP TABLE IF EXISTS notefiles;
 DROP TABLE IF EXISTS user_access;
 DROP TABLE IF EXISTS courses;
+DROP TABLE IF EXISTS course_times;
 DROP TABLE IF EXISTS notefile_downloads;
 SET FOREIGN_KEY_CHECKS = 1;
 
