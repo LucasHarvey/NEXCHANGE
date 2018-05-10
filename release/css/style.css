@@ -916,6 +916,7 @@ article span {
     padding: 5px 10px;
     height: 30px;
     max-width: 100%;
+    line-height: 30px;
     
     display: -webkit-box;
     
@@ -926,17 +927,17 @@ article span {
     -webkit-box-direction: normal;
         -ms-flex-direction: row;
             flex-direction: row;
+            
+    justify-content: flex-end;
 }
 
-.courseHeader>span {
+.courseHeader>div:first-child {
     color: #ffffff;
-    line-height: 30px;
-    width: calc(100% - 30px); /*MAGIC NUMBER: 30px FROM COURSEHEADER IMG*/
     cursor: pointer;
     
-    display: inline-flex;
-    flex-wrap: nowrap;
-    flex-direction: row;
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
 }
 .courseHeader .courseHTitle {
     white-space: pre;
@@ -977,8 +978,8 @@ article span {
 }
 
 .notificationSpan {
-    line-Height: 30px;
     margin-right: 5px;
+    white-space: nowrap;
 }
 
 /*
