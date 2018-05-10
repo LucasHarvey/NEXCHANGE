@@ -30,8 +30,8 @@ app.home = {
                 return (["created", "DESC"]);
         }
     },
-    __toggleCourse: function(e) {
-        var courseHeader = e.target;
+    __toggleCourse: function() {
+        var courseHeader = this; //BOUND FUNCTION to courseHeader.
         courseHeader.parentNode.querySelector("img").classList.toggle("rotate");
         var courseId = courseHeader.parentNode.parentNode.id.replace("course_", "");
         var notesContainer = document.getElementById("notes_" + courseId);
@@ -59,10 +59,10 @@ app.home = {
 
         var courseHeader = document.createElement('HEADER');
         courseHeader.className = "courseHeader";
-        var courseHeaderText = document.createElement("SPAN");
+        var courseHeaderText = document.createElement("DIV");
         courseHeaderText.innerHTML = "<span class='courseHTitle'>" + course.courseName + "</span>" + "<span class='courseHSemester'>(" + app.dateFormatting.formatSemester(course.semester) + ")</span>";
         courseHeader.appendChild(courseHeaderText);
-        courseHeaderText.onclick = app.home.__toggleCourse;
+        courseHeaderText.onclick = app.home.__toggleCourse.bind(courseHeaderText);
         var courseHeaderDropDown = document.createElement("IMG");
         courseHeaderDropDown.src = "./img/dropdown_icon.png";
         courseHeaderDropDown.className = "dropdownIcon";
