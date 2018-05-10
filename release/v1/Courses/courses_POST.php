@@ -45,9 +45,10 @@ move_uploaded_file($tmp, $storageName);
 
 $script = "./Courses/parse_courses.rb";
 $fileIn = $storageName;
-$fileOut = "./CoursesCSV/courses.latest.csv";
+$fileOutCourses = "./CoursesCSV/courses.latest.csv";
+$fileOutTimes = "./CoursesCSV/course_times.latest.csv";
 
-exec('ruby '.$script." ".$fileIn.' '.$fileOut.' '.$semesterCode.' 2>&1', $output, $returnValue);
+exec('ruby '.$script." ".$fileIn.' '.$fileOutCourses.' '.$fileOutTimes.' '.$semesterCode.' 2>&1', $output, $returnValue);
 if($returnValue != 0){
         echoError($conn, 500, "ErrorParsingCourseFile", "O: ".implode(",", $output)." --R:".$returnValue);
 }

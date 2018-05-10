@@ -75,13 +75,14 @@ class Course
 end
 
 #get the path from the command line argument.
-PATH = ARGV[0]
-UPLOADPATH = ARGV[1]
-SEMESTER_CMD = ARGV[2]
-raise "Commandline argument for path and upload path must be supplied. Optional semester" if PATH.nil? || UPLOADPATH.nil?
+INPUT = ARGV[0]
+COURSE_FILE_PATH = ARGV[1]
+TIME_FILE_PATH = ARGV[2]
+SEMESTER_CMD = ARGV[3]
+raise "Commandline argument for input path, course output path, time output path, and semester code required" if PATH.nil? || COURSE_FILE_PATH.nil? || TIME_FILE_PATH.nil?
 
 unparsed_courses = Array.new
-CSV.foreach(PATH, encoding: "CP1252") do |line|
+CSV.foreach(INPUT, encoding: "CP1252") do |line|
     course = Course.factory(line)
     if(course)
         unparsed_courses.push(course)
@@ -164,11 +165,11 @@ if(! SEMESTER_CMD.nil?)
     end
 end
 
-if(File.file?(UPLOADPATH))
-    File.delete(UPLOADPATH)
+if(File.file?(COURSE_FILE_PATH))
+    File.delete(COURSE_FILE_PATH)
 end
 
-file = File.new(UPLOADPATH,  "w+")
+file = File.new(COURSE_FILE_PATH,  "w+")
 
 courses.each do |course| 
     file.write(";")
