@@ -1,16 +1,20 @@
 #ruby deployment/parse_courses.rb deployment/courses.csv deployment/database/latest_courses.csv
 require 'csv'
 require 'date'
+require 'securerandom'
 
 class CourseGroup
-    attr_reader :teacher_name, :name, :number, :section_start, :section_end
+    attr_reader :course_id, :teacher_name, :name, :number, :section_start, :section_end, :time_slots
     attr_writer :section_end
-    def initialize(tname, name, number, sec_start, sec_end)
+    
+    def initialize(tname, name, number, sec_start, sec_end, time_slots)
+        @course_id = SecureRandom.uuid
         @teacher_name = tname
         @name = name
         @number = number
         @section_start = sec_start
         @section_end = sec_end
+        @time_slots = time_slots
     end
     
     def to_s
@@ -32,12 +36,12 @@ end
 class Course 
     attr_reader :teacher_name, :name, :number, :section, :time_slot, :type
 
-    def initialize(tname, name, number, section, tslot, type)
-        @teacher_name = tname
+    def initialize(teacher_name, name, number, section, time_slot, type)
+        @teacher_name = teacher_name
         @name = name
         @number = number
         @section = section
-        @time_slot = tslot
+        @time_slot = time_slot
         @type = type
     end
     
