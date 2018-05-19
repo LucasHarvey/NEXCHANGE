@@ -18,6 +18,17 @@ class CourseGroup
     end
 end
 
+class CourseTimes
+    attr_reader :days_of_week, :time_start, :time_end, :course_id
+    
+    def initialize(days_of_week, time_start, time_end, course_id)
+        @days_of_week = days_of_week
+        @time_start = time_start
+        @time_end = time_end
+        @course_id = course_id
+    end
+end
+
 class Course 
     attr_reader :teacher_name, :name, :number, :section, :time_slot, :type
 
