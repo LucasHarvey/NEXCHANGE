@@ -107,7 +107,7 @@ app.signup = {
         return (userId.length == 7 && !isNaN(userId));
     },
     verifyName: function(name) {
-        return (/^[A-Za-z\-\s]+$/g.test(name));
+        return (/^[A-Za-z'\-\s]+$/g.test(name));
     }
 };
 
