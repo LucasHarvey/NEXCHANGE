@@ -6,6 +6,9 @@ if(getUserPrivilege() != "ADMIN"){
     echoError($conn, 403, "AuthorizationFailed");
 }
 
+if(array_key_exists("section", $_GET) && !empty($_GET['section']) && !is_numeric($_GET['section'])){
+    echoError($conn, 400, "SectionNotValid");
+}
 $offset =  array_key_exists("page", $_GET) ? $_GET['page'] : 0;
 
 $allowedProps = array("teacherFullName", "courseName", "courseNumber", "section", "semester", "courseId", "id", "page", "section");
@@ -36,17 +39,52 @@ $selectQuery = "SELECT id, teacher_fullname as teacherFullName, course_name as c
 $selectQuery = $selectQuery. " LIMIT ".$GLOBALS['PAGE_SIZES']." OFFSET ". ($offset * $GLOBALS['PAGE_SIZES']);
 
 $courses = database_get_all($conn, $selectQuery, $insertTypes, $insertVals);
+$final = array();
 
-//TODO: Must filter by section. Must be done in PHP. Could be done in MySQL but lets not complicate things.
+#TODO MOVE THIS TO A MySQL FUNCTION. Too many callbacks.
+if(array_key_exists("section", $_GET) && !empty($_GET['section'])){
+    $_section = intval($_GET['section']);
+    foreach($courses as $course){
+        $section = $course['section'];
+        if(strpos($section, ",") !== false){
+            $pieces = explode(",", $section);
+            foreach($pieces as $piece){
+                if(strpos($piece, "-") !== false){
+                    $dashPieces = explode("-", $piece);
+                    if($_section >= intval($dashPieces[0]) && $_section <= intval($dashPieces[1])){
+                        array_push($final, $course);
+                    }
+                }else{
+                    if(intval($piece) == $_section){
+                        array_push($final, $course);
+                    }
+                }
+            }
+        }else{
+            if(strpos($section, "-") !== false){
+                $dashPieces = explode("-", $section);
+                if($_section >= intval($dashPieces[0]) && $_section <= intval($dashPieces[1])){
+                    array_push($final, $course);
+                }
+            }else{
+                if(intval($section) == $_section){
+                    array_push($final, $course);
+                }
+            }
+        }
+    }
+}else{
+    $final = $courses;
+}
 
 if(in_array("id", array_keys($whereStmt[1]))){
-    if(count($courses) == 0){
+    if(count($final) == 0){
         echoError($conn, 404, "CourseNotFound");
     }else{
-        echoSuccess($conn, array("course" => $courses[0]));
+        echoSuccess($conn, array("course" => $final[0]));
     }
 }
 
-echoSuccess($conn, array("courses" => $courses));
+echoSuccess($conn, array("courses" => $final));
 
 ?>
