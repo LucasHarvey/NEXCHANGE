@@ -40,10 +40,10 @@ app.courses = {
         courseCodeP.innerHTML = "Course Number: " + courseData.courseNumber;
         courseInfo.appendChild(courseCodeP);
         
-        var sectionText = course.section.sectionify();
+        var sectionText = courseData.section.sectionify(true);
         
         let sectionP = document.createElement("P");
-        sectionP.innerHTML = sectionText;
+        sectionP.innerHTML = sectionText[0]+": "+sectionText[1];
         courseInfo.appendChild(sectionP);
         
         let teacherP = document.createElement("P");
