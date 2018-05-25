@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,getQueryParameterByName,location */
+/* global Resources,MessageCode,Modal,getQueryParameterByName,location,sectionVerification */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -16,8 +16,7 @@ app.editCourse = {
         // Update the course input fields to match the original course:
         document.getElementById('courseName').value = app.editCourse.originalCourse.courseName;
         document.getElementById("courseNumber").value = app.editCourse.originalCourse.courseNumber;
-        document.getElementById("sectionStart").value = (app.editCourse.originalCourse.sectionStart + "").padStart(5, "0");
-        document.getElementById("sectionEnd").value = (app.editCourse.originalCourse.sectionEnd + "").padStart(5, "0");
+        document.getElementById("section").value = app.editCourse.originalCourse.section;
         document.getElementById("teacherFullName").value = app.editCourse.originalCourse.teacherFullName;
         
         var season = app.editCourse.originalCourse.semester[0];
@@ -54,8 +53,7 @@ app.editCourse = {
         // Update the course input fields 
         document.getElementById('courseName').value = data.payload.courseName;
         document.getElementById("courseNumber").value = data.payload.courseNumber;
-        document.getElementById("sectionStart").value = (data.payload.sectionStart + "").padStart(5, "0");
-        document.getElementById("sectionEnd").value = (data.payload.sectionEnd + "").padStart(5, "0");
+        document.getElementById("section").value = data.payload.section;
         document.getElementById("teacherFullName").value = data.payload.teacherFullName;
         
         var season = data.payload.semester[0];
@@ -101,8 +99,7 @@ app.editCourse = {
 
         let newCourseName = document.getElementById('courseName').value;
         let newCourseNumber = document.getElementById("courseNumber").value;
-        let newSectionStart = document.getElementById("sectionStart").value;
-        let newSectionEnd = document.getElementById("sectionEnd").value;
+        let newSection = document.getElementById("section").value;
         let newTeacherFullName = document.getElementById("teacherFullName").value;
         let seasonSelector = document.getElementById("season");
         var newSeason = seasonSelector.value;
@@ -124,13 +121,7 @@ app.editCourse = {
             return;
         }
         
-        if(!newSectionStart){
-            new Modal("Error", MessageCode("MissingArgumentSection"), null, {
-                    text: "Okay"
-                }).show();
-            return;
-        }
-        if(!newSectionEnd){
+        if(!newSection){
             new Modal("Error", MessageCode("MissingArgumentSection"), null, {
                     text: "Okay"
                 }).show();
@@ -171,6 +162,13 @@ app.editCourse = {
             }).show();
             return;
         }
+        
+        if (!sectionVerification(newSection)){
+            new Modal("Error", newSection + " is not a valid section code. Non-continuous sections seperated by commas (,) and continuous sections seperated by hyphens (-). Example: Section '66,68,71-75,91' would mean sections 66, 68 and sections 71 through 75, followed by 91.", null, {
+                text: "Okay"
+            }).show();
+            return;
+        }
 
         // Format the semester correctly
         newFormattedSemester = newSeason + newYear;
@@ -180,10 +178,8 @@ app.editCourse = {
             changes.courseName = newCourseName;
         if (newCourseNumber != this.originalCourse.courseNumber)
             changes.courseNumber = newCourseNumber;
-        if (newSectionStart != this.originalCourse.sectionStart)
-            changes.sectionStart = newSectionStart;
-        if (newSectionEnd != this.originalCourse.sectionEnd)
-            changes.sectionEnd = newSectionEnd;
+        if (newSection != this.originalCourse.section)
+            changes.section = newSection;
         if(newTeacherFullName != this.originalCourse.teacherFullName)
             changes.teacherFullName = newTeacherFullName;
         if(newFormattedSemester != this.originalCourse.semester)
@@ -194,7 +190,7 @@ app.editCourse = {
         document.getElementById("editCourse").removeEventListener("submit", app.editCourse.submitCourseEdit);
 
         if (changes != {}) {
-            Resources.Courses.PUT(app.editCourse.courseId, changes.teacherFullName, changes.courseName, changes.courseNumber, changes.sectionStart, changes.sectionEnd, changes.semester, this.successCourseEdit, this.failureCourseEdit);
+            Resources.Courses.PUT(app.editCourse.courseId, changes.teacherFullName, changes.courseName, changes.courseNumber, changes.section, changes.semester, this.successCourseEdit, this.failureCourseEdit);
         } else {
             new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();
         }

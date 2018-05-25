@@ -9,8 +9,15 @@ DROP TABLE IF EXISTS notes;
 DROP TABLE IF EXISTS notefiles;
 DROP TABLE IF EXISTS user_access;
 DROP TABLE IF EXISTS courses;
+DROP TABLE IF EXISTS course_times;
 DROP TABLE IF EXISTS notefile_downloads;
 SET FOREIGN_KEY_CHECKS = 1;
+
+DROP TRIGGER IF EXISTS before_insert_on_users_id;
+DROP TRIGGER IF EXISTS before_insert_on_notefiles_id;
+DROP TRIGGER IF EXISTS before_insert_on_courses_time_id;
+DROP TRIGGER IF EXISTS before_insert_on_user_access;
+DROP TRIGGER IF EXISTS before_insert_on_notes;
 
 -- Create the tables
 CREATE TABLE log_notifications_sent (
@@ -48,14 +55,25 @@ CREATE TABLE courses (
     teacher_fullname VARCHAR(255) NOT NULL,
     course_name VARCHAR(100) NOT NULL,
     course_number VARCHAR(10) NOT NULL,
-    section_start int(5),
-    section_end int(5),
+    section VARCHAR(255),
     semester VARCHAR(5) NOT NULL,
     
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
-    CONSTRAINT UC_Course UNIQUE (teacher_fullname,course_name,course_number,section_start,section_end,semester)
+    CONSTRAINT UC_Course UNIQUE (teacher_fullname,course_name,course_number,section,semester)
+);
+
+CREATE TABLE course_times (
+    id CHAR(36) NOT NULL,
+    course_id CHAR(36) NOT NULL,
+    
+    days_of_week CHAR(5) NOT NULL,
+    time_start CHAR(4) NOT NULL,
+    time_end CHAR(4) NOT NULL,
+    
+    PRIMARY KEY (id),
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
 -- User access denotes the courses a student or a note taker is allowed to do stuff for
@@ -118,9 +136,9 @@ CREATE TRIGGER before_insert_on_users_id
 CREATE TRIGGER before_insert_on_notefiles_id
     BEFORE INSERT ON notefiles 
     FOR EACH ROW SET new.id = uuid();
-  
-CREATE TRIGGER before_insert_on_courses_id
-    BEFORE INSERT ON courses 
+
+CREATE TRIGGER before_insert_on_courses_time_id
+    BEFORE INSERT ON course_times 
     FOR EACH ROW SET new.id = uuid();
 
 DELIMITER $$
