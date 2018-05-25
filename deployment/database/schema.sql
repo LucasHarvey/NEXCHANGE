@@ -61,7 +61,7 @@ CREATE TABLE courses (
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
-    CONSTRAINT UC_Course UNIQUE (teacher_fullname,course_name,course_number,section_start,section_end,semester)
+    CONSTRAINT UC_Course UNIQUE (teacher_fullname,course_name,course_number,section,semester)
 );
 
 CREATE TABLE course_times (
