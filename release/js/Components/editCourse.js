@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,getQueryParameterByName,location */
+/* global Resources,MessageCode,Modal,getQueryParameterByName,location,sectionVerification */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -163,7 +163,7 @@ app.editCourse = {
             return;
         }
         
-        if (!app.sectionVerification(newSection)){
+        if (!sectionVerification(newSection)){
             new Modal("Error", newSection + " is not a valid section code. Non-continuous sections seperated by commas (,) and continuous sections seperated by hyphens (-). Example: Section '66,68,71-75,91' would mean sections 66, 68 and sections 71 through 75, followed by 91.", null, {
                 text: "Okay"
             }).show();
