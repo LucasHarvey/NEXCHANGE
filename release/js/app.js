@@ -279,7 +279,7 @@ app._processBlobResponse = function(response, callback) {
 };
 
 app.logUi = function(message){
-    console.log("UILog: "+message);
+    console.log("UILog: ",message);
     if(Resources && Resources.Log){
         Resources.Log.POST(message);
     }
