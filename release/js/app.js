@@ -279,7 +279,7 @@ app._processBlobResponse = function(response, callback) {
 };
 
 app.logUi = function(message){
-    console.log("UILog: "+message);
+    console.log("UILog: ",message);
     if(Resources && Resources.Log){
         Resources.Log.POST(message);
     }
@@ -383,10 +383,59 @@ if (!String.prototype.padStart) {
     };
 }
 
+String.prototype.sectionify = function sectionify(asLabelAndValue){
+    //"Section".pluralize(section.length > 5)+": " +
+    var prefix = "Section";
+    if(this.contains(",") || this.contains("-"))
+        prefix += "s";
+    
+    var postfix = this;
+    
+    if(asLabelAndValue)
+        return [prefix, postfix]
+    
+    return prefix + " " + postfix;
+};
+
 String.prototype.nescape = function escapeHtml() {
     return this.replace(/[\"&<>]/g, function (a) {
         return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
     });
+};
+
+String.prototype.contains = function contains(elem){
+    return this.indexOf(elem) !== -1;
+};
+
+function sectionVerification(section){
+    if(!section.contains(",")){
+        if(section.contains("-")){
+            return validateDash(section); //it only has a range. ex: 51-56
+        }
+        return !isNaN(section); //It only has a number (allegedly) ex: 31; ex: notANumber
+    }
+    
+    var splits = section.split(",");
+    for(var i = 0; i<splits.length; i++){
+        var split = splits[i];
+        if(!split) return false;
+        if(split.contains("-")){
+            if(!validateDash(split)) return false;
+            continue;
+        }
+        
+        if(isNaN(split)) return false;
+    }
+    return true;
+    
+    function validateDash(dashed){
+        var dashSplit = dashed.split("-");
+        for(var i = 0; i<dashSplit.length; i++){
+            if(!dashSplit[i]) return false;
+            if(isNaN(dashSplit[i])) return false;
+        }
+        return true;
+    }
 };
 
 function generatePTag(header, content, spanned){
@@ -426,5 +475,3 @@ function getExtension(fileName){
     var extension = fileComponents[fileComponents.length - 1];
     return extension.toLowerCase();
 }
-
-
