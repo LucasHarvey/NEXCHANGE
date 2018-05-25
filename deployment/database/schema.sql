@@ -13,6 +13,12 @@ DROP TABLE IF EXISTS course_times;
 DROP TABLE IF EXISTS notefile_downloads;
 SET FOREIGN_KEY_CHECKS = 1;
 
+DROP TRIGGER IF EXISTS before_insert_on_users_id;
+DROP TRIGGER IF EXISTS before_insert_on_notefiles_id;
+DROP TRIGGER IF EXISTS before_insert_on_courses_time_id;
+DROP TRIGGER IF EXISTS before_insert_on_user_access;
+DROP TRIGGER IF EXISTS before_insert_on_notes;
+
 -- Create the tables
 CREATE TABLE log_notifications_sent (
     user_id CHAR(36) NOT NULL,
@@ -131,9 +137,9 @@ CREATE TRIGGER before_insert_on_users_id
 CREATE TRIGGER before_insert_on_notefiles_id
     BEFORE INSERT ON notefiles 
     FOR EACH ROW SET new.id = uuid();
-  
-CREATE TRIGGER before_insert_on_courses_id
-    BEFORE INSERT ON courses 
+
+CREATE TRIGGER before_insert_on_courses_time_id
+    BEFORE INSERT ON course_times 
     FOR EACH ROW SET new.id = uuid();
 
 DELIMITER $$
