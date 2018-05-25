@@ -383,6 +383,20 @@ if (!String.prototype.padStart) {
     };
 }
 
+String.prototype.sectionify = function sectionify(asLabelAndValue){
+    //"Section".pluralize(section.length > 5)+": " +
+    var prefix = "Section";
+    if(this.contains(",") || this.contains("-"))
+        prefix += "s";
+    
+    var postfix = this;
+    
+    if(asLabelAndValue)
+        return [prefix, postfix]
+    
+    return prefix + " " + postfix;
+};
+
 String.prototype.nescape = function escapeHtml() {
     return this.replace(/[\"&<>]/g, function (a) {
         return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];

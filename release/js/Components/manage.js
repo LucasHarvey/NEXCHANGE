@@ -142,14 +142,11 @@ app.manage = {
             article.article.id = "UA_C_" + course.id;
             article.header.innerText = course.courseName;
             
-            var section =  (course.sectionStart + "").padStart(5, "0");
-            if(course.sectionStart != course.sectionEnd){
-                section += " to " + (course.sectionEnd + "").padStart(5, "0");
-            }
+            var section =  course.section.sectionify(true);
             
             article.description.appendChild(generatePTag("Teacher", course.teacherFullName));
             article.description.appendChild(generatePTag("Course", course.courseNumber));
-            article.description.appendChild(generatePTag("Section".pluralize(section.length > 5), section));
+            article.description.appendChild(generatePTag(section[0], section[1]));
             article.description.appendChild(generatePTag("Semester", course.semester));
             article.description.appendChild(generatePTag("Contains", course.notesAuthored + " note".pluralize(course.notesAuthored)));
 
@@ -214,11 +211,9 @@ app.manage = {
             
             let course = data.payload.course;
             
-            var section =  (course.sectionStart + "").padStart(5, "0");
-            if(course.sectionStart != course.sectionEnd){
-                section += " to " + (course.sectionEnd + "").padStart(5, "0");
-            }
-            new Modal("Course Deleted", course.courseName.nescape() + " ("+"Section".pluralize(section.length > 5)+" " + section.nescape() + ") has been deleted successfully.", null, null, "Okay").show();
+            var section = course.section.sectionify(true);
+            
+            new Modal("Course Deleted", course.courseName.nescape() + " ("+section[0]+" " + section[1].nescape() + ") has been deleted successfully.", null, null, "Okay").show();
             
             var article = document.getElementById("UA_C_" + course.id);
             article.parentElement.removeChild(article);
@@ -261,13 +256,10 @@ app.manage = {
                 role = "Student Receiving Notes";
             }
             article.header.innerText = role + " - " + ua.firstName + " " + ua.lastName;
-            var section =  (ua.courseSectionStart + "").padStart(5, "0");
-            if(ua.courseSectionStart != ua.courseSectionEnd){
-                section += " to " + (ua.courseSectionEnd + "").padStart(5, "0");
-            }
+            var section =  ua.courseSection.sectionify(true);
             
             article.description.appendChild(generatePTag("Course", ua.courseNumber + " (" + ua.courseName + ")"));
-            article.description.appendChild(generatePTag("Section".pluralize(section.length > 5), section));
+            article.description.appendChild(generatePTag(section[0], section[1]));
             article.description.appendChild(generatePTag("Role", role));
             if(ua.role=="NOTETAKER") article.description.appendChild(generatePTag("Author of", ua.notesAuthored + " note".pluralize(ua.notesAuthored) + " (for this class)"));
             article.description.appendChild(generatePTag("Created On", new Date(ua.created.replace(/-/g, '\/')).toPrettyDate()));

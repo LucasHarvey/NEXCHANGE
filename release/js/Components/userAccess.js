@@ -62,11 +62,8 @@ app.useraccess = {
 
             for (var i = 0; i < courses.length; i++) {
                 var course = courses[i];
-                var section =  (course.sectionStart + "").padStart(5, "0");
-                if(course.sectionStart != course.sectionEnd){
-                    section += " to " + (course.sectionEnd + "").padStart(5, "0");
-                }
-                let name = course.courseName + " (" + course.courseNumber + " section".pluralize(section.length > 5) + " " + section + ")";
+                var section = course.section.sectionify(true);
+                let name = course.courseName + " (" + course.courseNumber + " " + section[0] + " " + section[1].nescape() + ")";
                 modalContent += "<li>" + name + "</li>";
             }
 
@@ -79,11 +76,8 @@ app.useraccess = {
 
             for (var i = 0; i < previousAccess.length; i++) {
                 var course = previousAccess[i];
-                var section =  (course.sectionStart + "").padStart(5, "0");
-                if(course.sectionStart != course.sectionEnd){
-                    section += " to " + (course.sectionEnd + "").padStart(5, "0");
-                }
-                let name = course.courseName + " (" + course.courseNumber + " section".pluralize(section.length > 5) + " " + section + ")";
+                var section = course.section.sectionify(true);
+                let name = course.courseName + " (" + course.courseNumber + " " + section[0] + " " + section[1].nescape() + ")";
                 modalContent += "<li>" + name + "</li>";
             }
 
