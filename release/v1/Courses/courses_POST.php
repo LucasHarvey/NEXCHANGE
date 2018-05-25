@@ -53,7 +53,7 @@ if($returnValue != 0){
         echoError($conn, 500, "ErrorParsingCourseFile", "O: ".implode(",", $output)." --R:".$returnValue);
 }
 
-$execCMD = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,teacher_fullname,course_name,course_number,section_start,section_end,semester' --local -uroot --password=Nex:2017 nexchange ".$fileOut;
+$execCMD = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,teacher_fullname,course_name,course_number,section,semester' --local -uroot --password=Nex:2017 nexchange ".$fileOut;
 exec($execCMD, $output2, $returnValue2);
 if($returnValue2 != 0){
         echoError($conn, 500, "ErrorUploadingParsedCourseFile", "O: ".implode(",", $output2)." --R:".$returnValue2);
