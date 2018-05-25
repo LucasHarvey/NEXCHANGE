@@ -165,7 +165,7 @@ class Course
         if section.match(/^\d+$/)
             section = section.to_i
         else
-            raise "SECTION NOT A NUMBER" + section
+            raise "A course row does not have a proper section value. Row: "+values.to_s
         end
         
         return Course.new(teacher_name, name, number, section, slot, type)
