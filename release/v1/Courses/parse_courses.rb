@@ -94,6 +94,10 @@ class CourseTime
         @time_end = time_end
     end
     
+    def to_s 
+        @days_of_week + ";" + @time_start + ";" + @time_end
+    end
+    
     def self.factory(fromString)
         splitDays = fromString.split(":")
         splitHours = splitDays[1].split("-")
@@ -336,6 +340,8 @@ file = File.new(TIME_FILE_PATH,  "w+")
 
 parsed_groups.each do |course| 
     course.time_slots.each do |timeSlot|
+        #course_time_id
+        file.write(";")
         file.write(course.course_id)
         file.write(";")
         file.write(timeSlot.to_s)
