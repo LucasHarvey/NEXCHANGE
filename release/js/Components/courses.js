@@ -40,12 +40,7 @@ app.courses = {
         courseCodeP.innerHTML = "Course Number: " + courseData.courseNumber;
         courseInfo.appendChild(courseCodeP);
         
-        var section =  (courseData.sectionStart + "").padStart(5, "0");
-        if(courseData.sectionStart != courseData.sectionEnd){
-            section += " to " + (courseData.sectionEnd + "").padStart(5, "0");
-        }
-        
-        var sectionText = "Section".pluralize(section.length > 5)+": " + section;
+        var sectionText = course.section.sectionify();
         
         let sectionP = document.createElement("P");
         sectionP.innerHTML = sectionText;
