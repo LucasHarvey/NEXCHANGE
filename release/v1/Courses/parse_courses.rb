@@ -339,7 +339,7 @@ end
 file = File.new(TIME_FILE_PATH,  "w+")
 
 parsed_groups.each do |course| 
-    course.time_slots.each do |timeSlot|
+    course.getTimeSlots().each do |timeSlot|
         #course_time_id
         file.write(";")
         file.write(course.course_id)
