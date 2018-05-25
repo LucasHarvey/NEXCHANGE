@@ -245,8 +245,6 @@ end
 def groupCoursesByTime(unparsed_courses)
     courses = Array.new
     unparsed_courses.each do |course_number, a_courses|
-        #TODO only one course in the course number would result in error here
-        
         if a_courses.length == 1
             a_courses = Array.new(a_courses)
         end
@@ -282,8 +280,6 @@ def createCourseGroup(parsed_times)
     end
     return course_groups
 end
-
-#Todo: exception for english courses?! those that are equivalent ex 603-102-MQ and 603-200-AB
 
 unparsed_courses = getCoursesFromFile
 parsed_courses = groupCoursesByNumber(unparsed_courses)
@@ -350,5 +346,5 @@ parsed_groups.each do |course|
 end
 
 file.close();
-
+ 
 puts parsed_groups.length.to_s + " courses parsed."
