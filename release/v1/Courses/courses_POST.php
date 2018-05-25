@@ -45,17 +45,24 @@ move_uploaded_file($tmp, $storageName);
 
 $script = "./Courses/parse_courses.rb";
 $fileIn = $storageName;
-$fileOut = "./CoursesCSV/courses.latest.csv";
+$fileOutCourses = "./CoursesCSV/courses.latest.csv";
+$fileOutTimes = "./CoursesCSV/course_times.latest.csv";
 
-exec('ruby '.$script." ".$fileIn.' '.$fileOut.' '.$semesterCode.' 2>&1', $output, $returnValue);
+exec('ruby '.$script." ".$fileIn.' '.$fileOutCourses.' '.$fileOutTimes.' '.$semesterCode.' 2>&1', $output, $returnValue);
 if($returnValue != 0){
-        echoError($conn, 500, "ErrorParsingCourseFile", "O: ".implode(",", $output)." --R:".$returnValue);
+    echoError($conn, 500, "ErrorParsingCourseFile", "O: ".implode(",", $output)." --R:".$returnValue);
 }
 
-$execCMD = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,teacher_fullname,course_name,course_number,section_start,section_end,semester' --local -uroot --password=THE_PASSWORD nexchange ".$fileOut;
+$execCMD = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,teacher_fullname,course_name,course_number,section,semester' --local -uroot --password=THE_PASSWORD nexchange ".$fileOutCourses;
 exec($execCMD, $output2, $returnValue2);
 if($returnValue2 != 0){
-        echoError($conn, 500, "ErrorUploadingParsedCourseFile", "O: ".implode(",", $output2)." --R:".$returnValue2);
+    echoError($conn, 500, "ErrorUploadingParsedCourseFile", "O: ".implode(",", $output2)." --R:".$returnValue2);
+}
+
+$execCMD2 = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,course_id, days_of_week, time_start, time_end' --local -uroot --password=THE_PASSWORD nexchange ".$fileOutTimes;
+exec($execCMD2, $output3, $returnValue3);
+if($returnValue3 != 0){
+    echoError($conn, 500, "ErrorUploadingParsedCourseFile", "Course Times. O: ".implode(",", $output3)." --R:".$returnValue3);
 }
 
 echoSuccess($conn, array("output" => $output[0]), 200);

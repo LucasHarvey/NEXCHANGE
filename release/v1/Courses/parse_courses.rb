@@ -1,37 +1,129 @@
 #ruby deployment/parse_courses.rb deployment/courses.csv deployment/database/latest_courses.csv
 require 'csv'
 require 'date'
+require 'securerandom'
+require 'pp'
 
 class CourseGroup
-    attr_reader :teacher_name, :name, :number, :section_start, :section_end
-    attr_writer :section_end
-    def initialize(tname, name, number, sec_start, sec_end)
+    attr_reader :course_id, :teacher_name, :name, :number, :sections, :time_slots
+    
+    def initialize(tname, name, number, section, time_slots)
+        @course_id = SecureRandom.uuid
         @teacher_name = tname
         @name = name
         @number = number
-        @section_start = sec_start
-        @section_end = sec_end
+        @sections = [section]
+        @time_slots = time_slots
+    end
+    
+    def addSection(section)
+        @sections.push(section)
+    end
+    
+    def addSections(sections)
+        @sections.concat(sections)
+    end
+    
+    def sectionsToString
+        sectionString = ""
+        firstNumberSwitch = true
+        
+        sections = @sections.sort
+            
+        firstSection = sections.shift
+
+        prevSection = firstSection
+        while(sections.length != 0)
+            nextSection = sections.shift
+            
+            if(nextSection != prevSection + 1) #Were the previous sections continuous?
+                if(firstNumberSwitch == false)
+                    sectionString = sectionString + ","
+                end
+                
+                if(firstSection != prevSection)
+                    sectionString = sectionString + firstSection.to_s+"-"+prevSection.to_s
+                else
+                    sectionString = sectionString + prevSection.to_s
+                end
+                firstNumberSwitch = false
+                firstSection = nextSection
+            end
+            
+            prevSection = nextSection
+        end
+        
+        if(firstNumberSwitch == false)
+            sectionString = sectionString + ","
+        end
+        if(firstSection != prevSection)
+            sectionString = sectionString + firstSection.to_s+"-"+prevSection.to_s
+        else
+            sectionString = sectionString + prevSection.to_s
+        end
+        
+        #TODO: Clean me up - repetitive code!
+        
+        return sectionString
     end
     
     def to_s
-        @teacher_name + ";" + @name + ";" + @number + ";" + @section_start + ";" + @section_end
+        @course_id + ";" + @teacher_name + ";" + @name + ";" + @number + ";" + self.sectionsToString()
+    end
+    
+    def getTimeSlots
+        parsed_times = Array.new
+        @time_slots.each do |time|
+            parsed_times.push(CourseTime.factory(time))
+        end
+        return parsed_times
+    end
+    
+    def self.factory(fromCourse)
+        return CourseGroup.new(fromCourse.teacher_name, fromCourse.name, fromCourse.number, fromCourse.section, fromCourse.time_slot)
+    end
+    
+end
+
+class CourseTime
+    attr_reader :days_of_week, :time_start, :time_end
+    
+    def initialize(days_of_week, time_start, time_end)
+        @days_of_week = days_of_week
+        @time_start = time_start
+        @time_end = time_end
+    end
+    
+    def to_s 
+        @days_of_week + ";" + @time_start + ";" + @time_end
+    end
+    
+    def self.factory(fromString)
+        splitDays = fromString.split(":")
+        splitHours = splitDays[1].split("-")
+        return CourseTime.new(splitDays[0], splitHours[0], splitHours[1])
     end
 end
 
 class Course 
     attr_reader :teacher_name, :name, :number, :section, :time_slot, :type
 
-    def initialize(tname, name, number, section, tslot, type)
-        @teacher_name = tname
+    def initialize(teacher_name, name, number, section, time_slot, type)
+        @teacher_name = teacher_name
         @name = name
         @number = number
         @section = section
-        @time_slot = tslot
+        @time_slot = time_slot
         @type = type
     end
     
+    def addTimeSlot(timeSlot)
+        @time_slot.concat(timeSlot)
+    end
+    
     def to_s
-        @teacher_name + ";" + @name + ";" + @number + ";" + @section + ";" + @time_slot
+        #Todo: compound time_slot to readable array.
+        return @teacher_name + ";" + @name + ";" + @number + ";" + @section + ";" + @time_slot.to_s
     end
     
     def self.factory(values)
@@ -70,72 +162,129 @@ class Course
         end
         number = number[0..2] + "-" + number[3..5] + "-" + number[6..7]
         
+        if section.match(/^\d+$/)
+            section = section.to_i
+        else
+            raise "SECTION NOT A NUMBER" + section
+        end
+        
         return Course.new(teacher_name, name, number, section, slot, type)
     end
 end
 
-#get the path from the command line argument.
-PATH = ARGV[0]
-UPLOADPATH = ARGV[1]
-SEMESTER_CMD = ARGV[2]
-raise "Commandline argument for path and upload path must be supplied. Optional semester" if PATH.nil? || UPLOADPATH.nil?
+INPUT_PATH = ARGV[0]
+COURSE_FILE_PATH = ARGV[1]
+TIME_FILE_PATH = ARGV[2]
+SEMESTER_CMD = ARGV[3]
 
-unparsed_courses = Array.new
-CSV.foreach(PATH, encoding: "CP1252") do |line|
-    course = Course.factory(line)
-    if(course)
-        unparsed_courses.push(course)
+def getCoursesFromFile
+    #get the path from the command line argument.
+    raise "Commandline argument for input path, course output path, time output path, and semester code required" if INPUT_PATH.nil? || COURSE_FILE_PATH.nil? || TIME_FILE_PATH.nil?
+    
+    unparsed_courses = Array.new
+    CSV.foreach(INPUT_PATH, encoding: "CP1252") do |line|
+        course = Course.factory(line)
+        if(course)
+            unparsed_courses.push(course)
+        end
     end
+    return unparsed_courses
 end
 
-courses_ranges = Array.new
-courses_ranges = unparsed_courses.group_by do |course|
-    [course.number, course.teacher_name, course.section]
+#Merges multiple courses that could have the same teacher and the same time.
+def handleSectionExceptions(sections)
+    similarCourses = {
+        #"603-102-MQ" => "603-102-MQ", #Course # that other courses will map to
+        #"603-200-AB" => "603-102-MQ",
+        #"603-103-MQ" => "603-102-MQ"
+    }
+    
+    finalCourses = Hash.new
+    
+    sections.each do |key, value|
+        course_sections = value.group_by do |course|
+            [course.section]
+        end
+        course_section_parsed = Array.new
+        course_sections.each do |sectionNumber, singleCourseSections|
+            course = singleCourseSections.shift
+            while(singleCourseSections.length != 0)
+                nextCourse = singleCourseSections.shift
+                course.addTimeSlot(nextCourse.time_slot)
+            end
+            course_section_parsed.push(course)
+        end
+        value = course_section_parsed
+        
+        
+        theKey = key[0]
+        if similarCourses.has_key?(theKey)
+            theKey = similarCourses[theKey]
+        end
+        
+        if !finalCourses.has_key?(theKey)
+            finalCourses[theKey] = value
+        else
+            finalCourses[theKey].concat(value)
+        end
+    end
+    
+    return finalCourses
 end
 
-sec_courses = Array.new
-courses_ranges.each do |key, value|
-    if(!(value.kind_of?(Array)))
-        course_group = CourseGroup.new(value.teacher_name, value.name, value.number, value.section, value.section)
-        sec_courses.push(course_group)
-    else
-        ordered_courses = value.sort_by do |course|
-            begin
-                Integer(course.section)
-            rescue
+def groupCoursesByNumber(courses)
+    sections = courses.group_by do |course|
+        [course.number]
+    end
+    
+    sections = handleSectionExceptions(sections)
+    
+    return sections
+end
+
+def groupCoursesByTime(unparsed_courses)
+    courses = Array.new
+    unparsed_courses.each do |course_number, a_courses|
+        if a_courses.length == 1
+            a_courses = Array.new(a_courses)
+        end
+        
+        course_times = a_courses.group_by do |course|
+            [course.time_slot, course.teacher_name]
+        end
+        
+        
+        courses.push(course_times.values)
+    end
+    
+    return courses
+end
+
+def createCourseGroup(parsed_times)
+    course_groups = Array.new
+    parsed_times.each do |courses|
+        courses.each do |time_courses|
+            
+            #convert sections into numbers first.
+            time_courses.sort_by do |course|
                 course.section
             end
+            
+            firstCourse = time_courses.shift
+            group = CourseGroup.factory(firstCourse)
+            
+            group.addSections(time_courses.map{|course| course.section })
+            
+            course_groups.push(group)
         end
-        course_group = CourseGroup.new(ordered_courses[0].teacher_name, ordered_courses[0].name, ordered_courses[0].number, ordered_courses[0].section, ordered_courses.last.section)
-        sec_courses.push(course_group)
     end
+    return course_groups
 end
 
-courses = Array.new
-current_courseGroup = sec_courses.shift
-
-for i in 0..sec_courses.length do
-    course = sec_courses[i]
-    
-    if(current_courseGroup.teacher_name == course.teacher_name && current_courseGroup.number == course.number)
-        if(current_courseGroup.section_end.to_i == course.section_end.to_i - 1)
-            current_courseGroup.section_end = course.section_end
-        else
-            courses.push(current_courseGroup)
-            current_courseGroup = course
-            i += 1
-        end
-    else
-        courses.push(current_courseGroup)
-        current_courseGroup = course
-        i += 1
-    end
-    
-    if(i + 1 >= sec_courses.length)
-        courses.push(current_courseGroup)
-        break
-    end
-end
+unparsed_courses = getCoursesFromFile
+parsed_courses = groupCoursesByNumber(unparsed_courses)
+parsed_sections = groupCoursesByTime(parsed_courses)
+parsed_groups = createCourseGroup(parsed_sections)
 
 year = Date.today.year
 month = Date.today.month - 1
@@ -164,14 +313,13 @@ if(! SEMESTER_CMD.nil?)
     end
 end
 
-if(File.file?(UPLOADPATH))
-    File.delete(UPLOADPATH)
+if(File.file?(COURSE_FILE_PATH))
+    File.delete(COURSE_FILE_PATH)
 end
 
-file = File.new(UPLOADPATH,  "w+")
+file = File.new(COURSE_FILE_PATH,  "w+")
 
-courses.each do |course| 
-    file.write(";")
+parsed_groups.each do |course| 
     file.write(course.to_s)
     file.write(";")
     file.write(semester)
@@ -180,4 +328,23 @@ end
 
 file.close();
 
-puts courses.length.to_s + " courses parsed."
+if(File.file?(TIME_FILE_PATH))
+    File.delete(TIME_FILE_PATH)
+end
+
+file = File.new(TIME_FILE_PATH,  "w+")
+
+parsed_groups.each do |course| 
+    course.getTimeSlots().each do |timeSlot|
+        #course_time_id
+        file.write(";")
+        file.write(course.course_id)
+        file.write(";")
+        file.write(timeSlot.to_s)
+        file.write("\n")
+    end
+end
+
+file.close();
+ 
+puts parsed_groups.length.to_s + " courses parsed."
