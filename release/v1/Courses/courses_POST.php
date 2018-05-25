@@ -50,7 +50,7 @@ $fileOutTimes = "./CoursesCSV/course_times.latest.csv";
 
 exec('ruby '.$script." ".$fileIn.' '.$fileOutCourses.' '.$fileOutTimes.' '.$semesterCode.' 2>&1', $output, $returnValue);
 if($returnValue != 0){
-    echoError($conn, 500, "ErrorParsingCourseFile", "O: ".implode(",", $output)." --R:".$returnValue);
+    echoError($conn, 400, "ErrorParsingCourseFile", "O: ".implode(",", $output)." --R:".$returnValue);
 }
 
 $execCMD = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,teacher_fullname,course_name,course_number,section,semester' --local -uroot --password=Nex:2017 nexchange ".$fileOutCourses;
@@ -65,7 +65,7 @@ if($returnValue3 != 0){
     echoError($conn, 500, "ErrorUploadingParsedCourseFile", "Course Times. O: ".implode(",", $output3)." --R:".$returnValue3);
 }
 
-echoSuccess($conn, array("output" => $output[0]), 200);
+echoSuccess($conn, array("output" => $output[0]), 201);
 
 function getFileError($errorNo){
 	switch ($errorNo) {
