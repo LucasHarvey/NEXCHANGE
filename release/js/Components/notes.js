@@ -120,11 +120,8 @@ app.notes = {
         let authorP = generatePTag("Notes taken by", noteData.user_name || "Anonymous", true);
         articleSection.appendChild(authorP);
 
-        var section =  (noteData.sectionStart + "").padStart(5, "0");
-        if(noteData.sectionStart != noteData.sectionEnd){
-            section += " to " + (noteData.sectionEnd + "").padStart(5, "0");
-        }
-        let courseP = generatePTag("Notes taken for", noteData.course_name + " ("+noteData.course_number + " : " + section +")", true);
+        var section = noteData.section.sectionify(true);
+        let courseP = generatePTag("Notes taken for", noteData.course_name + " ("+noteData.course_number + " : " + section[1] +")", true);
         articleSection.appendChild(courseP);
         
         let dateP = generatePTag("Notes taken on", new Date(noteData.taken_on.replace(/-/g, '\/')).toPrettyDate(), true);
