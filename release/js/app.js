@@ -403,6 +403,10 @@ String.prototype.nescape = function escapeHtml() {
     });
 };
 
+String.prototype.contains = function contains(elem){
+    return this.indexOf(elem) !== -1;
+};
+
 function sectionVerification(section){
     if(!section.contains(",")){
         if(section.contains("-")){
