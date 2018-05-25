@@ -403,6 +403,37 @@ String.prototype.nescape = function escapeHtml() {
     });
 };
 
+function sectionVerification(section){
+    if(!section.contains(",")){
+        if(section.contains("-")){
+            return validateDash(section); //it only has a range. ex: 51-56
+        }
+        return !isNaN(section); //It only has a number (allegedly) ex: 31; ex: notANumber
+    }
+    
+    var splits = section.split(",");
+    for(var i = 0; i<splits.length; i++){
+        var split = splits[i];
+        if(!split) return false;
+        if(split.contains("-")){
+            if(!validateDash(split)) return false;
+            continue;
+        }
+        
+        if(isNaN(split)) return false;
+    }
+    return true;
+    
+    function validateDash(dashed){
+        var dashSplit = dashed.split("-");
+        for(var i = 0; i<dashSplit.length; i++){
+            if(!dashSplit[i]) return false;
+            if(isNaN(dashSplit[i])) return false;
+        }
+        return true;
+    }
+};
+
 function generatePTag(header, content, spanned){
     let ptag = document.createElement("P");
     ptag.innerText = header + ": ";
@@ -440,5 +471,3 @@ function getExtension(fileName){
     var extension = fileComponents[fileComponents.length - 1];
     return extension.toLowerCase();
 }
-
-
