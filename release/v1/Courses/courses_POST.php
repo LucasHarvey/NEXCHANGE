@@ -37,8 +37,12 @@ if($errorNo != 0) {
 	$err = getFileError($errorNo);
     echoError($conn, $err[0], $err[1], "Error: ".$errorNo);
 }
-    
-$fileName = "courses-".$semesterCode."-".uniqid().".csv";
+
+// Generate a unique file name for storage using the file content
+// If the file happens to already exist, change the unique id until it doesn't
+do{
+    $fileName = "courses-".$semesterCode."-".uniqid().".csv";
+}while(file_exists("./CoursesCSV/".$fileName));
 
 $storageName = "./CoursesCSV/".$fileName;
 move_uploaded_file($tmp, $storageName);
