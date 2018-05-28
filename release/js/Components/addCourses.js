@@ -32,7 +32,7 @@ app.addCourses = {
         var label = document.getElementById("fileLabel");
         
         if(!this.files || this.files.length == 0) {
-            label.innerText = "Select File (*.csv)";
+            label.innerText = "Select File (.csv)";
             return;
         }
         
