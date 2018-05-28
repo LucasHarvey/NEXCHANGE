@@ -1,3 +1,16 @@
+<?php
+
+include_once "./v1/_globals.php";
+include_once "./v1/_authentication.php";
+
+// Verify that the user is an admin
+if(getUserPrivilege() != "ADMIN"){
+    http_response_code(403);
+    die();
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
