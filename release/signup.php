@@ -1,8 +1,21 @@
+<?php
+
+include_once "./v1/_globals.php";
+include_once "./v1/_authentication.php";
+
+// Verify that the user is an admin
+if(getUserPrivilege() != "ADMIN"){
+    http_response_code(403);
+    die();
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Note Search | NEXCHANGE</title>
+    <title>User Sign Up | NEXCHANGE</title>
     <link rel="shortcut icon" type="image/png" href="./img/favicon.png"/>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/style.css?v=4">
@@ -18,7 +31,7 @@
     <script async type="text/javascript" src="js/Components/modal.js?v=4"></script>
     <script async type="text/javascript" src="js/Components/user.js?v=4"></script>
 
-    <script async type="text/javascript" src="js/Components/notes.js?v=4"></script>
+    <script async type="text/javascript" src="js/Components/signup.js?v=4"></script>
 </head>
 
 <body>
@@ -41,38 +54,30 @@
         <aside class="aside1"></aside>
         <div class="main">
             
-            <h1 id="notesSearchHeader"></h1>
+            <h1>Sign Up</h1>
             
             <div class="userform-wrapper">
                 <form id="userData" class="userform">
                     <div class="userfield">
-                        <label for="sortDrop" class="sortByLabel">Sort By</label>
-                        <select id="sortDrop">
-                            <option name="sortMethod" value="newestUpload" selected>
-                                Newest by Upload Date
-                            </option>
-                            <option name="sortMethod" value="oldestUpload">
-                                Oldest by Upload Date
-                            </option>
-                            <option name="sortMethod" value="newestTakenOn">
-                                Newest by Taken On Date
-                            </option>
-                            <option name="sortMethod" value="oldestTakenOn">
-                                Oldest by Taken On Date
-                            </option>
-                            <option name="sortMethod" value="noteNameAscending">
-                                Note Name A-Z
-                            </option>
-                            <option name="sortMethod" value="noteNameDescending">
-                                Note Name Z-A
-                            </option>
-                        </select>
+                        <input type="text" id="firstName" name="firstName" placeholder="First Name" maxlength="40" required>
+                        <input type="text" id="lastName" name="lastName" placeholder="Last Name" maxlength="60" required>
                     </div>
+
+                    <div class="userfield">
+                        <input type="number" id="studentId" name="studentId" min="1000000" max="9999999" placeholder="Student ID" required>
+                    </div>
+
+                    <div class="userfield">
+                        <input type="email" id="email" name="email" placeholder="Email" maxlength="255" required>
+                    </div>
+
+                    <div class="userfield">
+                        <input class="button" type="submit" id="submit" name="submit" value="Sign Up">
+                    </div>
+
                 </form>
             </div>
-            
-            <div id="notesContainer"></div>
-            
+
         </div>
         <aside class="aside2"></aside>
     </div>
