@@ -101,6 +101,7 @@ function MessageCode(code){
         AuthorizationFailed: "You are not logged in or you do not have permission to do this.",
         AuthenticationFailed: "User ID or Password is incorrect.",
         AuthenticationExpired: "You have been logged out for prolonged inactivity.",
+        AuthenticationDenied: "Too many attempts. Please try again later.",
         AuthorizationTokenMismatch: "Your credentials are invalid. Login again.",
         UserAuthenticated: "User authenticated successfully",
         UserUnauthenticated: "You have been unauthenticated successfully.",
