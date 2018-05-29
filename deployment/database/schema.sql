@@ -3,6 +3,7 @@ use nexchange;
 -- DROP EVERYTHING
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS log_notifications_sent;
+DROP TABLE IF EXISTS login_attempts;
 DROP TABLE IF EXISTS log_user_logins;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS notes;
@@ -26,12 +27,6 @@ CREATE TABLE log_notifications_sent (
     sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE log_user_logins (
-    user_id CHAR(36) NOT NULL,
-    ip_address VARCHAR(45) NOT NULL,
-    login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
 CREATE TABLE users (
     id CHAR(36) NOT NULL,
     login_id CHAR(7) NOT NULL UNIQUE,
@@ -48,6 +43,22 @@ CREATE TABLE users (
     passresetcreated TIMESTAMP,
     
     PRIMARY KEY (id)
+);
+
+CREATE TABLE login_attempts (
+    user_id CHAR(36) NOT NULL,
+    ip_address VARCHAR (45) NOT NULL,
+    attempt_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE log_user_logins (
+    user_id CHAR(36) NOT NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE courses (
