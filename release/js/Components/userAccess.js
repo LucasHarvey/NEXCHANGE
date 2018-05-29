@@ -35,6 +35,27 @@ app.useraccess = {
         while (courseContainer.firstChild) {
             courseContainer.removeChild(courseContainer.firstChild);
         }
+        
+        // Clear the search results
+        document.getElementById('resultsTray').style.display = 'none';
+        
+        document.getElementById("results").style.display = "none";
+        
+        let resultsTable = document.getElementById("results");
+        while (resultsTable.rows.length > 1) {
+            resultsTable.deleteRow(1);
+        }
+        
+        var noResultsTray = document.getElementById("noResults");
+        noResultsTray.style.display = "none";
+        
+        // Remove the article if present
+        var noResultChildren = noResultsTray.children;
+        for(var i=0; i<noResultChildren.length; i++){
+            noResultsTray.removeChild(noResultChildren[i]);
+        }
+        
+        document.getElementById("noResults").innerHTML = "";
     },
 
     userAccessSuccess: function(response) {
