@@ -289,7 +289,6 @@ app.postCourseSearch = {
 
         document.getElementById("results").style.display = "none";
 
-
         let courseName = document.getElementById('courseName').value;
         let courseNumber = document.getElementById("courseNumber").value;
         let section = document.getElementById("section").value;
