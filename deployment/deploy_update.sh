@@ -11,14 +11,18 @@ echo "Part 2 -- Deleting Previous Files";
 mkdir /home/nexuser/_BACKUP
 cp -r /var/www/html/v1/CoursesCSV /home/nexuser/_BACKUP/
 cp -r /var/www/html/v1/Files /home/nexuser/_BACKUP/
-rm -rf /var/www/html
+rm -rf /var/www/html/*
 
 echo "Part 3 -- Moving New Files";
 cp * /var/www/html
 cp -r /home/nexuser/_BACKUP/CoursesCSV /var/www/html/v1
 cp -r /home/nexuser/_BACKUP/Files /var/www/html/v1
 
-echo "Part 4 -- Changing Permissions";
+echo "Part 4 -- Deleting Backup Directory";
+cd /home/nexuser
+rm -rf /home/nexuser/_BACKUP
+
+echo "Part 5 -- Changing Permissions";
 cd /var/www/html
 chown -R apache:apache *
 restorecon -R *
