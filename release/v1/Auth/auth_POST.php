@@ -17,7 +17,7 @@ $userid = $user["id"];
 $ip = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
 
 // Check brute force before looking at the user data
-$bruteStatusOK = getBruteStatus($conn, $creds, $userid);
+$bruteStatusOK = getBruteStatus($conn, $userid);
 
 if($bruteStatusOK){
     //Authenticate the user
@@ -94,9 +94,7 @@ function authenticate($conn, $creds){
     return false;
 }
 
-function getBruteStatus($conn, $creds, $userid){
-    
-    $studentId = $creds[0];
+function getBruteStatus($conn, $userid){
     
     $attempts = database_get_all($conn, "SELECT UNIX_TIMESTAMP(attempt_at) as loginAttemptTime FROM login_attempts WHERE user_id=? ORDER BY attempt_at DESC LIMIT 5", "s", $userid);
     
