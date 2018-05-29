@@ -30,7 +30,7 @@ function getNavbarItems($conn, $token = null){
             
         $settings = array(
             "content" => "MY PROFILE",
-            "url" => "./adminProfile"
+            "url" => "./profile"
         );
         
         return array($signup, $userAccess, $addCourse, $manageNotes, $settings);
