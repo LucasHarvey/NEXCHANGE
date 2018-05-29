@@ -25,7 +25,21 @@
 
     <!-- Header -->
     <header class="header">
-        <a class="logo" href="./home"><img src="./img/jac_logo.png" alt="John Abbott Logo"></a>
+        <a class="logo" href="
+<?php
+
+include_once "./v1/_globals.php";
+include_once "./v1/_authentication.php"; 
+if(getUserPrivilege() == "ADMIN"){
+    echo "./signup";
+} else {
+    echo "./home";
+    
+}
+
+?>
+        
+        "><img src="./img/jac_logo.png" alt="John Abbott Logo"></a>
         <nav>
             <div id="navbar">
                 <aside></aside>
