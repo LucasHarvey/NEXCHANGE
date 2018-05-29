@@ -1,3 +1,25 @@
+<?php
+
+include_once "./v1/_database.php";
+
+$conn = database_connect();
+
+$code = $_GET["q"];
+
+if($code == null){
+    header('Location: ./invalidLink');
+    die();
+}
+
+$result = database_get_row($conn, "SELECT id FROM users WHERE passresetcode=? AND privilege='USER' AND DATE_ADD(passresetcreated, INTERVAL 15 MINUTE) > NOW()", "s", $code);
+
+if(!$result){
+    header('Location: ./invalidLink');
+    die();
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
 
