@@ -492,7 +492,7 @@ app.manage = {
     },
     
     scrollSearch: function(event){
-        let scrollPosition = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) / ((document.body.clientHeight) || 1) ;
+        let scrollPosition = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) / ((document.body.scrollHeight - window.innerHeight) || 1);        
         if(scrollPosition > 0.9 && !app.manage.paginationEnd){
             app.manage.searchPaged(app.manage.searchData);
         }

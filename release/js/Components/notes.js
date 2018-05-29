@@ -41,7 +41,7 @@ app.notes = {
         app.notes.getNotesPaged(true);
     },
     getNotesPaged: function(forced){
-        let scrollPosition = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) / ((document.body.clientHeight) || 1) ;
+        let scrollPosition = (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) / ((document.body.scrollHeight - window.innerHeight) || 1);
         if(forced === true || (scrollPosition > 0.9 && !app.notes.paginationEnd)){
             let sorting = app.notes.getSortMethod();
             let sortMethod = sorting[0];
