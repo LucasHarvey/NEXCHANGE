@@ -1,13 +1,7 @@
 <?php
 $conn = database_connect();
 
-if(!array_key_exists("studentId", $_JSON)){
-    echoError($conn, 400, "MissingArgumentStudentId");
-}
-
-if(!array_key_exists("email", $_JSON)){
-    echoError($conn, 400, "MissingArgumentEmail");
-}
+requiredParams($conn, $_JSON, array("studentId", "email"));
 
 $studentId = $_JSON["studentId"];
 $email = $_JSON["email"];
