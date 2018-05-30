@@ -89,7 +89,7 @@ function generateWhereStatement($conn, $allowedProps, $changesKeysRemap, $column
     return array($where, $searchValues);
 }
 
-function getIP($ip = null, $deep_detect = TRUE){
+function getIP($ip = null){
     $ip = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
     return $ip;
 }
