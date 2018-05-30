@@ -145,8 +145,8 @@ app.handleAuthError = function(response) {
     new Modal("Not Authenticated", MessageCode(response.messageCode), successData, false).show();
 };
 
-app.post = function(resource, data, success, failure) {
-    let request = this._generateRequest(success, failure);
+app.post = function(resource, data, success, failure, options) {
+    let request = this._generateRequest(success, failure, options);
     request.open("POST", resource.location);
     // Set the xsrf token in header
     request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
@@ -281,7 +281,10 @@ app._processBlobResponse = function(response, callback) {
 app.logUi = function(message){
     console.log("UILog: ",message);
     if(Resources && Resources.Log){
-        Resources.Log.POST(message);
+        let failureFunc = function(response){
+            console.warn(response.status, response.messageCode);
+        }
+        Resources.Log.POST(message, null, failureFunc);
     }
 }
 

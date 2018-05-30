@@ -66,7 +66,7 @@ if($bruteStatusOK){
     }
 } else {
     // Too many attempts: login attempt denied.
-    echoError($conn, 401, "AuthenticationDenied");
+    echoError($conn, 403, "AuthenticationDenied");
 }
 
 function retrieveUserData($conn){
@@ -107,9 +107,9 @@ function getBruteStatus($conn, $userid){
     $waitTime = $now - $latestAttempt;
     
     // Check if:
-    //- First and most recent attempt are more than 5 minutes from each other OR
-    //- The latest attempt was more than 5 minutes ago
-    if($intervalBetweenAttempts >= $GLOBALS["NEXCHANGE_BRUTE_INTERVAL"] || $waitTime >= $GLOBALS["NEXCHANGE_BRUTE_WAIT"])
+    //- First and most recent attempt are at least 1 minute from each other OR
+    //- The latest attempt was at least 2 minutes ago
+    if($intervalBetweenAttempts >= $GLOBALS["NEXCHANGE_BRUTE_LOGIN_INTERVAL"] || $waitTime >= $GLOBALS["NEXCHANGE_BRUTE_LOGIN_WAIT"])
         return true;
     
     return false;
