@@ -55,6 +55,7 @@ CREATE TABLE login_attempts (
 );
 
 CREATE TABLE log_ui_errors (
+    message VARCHAR(45) NOT NULL,
     ip_address VARCHAR (45),
     error_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

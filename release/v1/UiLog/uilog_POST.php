@@ -3,6 +3,7 @@
 $conn = database_connect();
 
 requiredParams($conn, $_JSON, array("message"));
+
 $message = $_JSON['message'];
 
 $ip = getIP();
@@ -14,7 +15,7 @@ if($bruteStatusOK){
     logFrontEnd($message);
     
     // Log the UI Error
-    database_insert($conn, "INSERT INTO log_ui_errors (ip_address) values (?)", "s", $ip);
+    database_insert($conn, "INSERT INTO log_ui_errors (message, ip_address) values (?,?)", "ss", array($message, $ip));
 
     echoSuccess($conn, array("messageCode" => "LoggedSuccessfully"), 201);
 } else {
