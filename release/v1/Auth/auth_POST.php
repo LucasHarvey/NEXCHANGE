@@ -14,7 +14,7 @@ if($user == null){
     
 $userid = $user["id"];
 
-$ip = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
+$ip = getIP();
 
 // Check brute force before looking at the user data
 $bruteStatusOK = getBruteStatus($conn, $userid);

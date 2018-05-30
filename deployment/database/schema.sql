@@ -48,20 +48,20 @@ CREATE TABLE users (
 
 CREATE TABLE login_attempts (
     user_id CHAR(36) NOT NULL,
-    ip_address VARCHAR (45) NOT NULL,
+    ip_address VARCHAR (45),
     attempt_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE log_ui_errors (
-    ip_address VARCHAR (45) NOT NULL,
+    ip_address VARCHAR (45),
     error_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );
 
 CREATE TABLE log_user_logins (
     user_id CHAR(36) NOT NULL,
-    ip_address VARCHAR(45) NOT NULL,
+    ip_address VARCHAR(45),
     login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE

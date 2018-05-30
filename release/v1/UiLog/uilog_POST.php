@@ -5,7 +5,7 @@ $conn = database_connect();
 requiredParams($conn, $_JSON, array("message"));
 $message = $_JSON['message'];
 
-$ip = $_SERVER['REMOTE_ADDR']?:($_SERVER['HTTP_X_FORWARDED_FOR']?:$_SERVER['HTTP_CLIENT_IP']);
+$ip = getIP();
 
 // Check brute force before logging the error
 $bruteStatusOK = getBruteStatus($conn, $ip);
@@ -22,6 +22,9 @@ if($bruteStatusOK){
 }
 
 function getBruteStatus($conn, $ip){
+    
+    if($ip == null)
+        return false;
     
     $errors = database_get_all($conn, "SELECT UNIX_TIMESTAMP(error_at) as uiErrorTime FROM log_ui_errors WHERE ip_address=? ORDER BY error_at DESC LIMIT 5", "s", $ip);
     
