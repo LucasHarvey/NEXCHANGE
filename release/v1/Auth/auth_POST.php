@@ -14,10 +14,10 @@ if($user == null){
     
 $userid = $user["id"];
 
-$ip = getIP();
-
 // Check brute force before looking at the user data
-$bruteStatusOK = getBruteStatus($conn, $userid);
+$bruteStatusOK = getBruteStatus($conn, "LOGIN_ATTEMPT", $userid, $GLOBALS['NEXCHANGE_ALLOWED_TRIES_LOGIN'], $GLOBALS['NEXCHANGE_BRUTE_LOGIN_INTERVAL'], $GLOBALS['NEXCHANGE_BRUTE_LOGIN_WAIT']);
+
+$ip = getIP();
 
 if($bruteStatusOK){
     //Authenticate the user
@@ -37,6 +37,7 @@ if($bruteStatusOK){
         $privilege = $user["privilege"];
         
         $userid = $user["id"];
+        // Generate a new auth token
         $token = generateAuthToken($userid, $privilege);
         
         // Update the last_login field
@@ -90,27 +91,6 @@ function authenticate($conn, $creds){
     if($user != null){
         return password_verify($password, $user["passwordhash"]);
     }
-    
-    return false;
-}
-
-function getBruteStatus($conn, $userid){
-    
-    $attempts = database_get_all($conn, "SELECT UNIX_TIMESTAMP(attempt_at) as loginAttemptTime FROM login_attempts WHERE user_id=? ORDER BY attempt_at DESC LIMIT 5", "s", $userid);
-    
-    if(count($attempts) < 5)
-        return true;
-        
-    $intervalBetweenAttempts = $attempts[0]["loginAttemptTime"] - $attempts[4]["loginAttemptTime"];
-    $now = time();
-    $latestAttempt = $attempts[0]["loginAttemptTime"];
-    $waitTime = $now - $latestAttempt;
-    
-    // Check if:
-    //- First and most recent attempt are at least 1 minute from each other OR
-    //- The latest attempt was at least 2 minutes ago
-    if($intervalBetweenAttempts >= $GLOBALS["NEXCHANGE_BRUTE_LOGIN_INTERVAL"] || $waitTime >= $GLOBALS["NEXCHANGE_BRUTE_LOGIN_WAIT"])
-        return true;
     
     return false;
 }

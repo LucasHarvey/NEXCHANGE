@@ -12,6 +12,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST" || $_SERVER["REQUEST_METHOD"] == "DELETE
 include_once "_generics.php";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
+  include_once "_brute_force.php";
   include_once "Auth/auth_POST.php";
 }elseif ($_SERVER["REQUEST_METHOD"] == "DELETE"){
   include_once "Auth/auth_DELETE.php";

@@ -6,43 +6,26 @@ requiredParams($conn, $_JSON, array("message"));
 
 $message = $_JSON['message'];
 
-$ip = getIP();
+$userid = retrieveUserInfo()[0];
+
+if(!$userid){
+    echoError($conn, 404, "UserNotFound");
+}
 
 // Check brute force before logging the error
-$bruteStatusOK = getBruteStatus($conn, $ip);
+$bruteStatusOK = getBruteStatus($conn, "UI_LOG", $userid, $GLOBALS['NEXCHANGE_ALLOWED_TRIES_UI'], $GLOBALS['NEXCHANGE_BRUTE_UI_INTERVAL'], $GLOBALS['NEXCHANGE_BRUTE_UI_WAIT']);
+
+$ip = getIP();
 
 if($bruteStatusOK){
     logFrontEnd($message);
     
     // Log the UI Error
-    database_insert($conn, "INSERT INTO log_ui_errors (message, ip_address) values (?,?)", "ss", array($message, $ip));
+    database_insert($conn, "INSERT INTO log_ui_errors (user_id, ip_address) values (?,?)", "ss", array($userid, $ip));
 
     echoSuccess($conn, array("messageCode" => "LoggedSuccessfully"), 201);
 } else {
     echoError($conn, 403, "UILogDenied");
 }
 
-function getBruteStatus($conn, $ip){
-    
-    if($ip == null)
-        return false;
-    
-    $errors = database_get_all($conn, "SELECT UNIX_TIMESTAMP(error_at) as uiErrorTime FROM log_ui_errors WHERE ip_address=? ORDER BY error_at DESC LIMIT 5", "s", $ip);
-    
-    if(count($errors) < 5)
-        return true;
-        
-    $intervalBetweenErrors = $errors[0]["uiErrorTime"] - $errors[4]["uiErrorTime"];
-    $now = time();
-    $latestError = $errors[0]["uiErrorTime"];
-    $waitTime = $now - $latestError;
-    
-    // Check if:
-    //- First and most recent errors are at least 30 seconds from each other OR
-    //- The latest attempt was at least 1 minutes ago
-    if($intervalBetweenErrors >= $GLOBALS["NEXCHANGE_BRUTE_UI_INTERVAL"] || $waitTime >= $GLOBALS["NEXCHANGE_BRUTE_UI_WAIT"])
-        return true;
-    
-    return false;
-}
 ?>

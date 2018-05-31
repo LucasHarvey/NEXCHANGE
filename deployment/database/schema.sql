@@ -55,9 +55,11 @@ CREATE TABLE login_attempts (
 );
 
 CREATE TABLE log_ui_errors (
-    message VARCHAR(45) NOT NULL,
+    user_id CHAR(36) NOT NULL,
     ip_address VARCHAR (45),
-    error_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    error_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE log_user_logins (
