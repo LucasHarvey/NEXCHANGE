@@ -4,6 +4,40 @@ require 'date'
 require 'securerandom'
 require 'pp'
 
+TESTING_DEV = false
+
+def Test_CourseGroup_SectionString
+    puts "========TESTING COURSE SECTIONS========"
+    
+    testSections = [[12], [12,13], [12,14,16], [12,13,14,15,18], [1,3], [1,2,3,4,5,6,7,8,9,10,11,100], [25,24,23], [25,23,24]]
+    answers =      ["12", "12-13", "12,14,16", "12-15,18", "1,3", "1-11,100", "23-25", "23-25"]
+    
+    if(testSections.length() != answers.length())
+        raise "Test sections and answers are not of the same lenght."
+    end
+
+    while(testSections.length() != 0)
+        tname = "teacher_name"
+        cname = "course_name"
+        cnum = "420-620-AB"
+        csections = testSections.shift()
+        ctimeslots = "TR1400-1500"
+        
+        course = CourseGroup.new(tname, cname, cnum, csections, ctimeslots)
+        
+        testCase = course.sectionsToString()
+        answer = answers.shift()
+        if(testCase != answer)
+            puts "!TEST FAILED! testCase: '" + testCase + "' but answer: '"+answer+"'"
+        end
+        puts "Test Passed"
+    end
+    
+    puts ""
+    puts "Finished Test"
+end
+
+
 class CourseGroup
     attr_reader :course_id, :teacher_name, :name, :number, :sections, :time_slots
     
@@ -12,7 +46,11 @@ class CourseGroup
         @teacher_name = tname
         @name = name
         @number = number
-        @sections = [section]
+        if(section.kind_of?(Array))
+            @sections = section
+        else
+            @sections = [section]
+        end
         @time_slots = time_slots
     end
     
@@ -170,6 +208,11 @@ class Course
         
         return Course.new(teacher_name, name, number, section, slot, type)
     end
+end
+
+if(TESTING_DEV)
+    Test_CourseGroup_SectionString()
+    exit
 end
 
 INPUT_PATH = ARGV[0]
