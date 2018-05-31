@@ -66,7 +66,7 @@ if($bruteStatusOK){
     }
 } else {
     // Too many attempts: login attempt denied.
-    echoError($conn, 401, "AuthenticationDenied");
+    echoError($conn, 403, "AuthenticationDenied");
 }
 
 function retrieveUserData($conn){
