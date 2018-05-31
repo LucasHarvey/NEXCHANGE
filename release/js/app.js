@@ -368,6 +368,7 @@ function getQueryParameterByName(name) {
 // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
 if (!String.prototype.padStart) {
+    //Pads the start of a string with the padString until it reaches the targetLength
     String.prototype.padStart = function padStart(targetLength, padString) {
         targetLength = targetLength >> 0; //floor if number or convert non-number to 0;
         padString = String(padString || ' ');
@@ -384,12 +385,33 @@ if (!String.prototype.padStart) {
 }
 
 String.prototype.sectionify = function sectionify(asLabelAndValue){
-    //"Section".pluralize(section.length > 5)+": " +
+    function piecePadder(piece){
+        if(piece.contains("-")){
+            //Its a range of numbers. Ex: 13-14
+            var range = piece.split("-");
+            return range[0].padStart(5, "0") + "-" + range[1].padStart(5, "0");
+        }else{
+            //Its a single number. Ex: 13
+            return piece.padStart(5, "0");
+        }
+    }
+    
     var prefix = "Section";
     if(this.contains(",") || this.contains("-"))
         prefix += "s";
+        
+    var padded = []
+    if(this.contains(",")){
+        var pieces = this.split(",");
+        for(var i = 0; i<pieces.length; i++){
+            var piece = pieces[i];
+            padded.push(piecePadder(piece));
+        }
+    }else{
+        padded.push(piecePadder(this));
+    }
     
-    var postfix = this;
+    var postfix = padded.join();
     
     if(asLabelAndValue)
         return [prefix, postfix]
