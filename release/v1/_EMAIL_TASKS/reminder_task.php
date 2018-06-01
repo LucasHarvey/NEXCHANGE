@@ -18,7 +18,7 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
     
     $innerSelect = "SELECT u.id, u.email, u.first_name, u.last_name, c.course_name, c.course_number, getLastClassForgotten(c.id, u.id, $NOTETAKER_REMINDER_DAYS) as LCF".
                     "FROM users u INNER JOIN user_access ua ON ua.user_id=u.id INNER JOIN courses c ON ua.course_id = c.id ".
-                    "WHERE ua.role='NOTETAKER'";
+                    "WHERE ua.role='NOTETAKER' AND DATEDIFF(ua.expires_on, NOW()) > 0";
     $outterSelect = "SELECT *, DATEDIFF(NOW(), LCF) as 'DateDifference' FROM ($innerSelect) as T WHERE LCF IS NOT NULL";
     
     $usersAndCourses = database_get_all($conn, $outterSelect, "", array());
