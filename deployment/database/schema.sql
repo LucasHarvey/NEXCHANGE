@@ -211,6 +211,7 @@ BEGIN
         SELECT ELT(DAYOFWEEK(loop_date), "U", "M", "T", "W", "R", "F", "S") INTO loop_data_dateCode;
         
         IF (LOCATE(loop_data_dateCode, courseDaysOfWeek) > 0) THEN
+            /*This is where we would check if the date is an exception. ex march break*/
             IF (DATEDIFF(DATE(NOW()), loop_date) >= dateDiffAllowed) THEN
                 RETURN loop_date;
             ELSE
