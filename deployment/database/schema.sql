@@ -191,7 +191,6 @@ BEGIN
     DECLARE lastNote DATE;
     DECLARE courseDaysOfWeek CHAR(7);
     DECLARE loop_data_dateCode CHAR(1);
-    DECLARE loop_data_lastCourseDate DATE;
     DECLARE loop_date DATE;
 
     /*Constants: 
