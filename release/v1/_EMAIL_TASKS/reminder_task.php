@@ -15,13 +15,13 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
                                 //We are not checking for credentials but we expect commandline is secure. If an intruder has cmd access
                                 //Everything is vulnerable
     $conn = database_connect();
-        
-    $notesWithin7Days = "SELECT n.user_id, n.course_id FROM notes n WHERE DATE_ADD(created, INTERVAL $NOTETAKER_REMINDER_DAYS DAY) >= NOW() ORDER BY created DESC";
-    $selectUsers = "SELECT u.id,u.email,u.first_name,u.last_name,c.course_name,c.course_number ".
-                    "FROM user_access ua INNER JOIN users u ON ua.user_id = u.id INNER JOIN courses c ON ua.course_id=c.id ".
-                    "WHERE ua.role='NOTETAKER' AND (ua.user_id, ua.course_id) NOT IN ($notesWithin7Days) AND DATE_ADD(u.created, INTERVAL $NOTETAKER_REMINDER_DAYS DAY) <= NOW()";
     
-    $usersAndCourses = database_get_all($conn, $selectUsers, "", array());
+    $innerSelect = "SELECT u.id, u.email, u.first_name, u.last_name, c.course_name, c.course_number, getLastClassForgotten(c.id, u.id, $NOTETAKER_REMINDER_DAYS) as LCF".
+                    "FROM users u INNER JOIN user_access ua ON ua.user_id=u.id INNER JOIN courses c ON ua.course_id = c.id ".
+                    "WHERE ua.role='NOTETAKER'";
+    $outterSelect = "SELECT *, DATEDIFF(NOW(), LCF) as 'DateDifference' FROM ($innerSelect) as T WHERE LCF IS NOT NULL";
+    
+    $usersAndCourses = database_get_all($conn, $outterSelect, "", array());
     
     $link = $GLOBALS['NEXCHANGE_DOMAIN'] . "/login";
     $subject = 'No-Reply: NEXCHANGE - Reminder to Upload Notes';
@@ -29,7 +29,7 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
     foreach ($usersAndCourses as $user) {
         $message = 'Hello '.$user['first_name'].' '.$user['last_name'].
             ",\n\nThis is a reminder that you haven't uploaded any notes to NEXCHANGE for a course you're registered in.".
-            "\n\nYou've reached at least $NOTETAKER_REMINDER_DAYS days without uploading notes for ".$user['course_name']." (".$user['course_number'].").".
+            "\n\nYou haven't uploaded any notes for ".$user['course_name']." (".$user['course_number'].") after your class on ".$user['LCF'].". It has been a total of ".$user['DateDifference']." days since this class and have reached the reminder threshold.".
             "\n\nYou can login at: ".$link;
             
         //echo "Sending email to ".$user['email']. " because of ".$user['course_name'].PHP_EOL;
