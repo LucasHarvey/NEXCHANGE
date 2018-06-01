@@ -29,7 +29,7 @@ if (php_sapi_name() == "cli") { //Was this script ran from the commandline ?! On
     foreach ($usersAndCourses as $user) {
         $message = 'Hello '.$user['first_name'].' '.$user['last_name'].
             ",\n\nThis is a reminder that you haven't uploaded any notes to NEXCHANGE for a course you're registered in.".
-            "\n\nYou haven't uploaded any notes for ".$user['course_name']." (".$user['course_number'].") after your class on ".$user['LCF'].". It has been a total of ".$user['DateDifference']." days since this class and have reached the reminder threshold.".
+            "\n\nYou haven't uploaded any notes for ".$user['course_name']." (".$user['course_number'].") after your class on ".$user['LCF'].". It has been a total of ".$user['DateDifference']." days since this class, which exceeds the maximum of $NOTETAKER_REMINDER_DAYS days set by the Access Centre policy.".
             "\n\nYou can login at: ".$link;
             
         //echo "Sending email to ".$user['email']. " because of ".$user['course_name'].PHP_EOL;
