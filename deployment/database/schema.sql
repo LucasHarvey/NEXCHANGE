@@ -201,23 +201,21 @@ BEGIN
     SELECT DATE(created) INTO lastNote FROM notes WHERE course_id = courseId AND user_id = userId ORDER BY created DESC limit 1;
     SELECT GROUP_CONCAT(days_of_week SEPARATOR '') INTO courseDaysOfWeek FROM course_times GROUP BY course_id HAVING course_id = courseId;
     
+    /*Did the user never upload a note? If so set it to date user access was created*/
     IF (lastNote IS NULL) THEN
         SELECT DATE(created) INTO lastNote FROM user_access WHERE course_id = courseId AND user_id = userId;
     END IF;
 
     /*Start counting from the next day of the last note.*/
     SET loop_date = DATE_ADD(lastNote, INTERVAL 1 DAY);
-    SET loop_data_lastCourseDate = NULL;
     WHILE loop_date != DATE(NOW()) DO
         SELECT ELT(DAYOFWEEK(loop_date), "U", "M", "T", "W", "R", "F", "S") INTO loop_data_dateCode;
         
         IF (LOCATE(loop_data_dateCode, courseDaysOfWeek) > 0) THEN
-            SET loop_data_lastCourseDate = loop_date;
-        END IF;
-        
-        IF (loop_data_lastCourseDate IS NOT NULL) THEN
-            IF (DATEDIFF(DATE(NOW()), loop_data_lastCourseDate) >= dateDiffAllowed) THEN
-                RETURN loop_data_lastCourseDate;
+            IF (DATEDIFF(DATE(NOW()), loop_date) >= dateDiffAllowed) THEN
+                RETURN loop_date;
+            ELSE
+                RETURN NULL;
             END IF;
         END IF;
         
