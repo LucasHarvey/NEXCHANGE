@@ -209,7 +209,7 @@ BEGIN
 
     /*Start counting from the next day of the last note.*/
     SET loop_date = DATE_ADD(lastNote, INTERVAL 1 DAY);
-    WHILE loop_date < DATE(NOW()) DO
+    WHILE loop_date <= DATE_SUB(DATE(NOW()), INTERVAL dateDiffAllowed DAY) DO
         SELECT ELT(DAYOFWEEK(loop_date), "U", "M", "T", "W", "R", "F", "S") INTO loop_data_dateCode;
         
         IF (LOCATE(loop_data_dateCode, courseDaysOfWeek) > 0) THEN
