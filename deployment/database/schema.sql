@@ -209,16 +209,11 @@ BEGIN
 
     /*Start counting from the next day of the last note.*/
     SET loop_date = DATE_ADD(lastNote, INTERVAL 1 DAY);
-    WHILE loop_date <= DATE_SUB(DATE(NOW()), INTERVAL dateDiffAllowed DAY) DO
+    WHILE DATEDIFF(DATE(NOW()), loop_date) > dateDiffAllowed DO
         SELECT ELT(DAYOFWEEK(loop_date), "U", "M", "T", "W", "R", "F", "S") INTO loop_data_dateCode;
         
         IF (LOCATE(loop_data_dateCode, courseDaysOfWeek) > 0) THEN
-            /*This is where we would check if the date is an exception. ex march break*/
-            IF (DATEDIFF(DATE(NOW()), loop_date) >= dateDiffAllowed) THEN
-                RETURN loop_date;
-            ELSE
-                RETURN NULL;
-            END IF;
+            RETURN loop_date;
         END IF;
         
         SET loop_date = DATE_ADD(loop_date, INTERVAL 1 DAY);
