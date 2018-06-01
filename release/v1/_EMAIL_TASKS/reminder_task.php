@@ -7,7 +7,7 @@ include_once "v1/_globals.php";
 /*
 This script will send reminders to notetakers who have not uploaded any notes for the past x days (see consts below...)
 */
-$NOTETAKER_REMINDER_DAYS = 7;
+$NOTETAKER_REMINDER_DAYS = 2;
 echo "/==================NEXCHANGE EMAIL TASK=================\\".PHP_EOL;
 echo "Reminder Email Task Running...".PHP_EOL;
 echo "Date: ".date('l jS \of F Y h:i:s A').PHP_EOL;
