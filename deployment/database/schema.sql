@@ -20,6 +20,8 @@ DROP TRIGGER IF EXISTS before_insert_on_courses_time_id;
 DROP TRIGGER IF EXISTS before_insert_on_user_access;
 DROP TRIGGER IF EXISTS before_insert_on_notes;
 
+DROP FUNCTION IF EXISTS getLastClassForgotten;
+
 -- Create the tables
 CREATE TABLE log_notifications_sent (
     user_id CHAR(36) NOT NULL,
@@ -180,4 +182,48 @@ CREATE TRIGGER before_insert_on_notes
             SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = "This user has not been granted rights to upload notes for this course.";
         END IF;
     END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE FUNCTION getLastClassForgotten(courseId CHAR(36), userId CHAR(36), dateDiffAllowed INT(2))
+    RETURNS DATE
+    READS SQL DATA
+    NOT DETERMINISTIC
+BEGIN
+    DECLARE lastNote DATE;
+    DECLARE courseDaysOfWeek CHAR(7);
+    DECLARE loop_data_dateCode CHAR(1);
+    DECLARE loop_date DATE;
+
+    /*Constants: 
+        Get the date of the last note, 
+        Get the all days of classes
+    */
+    SELECT DATE(created) INTO lastNote FROM notes WHERE course_id = courseId AND user_id = userId ORDER BY created DESC limit 1;
+    SELECT GROUP_CONCAT(days_of_week SEPARATOR '') INTO courseDaysOfWeek FROM course_times GROUP BY course_id HAVING course_id = courseId;
+    
+    /*Did the user never upload a note? If so set it to date user access was created*/
+    IF (lastNote IS NULL) THEN
+        SELECT DATE(created) INTO lastNote FROM user_access WHERE course_id = courseId AND user_id = userId;
+    END IF;
+
+    /*Start counting from the next day of the last note.*/
+    SET loop_date = DATE_ADD(lastNote, INTERVAL 1 DAY);
+    WHILE loop_date <= DATE_SUB(DATE(NOW()), INTERVAL dateDiffAllowed DAY) DO
+        SELECT ELT(DAYOFWEEK(loop_date), "U", "M", "T", "W", "R", "F", "S") INTO loop_data_dateCode;
+        
+        IF (LOCATE(loop_data_dateCode, courseDaysOfWeek) > 0) THEN
+            /*This is where we would check if the date is an exception. ex march break*/
+            IF (DATEDIFF(DATE(NOW()), loop_date) >= dateDiffAllowed) THEN
+                RETURN loop_date;
+            ELSE
+                RETURN NULL;
+            END IF;
+        END IF;
+        
+        SET loop_date = DATE_ADD(loop_date, INTERVAL 1 DAY);
+    END WHILE;
+    
+    RETURN NULL;
+END$$
 DELIMITER ;
