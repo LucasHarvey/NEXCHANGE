@@ -84,6 +84,10 @@ app.addCourses = {
         document.getElementById('submit').disabled = false;
         document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitCourse);
         app.addCourses.uploadInProgress = false;
+
+        document.getElementById("pb").style.width = 0;
+        document.getElementById("pt").innerText = "";
+        
         app.handleFailure(data);
     },
     
@@ -165,9 +169,10 @@ app.addCourses = {
         document.getElementById('addCourses').removeEventListener('submit', app.addCourses.submitCourse);
 
         Resources.Courses.POST(formattedSemester, file, pass, function(response){
+
             //Success function
             that.hide();
-            app.addCourses.submitCourseSuccess;
+            app.addCourses.submitCourseSuccess(response);
         }, function(response){
             //Failure function
             if(response.messageCode == "AuthenticationFailed"){
@@ -176,11 +181,17 @@ app.addCourses = {
                 document.getElementById('submit').disabled = false;
                 document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitCourse);
                 
+                app.addCourses.uploadInProgress = false;
+
+                document.getElementById("pb").style.width = 0;
+                document.getElementById("pt").innerText = "";
+
+                
                 document.getElementById("addCourses_uploadCoursesPw").nextSibling.innerHTML = "Incorrect Password.";
                 return;
             }
             that.hide();
-            app.addCourses.submitCourseFailure;
+            app.addCourses.submitCourseFailure(response);
             
         }, function(event) {
             if (event.lengthComputable === true) {
