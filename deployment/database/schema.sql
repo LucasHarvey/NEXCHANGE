@@ -20,6 +20,8 @@ DROP TRIGGER IF EXISTS before_insert_on_courses_time_id;
 DROP TRIGGER IF EXISTS before_insert_on_user_access;
 DROP TRIGGER IF EXISTS before_insert_on_notes;
 
+DROP FUNCTION IF EXISTS getLastClassForgotten;
+
 -- Create the tables
 CREATE TABLE log_notifications_sent (
     user_id CHAR(36) NOT NULL,
