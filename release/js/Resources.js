@@ -235,14 +235,17 @@ let Resources = {
             };
             return app.get(Resources.Courses, data, successCallback, failureCallback);
         },
-        POST: function(semester, files, successCallback, failureCallback, progressCallback) {
+        POST: function(semester, files, password, successCallback, failureCallback, progressCallback) {
             var formData = new FormData();
             formData.append("semesterCode", semester);
             for (var i = 0; i < files.length; i++) {
                 formData.append("file[]", files[i]);
             }
+            formData.append("password", window.btoa(password));
 
-            let request = app._generateRequest(successCallback, failureCallback);
+            let request = app._generateRequest(successCallback, failureCallback, {
+                disableAuthResult: true //Let failure handle it
+            });
             request.open("POST", this.location);
             request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
             request.upload.onprogress = progressCallback;
