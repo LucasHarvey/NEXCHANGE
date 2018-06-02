@@ -10,21 +10,12 @@ app.addCourses = {
     reset: function() {
         app.addCourses.uploadInProgress = false;
 
-        document.getElementById("pb").style.width = 0;
-        document.getElementById("pt").innerText = "";
-
         // Empty the course input fields: 
         document.getElementById("file").value = "";
         document.getElementById("season").selectedIndex = app.addCourses.getDefaultSeason();
         document.getElementById("year").value = new Date().getFullYear();
         
         app.addCourses.updateFileLabel();
-    },
-    
-    addFile: function(event) {
-        // Reset the progess bar and progress text to 0 when the user clicks on the button to select files
-        document.getElementById("pb").style.width = 0;
-        document.getElementById("pt").innerText = "";
     },
     
     updateFileLabel: function(){
@@ -48,23 +39,6 @@ app.addCourses = {
         return 0; //fall
     },
     
-    setProgress: function(percent) {
-        percent = percent || 0;
-        let progressBar = document.getElementById("pb");
-        let progressText = document.getElementById("pt");
-
-        if (progressBar !== undefined) {
-            progressBar.style.width = percent + "%";
-        }
-
-        if (progressText !== undefined) {
-            progressText.innerText = percent + "%";
-            if(percent == 100){
-                progressText.innerText += " - Upload Complete";
-            }
-        }
-    },
-    
     submitCourseSuccess: function(data) {
         
         // Enable the form
@@ -84,6 +58,7 @@ app.addCourses = {
         document.getElementById('submit').disabled = false;
         document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitCourse);
         app.addCourses.uploadInProgress = false;
+        
         app.handleFailure(data);
     },
     
@@ -135,28 +110,62 @@ app.addCourses = {
 
         // Format the semester correctly
         formattedSemester = season + year;
-
+        
+        new Modal("Upload Courses",
+                    "Are you sure you want to upload the selected file?" +
+                    "<br>This <b>CANNOT</b> be undone." +
+                    "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='addCourses_uploadCoursesPw'><p class='error'></p>", {
+                        text: "Yes, UPLOAD Courses",
+                        callback: function() {
+                            app.addCourses._uploadCourses.call(this, formattedSemester, file);
+                        }
+                    }
+                ).show();
+    },
+    
+    _uploadCourses: function(formattedSemester, file){
+        
+        var pass = document.getElementById("addCourses_uploadCoursesPw").value;
+        if (!pass) {
+            document.getElementById("addCourses_uploadCoursesPw").nextSibling.innerHTML = "Please enter password.";
+            return;
+        }
+        
+        var that = this;
+        
         app.addCourses.uploadInProgress = true;
         
         //Disable the form
         document.getElementById('submit').disabled = true;
         document.getElementById('addCourses').removeEventListener('submit', app.addCourses.submitCourse);
- 
-        Resources.Courses.POST(formattedSemester, file, this.submitCourseSuccess, this.submitCourseFailure, function(event) {
-            if (event.lengthComputable === true) {
-                let percent = Math.round((event.loaded / event.total) * 100);
-                app.addCourses.setProgress(percent);
+
+        Resources.Courses.POST(formattedSemester, file, pass, function(response){
+            //Success function
+            that.hide();
+            app.addCourses.submitCourseSuccess(response);
+        }, function(response){
+            //Failure function
+            if(response.messageCode == "AuthenticationFailed"){
+                
+                // Enable the form
+                document.getElementById('submit').disabled = false;
+                document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitCourse);
+                
+                app.addCourses.uploadInProgress = false;
+                
+                document.getElementById("addCourses_uploadCoursesPw").nextSibling.innerHTML = "Incorrect Password.";
+                return;
             }
+            that.hide();
+            app.addCourses.submitCourseFailure(response);
+            
         });
-    },
-
-
+    }
 };
 
 app.startup.push(function addCoursesStartup() {
     app.addCourses.submitFile = app.addCourses.submitFile.bind(app.addCourses);
     
-    document.getElementById('file').addEventListener('click', app.addCourses.addFile);
     document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitFile);
     
     document.getElementById("year").value = new Date().getFullYear();
