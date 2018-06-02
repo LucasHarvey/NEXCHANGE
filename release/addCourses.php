@@ -93,11 +93,6 @@ if(getUserPrivilege() != "ADMIN"){
                         <input class="button" type="submit" id="submit" value="Upload CSV of Courses">
                     </div>
                     
-                    <div class="userfield">
-                        <div class="bar">
-                            <span class="bar-fill" id="pb"><span class="bar-fill-text" id="pt"></span></span>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>

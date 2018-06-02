@@ -235,7 +235,7 @@ let Resources = {
             };
             return app.get(Resources.Courses, data, successCallback, failureCallback);
         },
-        POST: function(semester, files, password, successCallback, failureCallback, progressCallback) {
+        POST: function(semester, files, password, successCallback, failureCallback) {
             var formData = new FormData();
             formData.append("semesterCode", semester);
             for (var i = 0; i < files.length; i++) {
@@ -248,7 +248,6 @@ let Resources = {
             });
             request.open("POST", this.location);
             request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
-            request.upload.onprogress = progressCallback;
             // Enable the loading spinner 
             document.body.classList.add("load");
             request.send(formData);
