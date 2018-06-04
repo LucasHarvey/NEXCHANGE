@@ -4,7 +4,9 @@ let Resources = {
         location: "v1/uilog.php",
         POST: function(message, successCallback, failureCallback){
             let data = {message: message};
-            return app.post(Resources.Log, data, successCallback, failureCallback);
+            return app.post(Resources.Log, data, successCallback, failureCallback, {
+                disableAuthResult: true //Let failure handle it
+            });
         }
     },
     Password: {

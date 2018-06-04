@@ -5,6 +5,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS log_notifications_sent;
 DROP TABLE IF EXISTS login_attempts;
 DROP TABLE IF EXISTS log_user_logins;
+DROP TABLE IF EXISTS log_ui_errors;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS notes;
 DROP TABLE IF EXISTS notefiles;
@@ -49,15 +50,23 @@ CREATE TABLE users (
 
 CREATE TABLE login_attempts (
     user_id CHAR(36) NOT NULL,
-    ip_address VARCHAR (45) NOT NULL,
+    ip_address VARCHAR (45),
     attempt_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE log_ui_errors (
+    user_id CHAR(36) NOT NULL,
+    ip_address VARCHAR (45),
+    error_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE log_user_logins (
     user_id CHAR(36) NOT NULL,
-    ip_address VARCHAR(45) NOT NULL,
+    ip_address VARCHAR(45),
     login_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
