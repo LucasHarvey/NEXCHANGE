@@ -11,7 +11,7 @@ echo "Part 2 -- Deleting Previous Files";
 mkdir /home/nexuser/_BACKUP
 cp -r /var/www/html/v1/CoursesCSV /home/nexuser/_BACKUP/
 cp -r /var/www/html/v1/Files /home/nexuser/_BACKUP/
-rm -rf /var/www/html
+rm -rf /var/www/html/*
 
 echo "Part 3 -- Moving New Files";
 cp * /var/www/html
