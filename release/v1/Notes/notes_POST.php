@@ -45,9 +45,10 @@ $noteData = moveFiles();
 $fileName = $noteData[0];
 $storageName = $noteData[1];
 $fileType = $noteData[2];
-$fileSize = $noteData[3];
-$md5 = $noteData[4];
-$succeeded = $noteData[5];
+$fileExtension = $noteData[3];
+$fileSize = $noteData[4];
+$md5 = $noteData[5];
+$succeeded = $noteData[6];
 
 // Insert the note information into the database 
 database_insert($conn, "INSERT INTO notes (user_id, course_id, created, name, description, taken_on) VALUES (?,?,?,?,?,?)", $noteTypes, $noteValues);
@@ -64,7 +65,7 @@ if($note == null){
 }
 
 // Insert the file information into the database
-$result = insertNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
+$result = insertNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5);
 
 if(!$result){
 	// Delete the file from the server
