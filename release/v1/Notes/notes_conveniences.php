@@ -21,6 +21,7 @@ function moveFiles(){
 				$fileName = $files['name'][$key];
 				$fileSize = $files['size'][$key];
 				$fileType = $files['type'][$key];
+				$fileExtension = getExtension($fileName);
 				$md5 = md5_file($files['tmp_name'][$key]);
 	    		
 	    		// Generate a unique file name for storage using the file content
@@ -51,7 +52,7 @@ function moveFiles(){
 			    	"name" => $fileName, 
 			    	"md5" => $md5));
 			    
-				$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5, $succeeded);
+				$noteFileData = array($fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5, $succeeded);
 			
 				return $noteFileData;
 				
@@ -116,10 +117,11 @@ function moveFiles(){
 				
 			// Get the file size of the zip
 			$fileSize = filesize($relPath);
-			$fileType = "zip";
+			$fileType = "application/zip";
+			$fileExtension = "zip";
 			$md5 = md5_file($relPath);
 			
-			$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5, $succeeded);
+			$noteFileData = array($fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5, $succeeded);
 			
 			return $noteFileData;
 				
@@ -141,12 +143,12 @@ function getFileError($errorNo){
     }
 }
 
-function insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5){
-	$insertTypes = "ssssis";
-	$insertValues = array($noteId,$fileName,$storageName,$fileType,$fileSize,$md5);
+function insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5){
+	$insertTypes = "sssssis";
+	$insertValues = array($noteId,$fileName,$storageName,$fileType,$fileExtension, $fileSize,$md5);
 
 	return database_insert($conn, 
-		"INSERT INTO notefiles (note_id, file_name, storage_name, type, size, md5) VALUES (?,?,?,?,?,?)",
+		"INSERT INTO notefiles (note_id, file_name, storage_name, type, extension, size, md5) VALUES (?,?,?,?,?,?,?)",
 		$insertTypes, $insertValues, true);
 }
 
@@ -160,13 +162,13 @@ function retrieveStorageName($conn, $noteId){
 	
 }
 
-function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5){
+function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5){
  
-	$insertTypes = "sssiss";
-	$insertValues = array($fileName,$storageName,$fileType,$fileSize,$md5,$noteId);
+	$insertTypes = "ssssiss";
+	$insertValues = array($fileName,$storageName,$fileType, $fileExtension, $fileSize,$md5,$noteId);
 	
 	return  database_update($conn,
-	    "UPDATE notefiles SET file_name=?, storage_name=?, type=?, size=?, md5=? WHERE note_id=? LIMIT 1",
+	    "UPDATE notefiles SET file_name=?, storage_name=?, type=?, extension=?, size=?, md5=? WHERE note_id=? LIMIT 1",
 		$insertTypes, $insertValues, true);
 }
 
