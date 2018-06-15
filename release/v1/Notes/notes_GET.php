@@ -31,10 +31,11 @@ function getNoteById($conn, $noteId){
 
 function getNotesForNotetaker($conn, $userId, $_sortMethod, $_sortDirection, $offset){
     
-    $selectQuery = "SELECT  n.id, n.name, n.description, n.taken_on, n.created, ".
+    $selectQuery = "SELECT  n.id, n.name, n.description, n.taken_on, n.created, nf.extension, nf.size, ".
                             "u.first_name, u.last_name, c.id as courseId, c.course_name as courseName, c.semester as semester, ua.role ".
                     "FROM notes n INNER JOIN users u ON n.user_id=u.id INNER JOIN courses c ON n.course_id=c.id ".
                         "INNER JOIN user_access ua ON ua.course_id=n.course_id ".
+                            "INNER JOIN notefiles nf ON n.id=nf.note_id ".
                     "WHERE ua.user_id=? AND n.user_id = ua.user_id AND ua.role='NOTETAKER' AND ua.expires_on >= NOW()";
     
     $selectQuery = $selectQuery . getSortQuery($_sortMethod, $_sortDirection, null, $offset);
@@ -47,7 +48,7 @@ function getNotesForStudent($conn, $userId, $_sortMethod, $_sortDirection, $hide
     //Retrieve note information, course information, author information, and the last time user downloaded the note.
     
     //Entire query including modifications: 5 hours of work.
-    $selectQuery = "SELECT  n.id, n.name, n.description, n.taken_on, n.created, nfd.lastDownloaded, ".
+    $selectQuery = "SELECT  n.id, n.name, n.description, n.taken_on, n.created, nf.extension, nf.size, nfd.lastDownloaded, ".
                             "c.id as courseId, c.course_name as courseName, c.semester as semester, ua.role ".
                     "FROM notes n LEFT JOIN users u ON n.user_id=u.id INNER JOIN courses c ON n.course_id=c.id ".
                         "INNER JOIN user_access ua ON ua.course_id=n.course_id ".
