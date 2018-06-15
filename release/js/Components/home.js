@@ -172,7 +172,7 @@ app.home = {
                if(fileSize < 1){
                    fileSize = parseFloat(noteData.size) + " Bytes";
                } else {
-                   fileSize += "KB";
+                   fileSize += " KB";
                }
             } else {
                 fileSize += " MB";
