@@ -28,10 +28,10 @@ function moveFiles(){
 	    		// If the file happens to already exist, change the unique id until it doesn't
 	    		do{
 	    		    $storageName =  uniqid() . getExtension($fileName);
-	    		}while(file_exists("./Files/".$storageName));
+	    		}while(file_exists($GLOBALS['REL_FILES_PATH'].$storageName));
 				
 				// Add the proper directory
-				$relPath = "./Files/" . $storageName;
+				$relPath = $GLOBALS['REL_FILES_PATH'] . $storageName;
 				
 				// Move the temporary file to the Files folder
 			    move_uploaded_file($tmp, $relPath);
@@ -72,7 +72,7 @@ function moveFiles(){
 	    	// If the file happens to already exist, change the unique id until it doesn't
 			do{
 			    $storageName = uniqid().".zip";
-			}while(file_exists("./Files/".$storageName));
+			}while(file_exists($GLOBALS['REL_FILES_PATH'].$storageName));
 			
 			// Use the name of the first file as the note name for the zip
 			$fileName = $files['name'][0];
@@ -90,7 +90,7 @@ function moveFiles(){
 			$fileName = cleanFileName($fileName, true);
 			
 			// Add the proper directory 
-			$relPath = "./Files/" . $storageName;
+			$relPath = $GLOBALS['REL_FILES_PATH'] . $storageName;
 			
 			if ($zip->open($relPath, ZipArchive::CREATE) === TRUE){
 			    
@@ -211,6 +211,14 @@ function cleanFileName($fileName, $zip=false){
 		return $newFileName .= ".zip";
 	}
 	return $newFileName . strtolower(end($fileDotSeparated)); 
+}
+
+function deleteFile($storageName){
+	if(file_exists($GLOBALS['REL_FILES_PATH'].$storageName)){
+		if(unlink($GLOBALS['REL_FILES_PATH'].$storageName)) return true;
+	}
+	
+	return false;
 }
 
 
