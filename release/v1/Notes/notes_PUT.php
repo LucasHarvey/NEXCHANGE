@@ -108,8 +108,7 @@ $note = database_get_row($conn, "SELECT id, name, description, taken_on, created
 
 if($note == null){
     // Delete the file from the server
-    if(file_exists("./Files/".$storageName))
-		unlink("./Files/".$storageName);
+    deleteFile($storageName);
 	echoError($conn, 500, "DatabaseUpdateError");
 }
 
@@ -125,19 +124,21 @@ if(!empty($_FILES['file'])){
     
     // If the update failed, delete the most recent file
     if(!$result){
-        if(file_exists("./Files/".$storageName))
-            unlink("./Files/".$storageName);
+        // Delete the file from the server
+        deleteFile($storageName);
         echoError($conn, 500, "DatabaseUpdateError");
     } 
     
     // Delete the old file
-    if(!file_exists("./Files/".$oldStorageName) || !unlink("./Files/".$oldStorageName)){
+    if(!deleteFile($oldStorageName)){
         echoError($conn, 404, "NoteFileDeleteFailure");
     }
 }
 
 
 if(!database_commit($conn)){
+        // Delete the file from the server
+        deleteFile($storageName);
 	if(!database_rollback($conn)){
 	    $GLOBALS["NEXCHANGE_TRANSACTION"] = false;
 		echoError($conn, 500, "DatabaseRollbackError", "Could not rollback the transaction");

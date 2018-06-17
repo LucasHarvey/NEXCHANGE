@@ -59,8 +59,7 @@ $note = database_get_row($conn,
 
 if($note == null){
 	// Delete the file from the server
-	if(file_exists($storageName))
-		unlink($storageName);
+	deleteFile($storageName);
 	echoError($conn, 500, "DatabaseInsertError");
 }
 
@@ -69,8 +68,7 @@ $result = insertNoteFile($conn, $note["id"], $fileName, $storageName, $fileType,
 
 if(!$result){
 	// Delete the file from the server
-	if(file_exists($storageName))
-		unlink($storageName);
+	deleteFile($storageName);
 	echoError($conn, 500, "DatabaseInsertError");
 }
 
@@ -81,6 +79,8 @@ $users_Notified = database_get_all($conn,
 								   $note["id"]);
 
 if(!database_commit($conn)){
+	// Delete the file from the server
+	deleteFile($storageName);
 	if(!database_rollback($conn)){
 		$GLOBALS['NEXCHANGE_TRANSACTION'] = false;
 		echoError($conn, 500, "DatabaseRollbackError", "Could not rollback the transaction");
