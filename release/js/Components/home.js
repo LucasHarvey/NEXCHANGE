@@ -185,7 +185,7 @@ app.home = {
         
          if(noteData.extension){
             let extensionP = document.createElement("P");
-            extensionP.innerHTML = "File Extension: <span>" + noteData.extension + "</span>";;
+            extensionP.innerHTML = "File Extension: <span>" + "." + noteData.extension + "</span>";;
             articleSection.appendChild(extensionP);
         }
 
