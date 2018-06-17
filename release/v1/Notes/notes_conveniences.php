@@ -21,7 +21,7 @@ function moveFiles(){
 				$fileName = $files['name'][$key];
 				$fileSize = $files['size'][$key];
 				$fileType = $files['type'][$key];
-				$fileExtension = getExtension($fileName);
+				$fileExtension = getExtension($fileName, true);
 				$md5 = md5_file($files['tmp_name'][$key]);
 	    		
 	    		// Generate a unique file name for storage using the file content
@@ -191,9 +191,11 @@ function validateUploadedFiles($conn){
     }
 }
 
-function getExtension($fileName){
+function getExtension($fileName, $withoutPeriod=false){
 	$fileDotSeparated = explode('.', $fileName); //MUST be on 2 lines.
     $ext = strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
+    
+    if($withoutPeriod) return $ext;
     
     return ".".$ext;
 }
