@@ -87,6 +87,7 @@ app.manage = {
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='manage_deleteAccountPw'><p class='error'></p>", {
                         text: "Yes, DELETE Account",
                         callback: function() {
+                            this.confirmButton.disabled = true;
                             app.manage._deleteAccount.call(this, studentId, button2);
                         }
                     }
@@ -96,15 +97,17 @@ app.manage = {
         }
     },
     _deleteAccount: function(studentId, submitButton) {
+        var that = this;
+    
         var pass = document.getElementById("manage_deleteAccountPw").value;
         if (!pass) {
             document.getElementById("manage_deleteAccountPw").nextSibling.innerHTML = "Please enter password.";
+            that.confirmButton.disabled = false;
             return;
         }
         // Disable the "Delete account" button
         submitButton.disabled = true;
         
-        var that = this;
         Resources.Users.DELETE(studentId, pass, function(data) {
             that.hide();
             new Modal("Account Deleted", "User Account with Student ID: " + data.payload.studentId + " has been deleted successfully.", null, null, "Okay").show();
@@ -115,6 +118,8 @@ app.manage = {
             if(data.messageCode == "AuthenticationFailed"){
                 // Enable the submit button
                 submitButton.disabled = false;
+                
+                that.confirmButton.disabled = false;
                 
                 document.getElementById("manage_deleteAccountPw").nextSibling.innerHTML = "Incorrect Password.";
                 return;
@@ -185,6 +190,7 @@ app.manage = {
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='manage_deleteCoursePw'><p></p>", {
                         text: "Yes, DELETE Course",
                         callback: function() {
+                            this.confirmButton.disabled = true;
                             app.manage._deleteCourse.call(this, courseId, button4);
                         }
                     }
@@ -196,16 +202,18 @@ app.manage = {
     },
     
     _deleteCourse: function(courseId, submitButton) {
+        var that = this;
+                
         var pass = document.getElementById("manage_deleteCoursePw").value;
         if (!pass) {
             document.getElementById("manage_deleteCoursePw").nextSibling.innerHTML = "Please enter password.";
+            that.confirmButton.disabled = false;
             return;
         }
         
         // Disable the "Delete course" button
         submitButton.disabled = true;
-        
-        var that = this;
+    
         Resources.Courses.DELETE(courseId, pass, function(data) {
             that.hide();
             
@@ -222,6 +230,8 @@ app.manage = {
             if(data.messageCode == "AuthenticationFailed"){
                 // Enable the submit button
                 submitButton.disabled = false;
+                
+                that.confirmButton.disabled = false;
                 
                 document.getElementById("manage_deleteCoursePw").nextSibling.innerHTML = "Incorrect Password.";
                 document.getElementById("manage_deleteCoursePw").nextSibling.className = "error";
