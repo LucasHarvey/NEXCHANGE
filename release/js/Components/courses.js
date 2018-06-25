@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,location */
+/* global Resources,MessageCode,location */
 var app = app || {
     startup: [],
     afterStartup: []
