@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,generateDeleteConfirmationModal,debounce,location,generatePTag */
+/* global Resources,MessageCode,Modal,generateDeleteConfirmationModal,debounce,location,generatePTag,history */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -314,6 +314,16 @@ app.manage = {
         }
         return "student";
     },
+    
+    _selectSearchType: function(type){
+        let searchWhat = document.getElementsByName("searchWhat");
+        for (var i = 0; i < searchWhat.length; i++) {
+            if (searchWhat[i].value == type) {
+                searchWhat[i].checked = true;
+            }
+        }
+    },
+    
     _searchCourse: function() {
         let teacherName = document.getElementById("teacherFullName").value;
         let courseName = document.getElementById("courseName").value;
@@ -369,6 +379,13 @@ app.manage = {
             sem: formattedSemester
         };
         
+        let searchWhat = app.manage._getSearchType();
+        let stateObj = {
+            searchWhat: searchWhat,
+            searchData: app.manage.searchData
+        };
+        history.replaceState(stateObj, "Manage | NEXCHANGE", "manage");
+        
         // Disable the search form
         document.getElementById("searchButton").disabled = true;
         document.getElementById("searchData").removeEventListener('submit', app.manage.search);
@@ -384,6 +401,13 @@ app.manage = {
             name: name,
             studentId: studentId,
         };
+        
+        let searchWhat = app.manage._getSearchType();
+        let stateObj = {
+            searchWhat: searchWhat,
+            searchData: app.manage.searchData
+        };
+        history.replaceState(stateObj, "Manage | NEXCHANGE", "manage");
         
         // Disable the search form
         document.getElementById("searchButton").disabled = true;
@@ -402,6 +426,13 @@ app.manage = {
             cname: courseName,
             cnumber: courseNumber,
         };
+        
+        let searchWhat = app.manage._getSearchType();
+        let stateObj = {
+            searchWhat: searchWhat,
+            searchData: app.manage.searchData
+        };
+        history.replaceState(stateObj, "Manage | NEXCHANGE", "manage");
         
         // Disable the search form
         document.getElementById("searchButton").disabled = true;
@@ -579,6 +610,12 @@ app.startup.push(function manageStartup() {
 
     document.getElementById("season").addEventListener("change", app.manage.updateYearInput);
     app.manage.updateYearInput();
+    
+    if(history.state){
+        app.manage.searchData = history.state.searchData;
+        app.manage._selectSearchType(history.state.searchWhat);
+        app.manage.searchPaged(app.manage.searchData);
+    }
     
     document.body.onscroll = debounce(app.manage.scrollSearch, 250);
 });
