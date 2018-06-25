@@ -23,6 +23,7 @@ app.postCourseSearch = {
     removeCourse: function() {
         let course = this.parentElement;
         document.getElementById("courseContainer").removeChild(course);
+        app.postCourseSearch.updateCourseContainerLabel();
     },
 
     containsCourse: function(courseId) {
@@ -42,6 +43,7 @@ app.postCourseSearch = {
             if (resultsTable.rows[i].highlighted == true) {
                 var courseId = resultsTable.rows[i].id;
                 if (app.postCourseSearch.containsCourse(courseId)) {
+                    app.postCourseSearch.unhighlightRow(resultsTable.rows[i]);
                     continue;
                 }
                 var course = document.createElement("SPAN");
@@ -61,6 +63,24 @@ app.postCourseSearch = {
                 courseContainer.appendChild(course);
                 app.postCourseSearch.unhighlightRow(resultsTable.rows[i]);
             }
+        }
+        app.postCourseSearch.updateCourseContainerLabel();
+    },
+    
+     updateCourseContainerLabel: function(){
+        
+        let label = document.getElementById("courseContainerLabel");
+        let container = document.getElementById("courseContainer");
+        let childrenCount = container.children.length;
+        if(childrenCount > 0){
+            label.style.display = "block";
+            if(childrenCount == 1){
+                label.innerText = "Course:"
+            } else {
+                label.innerText = "Courses:";
+            }
+        } else {
+            label.style.display = "none";
         }
     },
 

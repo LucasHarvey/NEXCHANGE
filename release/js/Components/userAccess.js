@@ -218,7 +218,6 @@ app.useraccess = {
         if (month >= 5 && month < 8) return 4; //summer
         return 1; //fall
     }
-
 };
 
 app.startup.push(function userAccessStartup() {
