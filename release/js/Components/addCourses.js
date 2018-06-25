@@ -117,6 +117,7 @@ app.addCourses = {
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='addCourses_uploadCoursesPw'><p class='error'></p>", {
                         text: "Yes, UPLOAD Courses",
                         callback: function() {
+                            this.confirmButton.disabled = true;
                             app.addCourses._uploadCourses.call(this, formattedSemester, file);
                         }
                     }
@@ -125,13 +126,14 @@ app.addCourses = {
     
     _uploadCourses: function(formattedSemester, file){
         
+        var that = this;
+        
         var pass = document.getElementById("addCourses_uploadCoursesPw").value;
         if (!pass) {
             document.getElementById("addCourses_uploadCoursesPw").nextSibling.innerHTML = "Please enter password.";
+            that.confirmButton.disabled = false;
             return;
         }
-        
-        var that = this;
         
         app.addCourses.uploadInProgress = true;
         
@@ -150,6 +152,8 @@ app.addCourses = {
                 // Enable the form
                 document.getElementById('submit').disabled = false;
                 document.getElementById('addCourses').addEventListener('submit', app.addCourses.submitCourse);
+                
+                that.confirmButton.disabled = false;
                 
                 app.addCourses.uploadInProgress = false;
                 
