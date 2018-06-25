@@ -5,24 +5,6 @@ var app = app || {
 };
 
 app.useraccess = {
-    prepopulateCourses: function(data) {
-        let courseContainer = document.getElementById("courseContainer");
-        var course = document.createElement("p");
-        var courseName = data.payload.course.courseName;
-        var courseNumber = data.payload.course.courseNumber;
-        var courseId = data.payload.course.id;
-        course.innerText = courseName + " - " + courseNumber;
-        course.id = courseId;
-
-        var removeButton = document.createElement("BUTTON");
-        removeButton.className = "removeButton";
-        removeButton.type = "button";
-        removeButton.innerText = "X";
-        removeButton.onclick = app.postCourseSearch.removeCourse;
-
-        course.appendChild(removeButton);
-        courseContainer.appendChild(course);
-    },
     
     clearForm: function(){
         document.getElementById('studentId').value = "";
@@ -218,7 +200,6 @@ app.useraccess = {
         if (month >= 5 && month < 8) return 4; //summer
         return 1; //fall
     }
-
 };
 
 app.startup.push(function userAccessStartup() {
@@ -234,10 +215,3 @@ app.startup.push(function userAccessStartup() {
     }
 });
 
-app.afterStartup.push(function userAccessAfterStartup() {
-    let courseId = app.getStore("grantAccessCourseId");
-    if (courseId) {
-        app.store("grantAccessCourseId", null);
-        Resources.Courses.GET(courseId, app.useraccess.prepopulateCourses);
-    }
-});
