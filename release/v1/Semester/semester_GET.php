@@ -23,6 +23,8 @@ if(!database_commit($conn)){
 	echoError($conn, 500, "DatabaseCommitError", "Could not commit transaction.");
 }
 
+if($semesterDetails == null)
+	echoError($conn, 400, "SemesterSettingsNotFound");
 
 $semesterStart = $semesterDetails["semesterStart"];
 $semesterEnd = $semesterDetails["semesterEnd"];
