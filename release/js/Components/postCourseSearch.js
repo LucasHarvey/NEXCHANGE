@@ -60,11 +60,13 @@ app.postCourseSearch = {
         event.preventDefault();
         let resultsTable = document.getElementById("results");
         let courseContainer = document.getElementById("courseContainer");
+        var repeatedCourses = [];
         for (var i = 1; i < resultsTable.rows.length; i++) {
             if (resultsTable.rows[i].highlighted == true) {
                 var courseId = resultsTable.rows[i].id;
                 if (app.postCourseSearch.containsCourse(courseId)) {
                     app.postCourseSearch.unhighlightRow(resultsTable.rows[i]);
+                    repeatedCourses.push(resultsTable.rows[i].cells[0].innerText);
                     continue;
                 }
                 var course = document.createElement("SPAN");
@@ -85,7 +87,22 @@ app.postCourseSearch = {
                 app.postCourseSearch.unhighlightRow(resultsTable.rows[i]);
             }
         }
+        if(repeatedCourses.length>0){
+            var modalContent = app.postCourseSearch.generateRepeatedCourses(repeatedCourses);
+            new Modal("Error", modalContent, null, {
+                text: "Okay"
+            }).show();
+        }
         app.postCourseSearch.updateCourseContainerLabel();
+    },
+    
+    generateRepeatedCourses: function(repeatedCourses){
+        var content = "You have already added the following course".pluralize(repeatedCourses.length) + ": <ul>";
+        for(var i=0; i<repeatedCourses.length; i++){
+            content += "<li>"+repeatedCourses[i].nescape()+"</li>";
+        }
+        content += "</ul>"
+        return content;
     },
     
      updateCourseContainerLabel: function(){
