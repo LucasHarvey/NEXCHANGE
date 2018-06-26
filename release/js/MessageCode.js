@@ -22,6 +22,7 @@ function MessageCode(code){
         StudentNotFound: "Student was not found.",
         NoChangesToMake: "No changes were made. Make sure you modified a field.",
         KeyNotFound: "Malformed request body.",
+        SemesterSettingsNotFound: "No settings were found for the current semester.",
     
         UserUpdated: "Your profile has been updated successfully.",
         PasswordUpdateFailure: 'Your password could not be updated. Please change it in the "My Profile" page.',
