@@ -68,12 +68,17 @@ app.manage = {
             if(user.isNoteTaker) article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
             article.description.appendChild(generatePTag("User Created On", (new Date(user.created.replace(/-/g, '\/'))).toPrettyDate()));
             
-            article.button.innerHTML = "View Student Notes";
-            article.button.id = "UA" + i + "_" + user.id;
-            article.button.onclick = function() {
-                var studentId = this.id.split("_")[1];
-                location.assign("./notes?studentId=" + studentId);
-            };
+            if(user.isNoteTaker){
+                article.button.innerHTML = "View Student Notes";
+                article.button.id = "UA" + i + "_" + user.id;
+                article.button.onclick = function() {
+                    var studentId = this.id.split("_")[1];
+                    location.assign("./notes?studentId=" + studentId);
+                };
+            } else {
+                article.section.children[1].removeChild(article.button);
+            }
+            
             article.button2.innerHTML = "Delete Account";
             article.button2.className = "warning";
             article.button2.id = "UA" + i + "_" + user.id;
@@ -274,14 +279,19 @@ app.manage = {
             if(ua.role=="NOTETAKER") article.description.appendChild(generatePTag("Author of", ua.notesAuthored + " note".pluralize(ua.notesAuthored) + " (for this class)"));
             article.description.appendChild(generatePTag("Created On", new Date(ua.created.replace(/-/g, '\/')).toPrettyDate()));
             article.description.appendChild(generatePTag("Expires On", new Date(ua.expires_on).toPrettyDate()));
-
-            article.button.innerHTML = "View Notes";
-            article.button.id = "UA2" + i + "_" + ua.userId + "_" + ua.courseId;
-            article.button.onclick = function(e) {
-                var userId = this.id.split("_")[1];
-                var courseId = this.id.split("_")[2];
-                location.assign("./notes?studentId=" + userId + "&courseId=" + courseId);
-            };
+            
+            if(ua.role=="NOTETAKER"){
+                article.button.innerHTML = "View Notes";
+                article.button.id = "UA2" + i + "_" + ua.userId + "_" + ua.courseId;
+                article.button.onclick = function(e) {
+                    var userId = this.id.split("_")[1];
+                    var courseId = this.id.split("_")[2];
+                    location.assign("./notes?studentId=" + userId + "&courseId=" + courseId);
+                };
+            } else {
+                article.section.children[1].removeChild(article.button);
+            }
+            
             article.button2.innerHTML = "Revoke Access";
             article.button2.className = "warning";
             article.button2.id = "UA" + i + "_" + ua.userId + "_" + ua.courseId;
