@@ -1093,6 +1093,22 @@ td {
 }
 
 /*
+    SEMESTER DETAILS
+*/
+
+.marchBreakBox {
+    max-width: 145px!important;
+}
+.marchBreakBox+input {
+    max-width: 14px;
+    min-width: 14px;
+}
+
+.semesterLabel {
+    max-width: 145px!important;
+}
+
+/*
     UPLOAD/EDIT
 */
 #characterCount {

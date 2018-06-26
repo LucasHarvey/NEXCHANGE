@@ -115,7 +115,7 @@ app.editNote = {
         
             // Disable the form
             document.getElementById('noteData').removeEventListener('submit', app.editNote.submitNote);
-            document.getElementById("submit").disable = true;
+            document.getElementById("submit").disabled = true;
             
             Resources.NotesEdit.POST(this.noteId, changes.name, changes.desc, changes.taken_on, files, this.successEdit, this.failureEdit, function(event) {
                 if (event.lengthComputable === true) {

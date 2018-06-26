@@ -283,5 +283,22 @@ let Resources = {
         GET: function(successCallback, failureCallback) {
             return app.get(Resources.Navbar, null, successCallback, failureCallback);
         }
+    },
+    
+    Semester: {
+        location: "v1/semester.php",
+        GET: function(successCallback, failureCallback){
+            let data = {};
+            return app.get(Resources.Semester, data, successCallback, failureCallback);
+        },
+        PUT: function(semesterStart, semesterEnd, marchBreakStart, marchBreakEnd, successCallback, failureCallback){
+            let data = {
+                semesterStart: semesterStart,
+                semesterEnd: semesterEnd,
+                marchBreakStart: marchBreakStart,
+                marchBreakEnd: marchBreakEnd
+            }
+            return app.put(Resources.Semester, data, successCallback, failureCallback);
+        }
     }
 };
