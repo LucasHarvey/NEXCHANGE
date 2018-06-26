@@ -288,16 +288,20 @@ let Resources = {
     Semester: {
         location: "v1/semester.php",
         GET: function(successCallback, failureCallback){
-            let data = {};
-            return app.get(Resources.Semester, data, successCallback, failureCallback);
+            return app.get(Resources.Semester, {}, successCallback, failureCallback);
         },
         PUT: function(semesterStart, semesterEnd, marchBreakStart, marchBreakEnd, successCallback, failureCallback){
-            let data = {
-                semesterStart: semesterStart,
-                semesterEnd: semesterEnd,
-                marchBreakStart: marchBreakStart,
-                marchBreakEnd: marchBreakEnd
+            
+            let data = {};
+            if(semesterStart !== undefined) data["semesterStart"] = semesterStart;
+            if(semesterEnd !== undefined) data["semesterEnd"] = semesterEnd;
+            if(marchBreakStart !== undefined) data["marchBreakStart"] = marchBreakStart;
+            if(marchBreakEnd !== undefined) data["marchBreakEnd"] = marchBreakEnd;
+            
+            if(data.semesterStart === undefined && data.semesterEnd === undefined && data.marchBreakStart === undefined && data.marchBreakEnd === undefined){
+                return;
             }
+
             return app.put(Resources.Semester, data, successCallback, failureCallback);
         }
     }

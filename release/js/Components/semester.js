@@ -60,6 +60,15 @@ app.semester = {
             semesterStart = new Date(semesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
         if(semesterEnd != null)
             semesterEnd = new Date(semesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
+            
+        if(semesterStart != null && semesterEnd != null){
+            if(semesterEnd <= semesterStart){
+                new Modal("Error", MessageCode("SemesterDatesNotValid"), null, {
+                    text: "Okay"
+                }).show();
+                return;
+            }
+        }
         
         var marchBreakEnabled = document.getElementById("hideFields");
 
@@ -81,7 +90,13 @@ app.semester = {
                 }).show();
                 return;
             }
-                
+            
+            if(marchBreakEnd <= marchBreakStart){
+                new Modal("Error", MessageCode("MarchBreakNotValid"), null, {
+                    text: "Okay"
+                }).show();
+                return;
+            }
         }
         
         var changes = {
@@ -168,7 +183,7 @@ app.semester = {
             document.getElementById('semesterDates').removeEventListener('submit', app.semester.submitDates);
             document.getElementById("submitDates").disabled = true;
             
-            Resources.Semester.PUT(semesterStart, semesterEnd, marchBreakStart, marchBreakEnd, app.semester.submitDatesSuccess);
+            Resources.Semester.PUT(changes.semesterStart, changes.semesterEnd, changes.marchBreakStart, changes.marchBreakEnd, app.semester.submitDatesSuccess);
         } else {
             new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();
         }
