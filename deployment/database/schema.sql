@@ -203,6 +203,10 @@ BEGIN
     DECLARE courseDaysOfWeek CHAR(7);
     DECLARE loop_data_dateCode CHAR(1);
     DECLARE loop_date DATE;
+    DECLARE semesterStart DATE;
+    DECLARE semesterEnd DATE;
+    DECLARE marchBreakStart DATE;
+    DECLARE marchBreakEnd DATE;
 
     /*Constants: 
         Get the date of the last note, 
@@ -211,6 +215,11 @@ BEGIN
     SELECT DATE(created) INTO lastNote FROM notes WHERE course_id = courseId AND user_id = userId ORDER BY created DESC limit 1;
     SELECT GROUP_CONCAT(days_of_week SEPARATOR '') INTO courseDaysOfWeek FROM course_times GROUP BY course_id HAVING course_id = courseId;
     
+    SELECT semester_start INTO semesterStart FROM semester_dates;
+    SELECT semester_end INTO semesterEnd FROM semester_dates;
+    SELECT march_break_start INTO marchBreakStart FROM semester_dates;
+    SELECT march_break_end INTO marchBreakEnd FROM semester_dates;
+    
     /*Did the user never upload a note? If so set it to date user access was created*/
     IF (lastNote IS NULL) THEN
         SELECT DATE(created) INTO lastNote FROM user_access WHERE course_id = courseId AND user_id = userId;
@@ -218,15 +227,36 @@ BEGIN
 
     /*Start counting from the next day of the last note.*/
     SET loop_date = DATE_ADD(lastNote, INTERVAL 1 DAY);
-    WHILE DATEDIFF(DATE(NOW()), loop_date) > dateDiffAllowed DO
+    lookForClass: WHILE DATEDIFF(DATE(NOW()), loop_date) > dateDiffAllowed DO
         SELECT ELT(DAYOFWEEK(loop_date), "U", "M", "T", "W", "R", "F", "S") INTO loop_data_dateCode;
+        
+        /*Is the loop date after the semester started?*/
+        IF (semesterStart != NULL) THEN
+            IF(loop_date < semesterStart) THEN 
+                ITERATE lookForClass;
+            END IF;
+        END IF;
+        
+        /*Is the current date at least one week before the semester ends?*/
+        IF (semesterEnd != NULL) THEN 
+            IF(NOW() > DATE_SUB(semesterEnd, INTERVAL 7 DAY)) THEN
+                ITERATE lookForClass;
+            END IF;
+        END IF;
+        
+        /*Is the loop date during the March break?*/
+        IF (marchBreakStart != NULL && marchBreakEnd != NULL) THEN
+            IF(loop_date BETWEEN marchBreakStart AND marchBreakEnd) THEN
+                ITERATE lookForClass;
+            END IF;
+        END IF;
         
         IF (LOCATE(loop_data_dateCode, courseDaysOfWeek) > 0) THEN
             RETURN loop_date;
         END IF;
         
         SET loop_date = DATE_ADD(loop_date, INTERVAL 1 DAY);
-    END WHILE;
+    END WHILE lookForClass;
     
     RETURN NULL;
 END$$
