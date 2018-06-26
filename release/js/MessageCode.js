@@ -85,6 +85,8 @@ function MessageCode(code){
         FutureSemester: "Please choose a past or current semester.",
         PastSemester: "Please choose a future or current semester.",
         SemesterNotValid: "The semester you entered is not valid.",
+        SemesterDatesNotValid: "The semester end date must be after the start date.",
+        MarchBreakNotValid: "The March break end date must be after the start date.",
         // Settings error codes
         MissingArgumentEmail: "Email was left empty.",
         EmailNotValid: "The email address is not valid.",
