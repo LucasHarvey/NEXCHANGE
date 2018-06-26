@@ -115,7 +115,7 @@ app.editNote = {
         
             // Disable the form
             document.getElementById('noteData').removeEventListener('submit', app.editNote.submitNote);
-            document.getElementById("submit").disable = true;
+            document.getElementById("submit").disabled = true;
             
             Resources.NotesEdit.POST(this.noteId, changes.name, changes.desc, changes.taken_on, files, this.successEdit, this.failureEdit, function(event) {
                 if (event.lengthComputable === true) {
@@ -155,7 +155,7 @@ app.editNote = {
         
         // Enable the form
         document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote);
-        document.getElementById("submit").disable = false;
+        document.getElementById("submit").disabled = false;
         
         // Update the original note
         let note = response.payload.note;
@@ -194,7 +194,7 @@ app.editNote = {
         
         // Enable the form
         document.getElementById('noteData').addEventListener('submit', app.editNote.submitNote);
-        document.getElementById("submit").disable = false;
+        document.getElementById("submit").disabled = false;
         
         app.handleFailure(data);
     },
