@@ -10,10 +10,8 @@ if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseUpdateError", "Could not start transaction.");
 }
 
-$_query = "SELECT semester_start as semesterStart, semester_end as semesterEnd, march_break_start as marchBreakStart, march_break_end as marchBreakEnd FROM semester_dates";
-$query = $conn->prepare($_query);
+$semesterDetails = database_get_row($conn, "SELECT semester_start as semesterStart, semester_end as semesterEnd, march_break_start as marchBreakStart, march_break_end as marchBreakEnd FROM semester_dates", "", array());
 
-$semesterDetails = database_execute_single($query);
 
 if(!database_commit($conn)){
 	if(!database_rollback($conn)){
