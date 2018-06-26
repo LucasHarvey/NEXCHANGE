@@ -99,7 +99,7 @@ app.postCourseSearch = {
     generateRepeatedCourses: function(repeatedCourses){
         var content = "You have already added the following course".pluralize(repeatedCourses.length) + ": <ul>";
         for(var i=0; i<repeatedCourses.length; i++){
-            content += "<li>"+repeatedCourses[i]+"</li>";
+            content += "<li>"+repeatedCourses[i].nescape()+"</li>";
         }
         content += "</ul>"
         return content;
