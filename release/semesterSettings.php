@@ -15,7 +15,7 @@ if(getUserPrivilege() != "ADMIN"){
 <html>
 
 <head>
-    <title>Semester Details | NEXCHANGE</title>
+    <title>Semester Settings | NEXCHANGE</title>
     <link rel="shortcut icon" type="image/png" href="./img/favicon.png"/>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/style.css?v=4">
