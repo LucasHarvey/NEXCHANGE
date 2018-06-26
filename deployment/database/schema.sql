@@ -2,6 +2,7 @@ use nexchange;
 
 -- DROP EVERYTHING
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS semester_dates;
 DROP TABLE IF EXISTS log_notifications_sent;
 DROP TABLE IF EXISTS login_attempts;
 DROP TABLE IF EXISTS log_user_logins;
@@ -23,6 +24,13 @@ DROP TRIGGER IF EXISTS before_insert_on_notes;
 DROP FUNCTION IF EXISTS getLastClassForgotten;
 
 -- Create the tables
+CREATE TABLE semester_dates (
+    semester_start DATE,
+    semester_end DATE,
+    march_break_start DATE,
+    march_break_end DATE
+);
+
 CREATE TABLE log_notifications_sent (
     user_id CHAR(36) NOT NULL,
     notification_code INT(2), -- 1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password, +10 for maybe (async)
