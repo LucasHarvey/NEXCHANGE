@@ -2,14 +2,6 @@
     SHARED STYLES
 */
 
-.feedbackLink {
-    color: #ad5252;
-}
-
-.feedbackLink:hover {
-    color: #c68686;
-}
-
 html {
     height: 100%;
     width: 100%;
@@ -1089,16 +1081,25 @@ td {
     padding-top: 10px;
 }
 
-.forgotPsswdLink > a {
-    text-decoration: none;
-}
-
 .bugReportLink {
     padding-top: 10px;
 }
 
-.bugReportLink > a {
+.passwordLink {
     text-decoration: none;
+}
+
+.passwordLink:hover {
+    color: #5b77a4;
+}
+
+.feedbackLink {
+    text-decoration: none;
+    color: #ad5252;
+}
+
+.feedbackLink:hover {
+    color: #c68686;
 }
 
 /*

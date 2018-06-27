@@ -102,7 +102,7 @@ if(getUserPrivilege() == "ADMIN"){
                     </div>
                     
                     <div class="userform-wrapper forgotPsswdLink">
-                        <a href="./forgotpassword">Forgot your password?</a>
+                        <a class="passwordLink" href="./forgotpassword">Forgot your password?</a>
                     </div>
                     
                     <div class="userform-wrapper bugReportLink">
