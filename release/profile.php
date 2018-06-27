@@ -101,7 +101,11 @@ if(getUserPrivilege() == "ADMIN"){
                         <input type="button" class="button" id="logoutEverywhere" value="Log out from other devices">
                     </div>
                     
-                    <div class="userform-wrapper">
+                    <div class="userform-wrapper forgotPsswdLink">
+                        <a class="passwordLink" href="./forgotpassword">Forgot your password?</a>
+                    </div>
+                    
+                    <div class="userform-wrapper bugReportLink">
                         <a class="feedbackLink" target="_blank" href="https://goo.gl/forms/QbWXdBqwvv6H0Tkq1">Feedback and Bug Report</a>
                     </div>
                     
