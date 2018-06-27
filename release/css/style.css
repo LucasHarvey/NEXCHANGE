@@ -1085,6 +1085,22 @@ td {
     }
 }
 
+.forgotPsswdLink {
+    padding-top: 10px;
+}
+
+.forgotPsswdLink > a {
+    text-decoration: none;
+}
+
+.bugReportLink {
+    padding-top: 10px;
+}
+
+.bugReportLink > a {
+    text-decoration: none;
+}
+
 /*
     MANAGE
 */
