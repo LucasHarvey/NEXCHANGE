@@ -229,13 +229,9 @@ app.semester = {
     getDefaultSeason: function() {
         let month = new Date().getMonth();
         let today = new Date().getDate();
-        //Intersession from December 20 to January 14
-        if ((month == 11 && today >= 20) || (month == 0 && today < 15)) return 1; //intersession
-        //Winter from January 15 to May 25
-        if (((month == 0 && today >= 15) || month > 0) && ((month == 4 && today <= 25) || month < 4)) return 2; //winter
-        //Summer from May 26 to August 15
-        if (((month == 4 && today > 25) || month > 4) && ((month == 7 && today <= 15) || month < 7)) return 3; //summer
-        //Fall from August 16 to December 19
+        if (month >= 11 || (month == 0 && today < 15)) return 1; //intersession
+        if (month >= 0 && month < 5) return 2; //winter
+        if (month >= 5 && month < 8) return 3; //summer
         return 1; //fall
     },
     
