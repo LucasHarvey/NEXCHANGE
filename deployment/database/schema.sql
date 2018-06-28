@@ -25,10 +25,11 @@ DROP FUNCTION IF EXISTS getLastClassForgotten;
 
 -- Create the tables
 CREATE TABLE semester_dates (
-    semester_start DATE,
-    semester_end DATE,
-    march_break_start DATE,
-    march_break_end DATE
+    semester_code VARCHAR(5) NOT NULL,
+    semester_start DATE DEFAULT NULL,
+    semester_end DATE DEFAULT NULL,
+    march_break_start DATE DEFAULT NULL,
+    march_break_end DATE DEFAULT NULL
 );
 
 CREATE TABLE log_notifications_sent (

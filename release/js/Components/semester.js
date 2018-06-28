@@ -17,12 +17,12 @@ app.semester = {
         }
     },
     
-    submitDatesSuccess: function() {
+    submitDatesSuccess: function(response) {
         // Enable the form
         document.getElementById('semesterDates').addEventListener('submit', app.semester.submitDates);
         document.getElementById("submitDates").disabled = false;
         
-        new Modal("Semester Dates Updated", "The semester dates have been updated successfully.", {
+        new Modal("Semester Dates Updated", MessageCode(response.payload.messageCode), {
             text: "Okay",
             callback: function() {
                 window.location.reload();
@@ -33,6 +33,12 @@ app.semester = {
     
     submitDates: function(event){
         event.preventDefault();
+    
+        var year = document.getElementById("semesterYear").value;
+        var season = document.getElementById("semesterSeason").value;
+        
+        var semesterCode = app.semester.validateSemester(season,year);
+        if(!semesterCode) return;
         
         var oldSemesterStart = null;
         var oldSemesterEnd = null;
@@ -183,13 +189,18 @@ app.semester = {
             document.getElementById('semesterDates').removeEventListener('submit', app.semester.submitDates);
             document.getElementById("submitDates").disabled = true;
             
-            Resources.Semester.PUT(changes.semesterStart, changes.semesterEnd, changes.marchBreakStart, changes.marchBreakEnd, app.semester.submitDatesSuccess);
+            Resources.Semester.POST(semesterCode, changes.semesterStart, changes.semesterEnd, changes.marchBreakStart, changes.marchBreakEnd, app.semester.submitDatesSuccess);
         } else {
             new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();
         }
     },
     
     populateDates: function(response){
+        
+        // Enable the form
+        document.getElementById('semesterDates').addEventListener('submit', app.semester.submitDates);
+        document.getElementById("submitDates").disabled = false;
+        
         let data = response.payload;
         
         this.originalDates = data;
@@ -202,17 +213,81 @@ app.semester = {
         
         semesterStartField.value = data.semesterStart;
         semesterEndField.value = data.semesterEnd;
+        marchBreakStartField.value = data.marchBreakStart;
+        marchBreakEndField.value = data.marchBreakEnd;
     
         if(data.marchBreakStart || data.marchBreakEnd){
             marchBreakEnabled.checked = true;
-            marchBreakStartField.value = data.marchBreakStart;
-            marchBreakEndField.value = data.marchBreakEnd;
         } else {
             marchBreakEnabled.checked = false;
         }
         
         app.semester.toggleMarchBreak();
         
+    },
+    
+    getDefaultSeason: function() {
+        let month = new Date().getMonth();
+        let today = new Date().getDate();
+        if (month >= 11 || (month == 0 && today < 15)) return 1; //intersession
+        if (month >= 0 && month < 5) return 2; //winter
+        if (month >= 5 && month < 8) return 3; //summer
+        return 1; //fall
+    },
+    
+    validateSemester: function(season, year){
+        
+        let seasonSelector = document.getElementById("semesterSeason");
+        let yearInput = document.getElementById("semesterYear");
+        
+        if (!year) {
+            new Modal("Error", MessageCode("MissingArgumentYear"), null, {
+                text: "Okay"
+            }).show();
+            return false;
+        }
+
+        if (!season) {
+            new Modal("Error", MessageCode("MissingArgumentSeason"), null, {
+                text: "Okay"
+            }).show();
+            return false;
+        }
+
+        if (isNaN(year) || year % 1 != 0 || year<0) {
+            new Modal("Error", year + " is not a valid year.", null, {
+                text: "Okay"
+            }).show();
+            return false;
+        }
+
+        if (!app.dateFormatting.semesterFormatVerification(season, year)) {
+            new Modal("Error", seasonSelector.innerText + " " + year + " is not a valid semester.", null, {
+                text: "Okay"
+            }).show();
+            return false;
+        }
+        
+        return season + year;
+    },
+    
+    updateFields: function(){
+        // Disable the form
+        document.getElementById('semesterDates').removeEventListener('submit', app.semester.submitDates);
+        document.getElementById("submitDates").disabled = true;
+            
+        var year = document.getElementById("semesterYear").value;
+        var season = document.getElementById("semesterSeason").value;
+        
+        var semesterCode = app.semester.validateSemester(season,year);
+        if(!semesterCode){
+            // Enable the form
+            document.getElementById('semesterDates').addEventListener('submit', app.semester.submitDates);
+            document.getElementById("submitDates").disabled = false;
+            return;
+        }
+    
+        Resources.Semester.GET(semesterCode, app.semester.populateDates);
     }
 }
 
@@ -222,11 +297,18 @@ app.startup.push(function semesterStartup() {
     document.getElementById("hideFields").addEventListener("change", app.semester.toggleMarchBreak);
     document.getElementById("semesterDates").addEventListener("submit", app.semester.submitDates);
     
+    document.getElementById("semesterSeason").selectedIndex = app.semester.getDefaultSeason();
+    document.getElementById("semesterYear").value = new Date().getFullYear();
+    
+    document.getElementById("semesterSeason").addEventListener("change", app.semester.updateFields);
+    document.getElementById("semesterYear").addEventListener("change", app.semester.updateFields);
+    
 });
+
 
 app.afterStartup.push(function semesterAfterStartup() {
     //POPULATE THE FIELDS
-    Resources.Semester.GET(app.semester.populateDates);
+    app.semester.updateFields();
 });
 
 

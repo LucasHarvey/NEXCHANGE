@@ -287,12 +287,13 @@ let Resources = {
     
     Semester: {
         location: "v1/semester.php",
-        GET: function(successCallback, failureCallback){
-            return app.get(Resources.Semester, {}, successCallback, failureCallback);
+        GET: function(semesterCode, successCallback, failureCallback){
+            return app.get(Resources.Semester, {semesterCode: semesterCode}, successCallback, failureCallback);
         },
-        PUT: function(semesterStart, semesterEnd, marchBreakStart, marchBreakEnd, successCallback, failureCallback){
+        POST: function(semesterCode, semesterStart, semesterEnd, marchBreakStart, marchBreakEnd, successCallback, failureCallback){
             
             let data = {};
+            data["semesterCode"] = semesterCode;
             if(semesterStart !== undefined) data["semesterStart"] = semesterStart;
             if(semesterEnd !== undefined) data["semesterEnd"] = semesterEnd;
             if(marchBreakStart !== undefined) data["marchBreakStart"] = marchBreakStart;
@@ -302,7 +303,7 @@ let Resources = {
                 return;
             }
 
-            return app.put(Resources.Semester, data, successCallback, failureCallback);
+            return app.post(Resources.Semester, data, successCallback, failureCallback);
         }
     }
 };
