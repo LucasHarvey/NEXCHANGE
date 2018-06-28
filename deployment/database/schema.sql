@@ -204,11 +204,37 @@ BEGIN
     DECLARE courseDaysOfWeek CHAR(7);
     DECLARE loop_data_dateCode CHAR(1);
     DECLARE loop_date DATE;
+    DECLARE day VARCHAR(2);
+    DECLARE month VARCHAR(2);
+    DECLARE year VARCHAR (4);
+    DECLARE season CHAR(1);
+    DECLARE semesterCode VARCHAR(5);
     DECLARE semesterStart DATE;
     DECLARE semesterEnd DATE;
     DECLARE marchBreakStart DATE;
     DECLARE marchBreakEnd DATE;
-
+    
+    SET day = DAY(CURDATE());
+    SET month = MONTH(CURDATE());
+    SET year = YEAR(CURDATE());
+    
+    /*Fall from August 16 to December 19*/
+    SET season = "F";
+    /*Intersession from December 20 to January 14*/
+    IF ((month = 12 AND day >= 20) OR (month = 1 AND day < 15)) THEN
+        SET season = "I";
+    END IF;
+    /*Winter from January 15 to May 25*/
+    IF (((month = 1 AND day >= 15) OR month > 1) AND ((month = 5 AND day <= 25) OR month < 5)) THEN
+        SET season = "W";
+    END IF;
+    /*Summer from May 26 to August 15*/
+    IF (((month = 5 AND day > 25) OR month > 5) AND ((month = 8 AND day <= 15) OR month < 8)) THEN
+        SET season = "S";
+    END IF;
+    
+    SET semesterCode = CONCAT(season, year);
+    
     /*Constants: 
         Get the date of the last note, 
         Get the all days of classes
@@ -216,10 +242,10 @@ BEGIN
     SELECT DATE(created) INTO lastNote FROM notes WHERE course_id = courseId AND user_id = userId ORDER BY created DESC limit 1;
     SELECT GROUP_CONCAT(days_of_week SEPARATOR '') INTO courseDaysOfWeek FROM course_times GROUP BY course_id HAVING course_id = courseId;
     
-    SELECT semester_start INTO semesterStart FROM semester_dates;
-    SELECT semester_end INTO semesterEnd FROM semester_dates;
-    SELECT march_break_start INTO marchBreakStart FROM semester_dates;
-    SELECT march_break_end INTO marchBreakEnd FROM semester_dates;
+    SELECT semester_start INTO semesterStart FROM semester_dates WHERE semester_code=semesterCode;
+    SELECT semester_end INTO semesterEnd FROM semester_dates WHERE semester_code=semesterCode;
+    SELECT march_break_start INTO marchBreakStart FROM semester_dates WHERE semester_code=semesterCode;
+    SELECT march_break_end INTO marchBreakEnd FROM semester_dates WHERE semester_code=semesterCode;
     
     /*Did the user never upload a note? If so set it to date user access was created*/
     IF (lastNote IS NULL) THEN
