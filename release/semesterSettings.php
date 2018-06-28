@@ -102,6 +102,27 @@ if(getUserPrivilege() != "ADMIN"){
             
             <div class="userform-wrapper">
                 <form id="semesterDates" class="userform">
+                    
+                    <div class="userfield">
+                        <div class="subfield">
+                            <select id="semesterSeason">
+                                <option value="F">
+                                    Fall
+                                </option>
+                                <option value="I">
+                                    Intersession
+                                </option>
+                                <option value="W">
+                                    Winter
+                                </option>
+                                <option value="S">
+                                    Summer
+                                </option>
+                            </select>
+                            <input type="number" id="semesterYear" placeholder="Please enter a year" required/>
+                        </div>
+                        
+                    </div>
             
                     <div class="userfield">
                         <label for="semesterStart" class="semesterLabel">Semester Start: </label>
