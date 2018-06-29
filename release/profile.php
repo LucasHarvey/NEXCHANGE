@@ -84,7 +84,7 @@ if(getUserPrivilege() == "ADMIN"){
                             <input type="button" id="modifyPasswordButton" class="button" value="Edit"/>
                         </div>
                     </div>
-                    <div class="userfield" id="modifyPasswordField" style='display: none;'>
+                    <div class="userfield" id="modifyPasswordField" style='display:none;'>
                         <label for="password">Enter Again: </label>
                         <input type="password" id="passwordConfirmation" placeholder="Confirm Password" autocomplete="off" />
                     </div>
