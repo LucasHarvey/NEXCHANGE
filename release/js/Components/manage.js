@@ -627,6 +627,7 @@ app.startup.push(function manageStartup() {
     if(history.state){
         app.manage.searchData = history.state.searchData;
         app.manage._selectSearchType(history.state.searchWhat);
+        app.manage.toggleSearchFields();
         app.manage.searchPaged(app.manage.searchData);
     }
     
