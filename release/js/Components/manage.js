@@ -429,10 +429,12 @@ app.manage = {
         let courseName = document.getElementById("ua_courseName").value;
         let courseNumber = document.getElementById("ua_courseNumber").value;
         let studentId = document.getElementById("ua_studentId").value;
+        let lastName = document.getElementById("ua_studentName").value;
         
         app.manage.searchData = {
             type: "access",
             studentId: studentId,
+            lastName: lastName,
             cname: courseName,
             cnumber: courseNumber,
         };
@@ -448,7 +450,7 @@ app.manage = {
         document.getElementById("searchButton").disabled = true;
         document.getElementById("searchData").removeEventListener('submit', app.manage.search);
 
-        Resources.UserAccess.SEARCH(studentId, courseName, courseNumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
+        Resources.UserAccess.SEARCH(studentId, lastName, courseName, courseNumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
     },
     searchSuccess: function(data) {
         // Enable the search form
@@ -492,6 +494,7 @@ app.manage = {
         document.getElementById("ua_courseName").value = "";
         document.getElementById("ua_courseNumber").value = "";
         document.getElementById("ua_studentId").value = "";
+        document.getElementById("ua_studentName").value = "";
     },
     
     searchFailure: function(response){
@@ -559,7 +562,7 @@ app.manage = {
                 Resources.Courses.SEARCH(data.tname, data.cname, data.cnumber, data.sec, data.sem, this.pagesLoaded, this.searchSuccess, this.searchFailure);
                 break;
             case "access":
-                Resources.UserAccess.SEARCH(data.studentId, data.cname, data.cnumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
+                Resources.UserAccess.SEARCH(data.studentId, data.lastName, data.cname, data.cnumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
                 break;
             case "student":
                 Resources.Users.SEARCH(data.name, data.studentId, this.pagesLoaded, this.searchSuccess, this.searchFailure);
