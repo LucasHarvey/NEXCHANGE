@@ -1067,10 +1067,6 @@ td {
     SETTINGS
 */
 
-#dataConfirmation{
-    margin: 20px 0;
-}
-
 @media all and (max-width: 600px) {
     .course > div {
         margin: 0 5px;
