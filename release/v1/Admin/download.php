@@ -24,8 +24,8 @@ if (!isset($_GET['type'])) {
 }
 
 $statType = $_GET["type"];
-if($statType != "global" || $statType != "user"){
-    http_build_query(400);
+if($statType != "global" && $statType != "user"){
+    http_response_code(400);
     die();
 }
 

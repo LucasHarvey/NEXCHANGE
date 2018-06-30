@@ -11,7 +11,7 @@ SELECT login_id, first_name, last_name, email, created, ua.roles, ua.courses, lo
     
     INNER JOIN (
         SELECT user_id, GROUP_CONCAT(DISTINCT role SEPARATOR ' and ') as roles,
-                GROUP_CONCAT(DISTINCT c.course_number SEPARATOR ', ') as courses
+                GROUP_CONCAT(DISTINCT c.course_number SEPARATOR ';') as courses
         FROM user_access ua INNER JOIN courses c ON ua.course_id=c.id 
         GROUP BY user_id
     ) as ua ON u.id = ua.user_id
