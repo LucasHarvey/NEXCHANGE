@@ -5,7 +5,7 @@ SELECT COUNT(*) AS count_notetakers FROM (SELECT COUNT(*) AS count FROM user_acc
 /*Number of students: */
 SELECT COUNT(*) AS count_students FROM (SELECT COUNT(*) AS count FROM user_access WHERE role="STUDENT" GROUP BY user_id) AS T;
 /*Number of admins*/
-SELECT COUNT(*) AS count_users FROM users GROUP BY privilege HAVING privilege="ADMIN";
+SELECT COUNT(*) AS count_admins FROM users GROUP BY privilege HAVING privilege="ADMIN";
 
 /*Login frequency of admins*/
 SELECT count(*) AS login_count, (COUNT(*)
