@@ -22,6 +22,7 @@ function MessageCode(code){
         StudentNotFound: "Student was not found.",
         NoChangesToMake: "No changes were made. Make sure you modified a field.",
         KeyNotFound: "Malformed request body.",
+        SemesterSettingsUpdated: "The semester settings have been updated successfully.",
     
         UserUpdated: "Your profile has been updated successfully.",
         PasswordUpdateFailure: 'Your password could not be updated. Please change it in the "My Profile" page.',
@@ -42,6 +43,8 @@ function MessageCode(code){
         UserCreateNotesDenied: "You have not been granted rights to upload notes for this course.",
         UserDownloadNotesDenied: "You have not been granted rights to download notes for this course.",
         UserAlreadyRegisteredInCourse: "This user is already signed up to be a notetaker or a student in this course.",
+        SemesterUpdated: "The dates have been updated successfully.",
+        SemesterDetailsNotConfigured: "The dates for the current semester have not been configured yet.",
     
         MissingArgument: "An argument is missing from the request. Make sure all fields were entered properly.",
         MissingArgumentFirstName: "First name was left empty.",
@@ -69,6 +72,10 @@ function MessageCode(code){
         MissingArgumentSeason: "Please select a season.",
         MissingArgumentYearExpiry: "Please select an expiry year.",
         MissingArgumentSeasonExpiry: "Please select an expiry season.",
+        MissingArgumentSemesterStart: "Please select the semester start date.",
+        MissingArgumentSemesterEnd: "Please select the semester end date.",
+        MissingArgumentMarchBreakStart: "Please select a start date for the March break.",
+        MissingArgumentMarchBreakEnd: "Please select an end date for the March break.",
     
         NoteNameNotValid: "Note name is too long: maximum 60 characters.",
         DescriptionNotValid: "Description is too long: maximum 500 characters.",
@@ -79,6 +86,8 @@ function MessageCode(code){
         FutureSemester: "Please choose a past or current semester.",
         PastSemester: "Please choose a future or current semester.",
         SemesterNotValid: "The semester you entered is not valid.",
+        SemesterDatesNotValid: "The semester end date must be after the start date.",
+        MarchBreakNotValid: "The March break end date must be after the start date.",
         // Settings error codes
         MissingArgumentEmail: "Email was left empty.",
         EmailNotValid: "The email address is not valid.",

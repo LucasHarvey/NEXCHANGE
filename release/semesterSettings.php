@@ -15,7 +15,7 @@ if(getUserPrivilege() != "ADMIN"){
 <html>
 
 <head>
-    <title>Add Course | NEXCHANGE</title>
+    <title>Semester Settings | NEXCHANGE</title>
     <link rel="shortcut icon" type="image/png" href="./img/favicon.png"/>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/style.css?v=4">
@@ -32,6 +32,8 @@ if(getUserPrivilege() != "ADMIN"){
     <script async type="text/javascript" src="js/Components/user.js?v=4"></script>
 
     <script async type="text/javascript" src="js/Components/addCourses.js?v=4"></script>
+    <script async type="text/javascript" src="js/Components/semester.js?v=4"></script>
+    
     <script async type="text/javascript" src="js/Components/dateFormatting.js?v=4"></script>
 
 </head>
@@ -93,6 +95,67 @@ if(getUserPrivilege() != "ADMIN"){
                         <input class="button" type="submit" id="submit" value="Upload CSV of Courses">
                     </div>
                     
+                </form>
+            </div>
+            
+            <h1>Semester Dates</h1>
+            
+            <div class="userform-wrapper">
+                <form id="semesterDates" class="userform">
+                    
+                    <div class="userfield">
+                        <div class="subfield">
+                            <select id="semesterSeason">
+                                <option value="F">
+                                    Fall
+                                </option>
+                                <option value="I">
+                                    Intersession
+                                </option>
+                                <option value="W">
+                                    Winter
+                                </option>
+                                <option value="S">
+                                    Summer
+                                </option>
+                            </select>
+                            <input type="number" id="semesterYear" placeholder="Please enter a year" required/>
+                        </div>
+                        
+                    </div>
+            
+                    <div class="userfield">
+                        <label for="semesterStart" class="semesterLabel">Semester Start: </label>
+                        <input type="date" id="semesterStart">
+                    </div>
+                    
+                    <div class="userfield">
+                        <label for="semesterEnd" class="semesterLabel">Semester End: </label>
+                        <input type="date" id="semesterEnd">
+                    </div>
+                    
+                     <div class="userfield" id="hideMarchBreak"> 
+                        <label for="hideFields" class="marchBreakBox">March Break</label>
+                        <input type="checkbox" id="hideFields">
+                    </div>
+                    
+                    <div id="marchBreakFields" style="display:none">
+                        
+                        <div class="userfield">
+                            <label for="marchBreakStart" class="semesterLabel">March Break Start: </label>
+                            <input type="date" id="marchBreakStart">
+                        </div>
+                        
+                        <div class="userfield">
+                            <label for="marchBreakEnd" class="semesterLabel">March Break End: </label>
+                            <input type="date" id="marchBreakEnd">
+                        </div>
+                    
+                    </div>
+                    
+                    <div class="userfield">
+                        <input class="button" type="submit" id="submitDates" value="Save Changes">
+                    </div>
                 </form>
             </div>
         </div>

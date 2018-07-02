@@ -284,5 +284,27 @@ let Resources = {
         GET: function(successCallback, failureCallback) {
             return app.get(Resources.Navbar, null, successCallback, failureCallback);
         }
+    },
+    
+    Semester: {
+        location: "v1/semester.php",
+        GET: function(semesterCode, successCallback, failureCallback){
+            return app.get(Resources.Semester, {semesterCode: semesterCode}, successCallback, failureCallback);
+        },
+        POST: function(semesterCode, semesterStart, semesterEnd, marchBreakStart, marchBreakEnd, successCallback, failureCallback){
+            
+            let data = {};
+            data["semesterCode"] = semesterCode;
+            if(semesterStart !== undefined) data["semesterStart"] = semesterStart;
+            if(semesterEnd !== undefined) data["semesterEnd"] = semesterEnd;
+            if(marchBreakStart !== undefined) data["marchBreakStart"] = marchBreakStart;
+            if(marchBreakEnd !== undefined) data["marchBreakEnd"] = marchBreakEnd;
+            
+            if(data.semesterStart === undefined && data.semesterEnd === undefined && data.marchBreakStart === undefined && data.marchBreakEnd === undefined){
+                return;
+            }
+
+            return app.post(Resources.Semester, data, successCallback, failureCallback);
+        }
     }
 };
