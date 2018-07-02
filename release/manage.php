@@ -133,6 +133,10 @@ if(getUserPrivilege() != "ADMIN"){
                     <div class="userfield">
                         <input class="button" type="submit" id="searchButton" name="submit" value="Search">
                     </div>
+                    <div class="userfield">
+                        <input class="button" id="download_stats_global" value="Download Global Statistics">
+                        <input class="button" id="download_stats_user" value="Download User Statistics">
+                    </div>
 
                 </form>
             </div>
