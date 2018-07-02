@@ -74,22 +74,22 @@ app.useraccess = {
             modalContent += "</ul>";
         }
         
-        var accessArrays = [[],[]];
+        var firstRole = [];
+        var secondRole = [];
         
         for (var i = 0; i < previousAccess.length; i++) {
             if(previousAccess[i].role == response.payload.role){
-                accessArrays[0].push(previousAccess[i]);
+                firstRole.push(previousAccess[i]);
             } else {
-                accessArrays[1].push(previousAccess[i]);
+                secondRole.push(previousAccess[i]);
             }
         }
         
-        if(accessArrays[0].length > 0){
-            var firstArray = accessArrays[0];
-                modalContent += "User already has access to <span>" + role + "</span> in the following course".pluralize(firstArray.length) + ": " +
+        if(firstRole.length > 0){
+                modalContent += "User already has access to <span>" + role + "</span> in the following course".pluralize(firstRole.length) + ": " +
                 "<ul>";
-            for (var i = 0; i < firstArray.length; i++) {
-                    var course = firstArray[i];
+            for (var i = 0; i < firstRole.length; i++) {
+                    var course = firstRole[i];
                     var section = course.section.sectionify(true);
                     let name = course.courseName + " (" + course.courseNumber + " " + section[0] + " " + section[1].nescape() + ")";
                     modalContent += "<li>" + name + "</li>";
@@ -98,12 +98,11 @@ app.useraccess = {
             modalContent += "</ul>";
         }
         
-        if(accessArrays[1].length > 0){
-            var secondArray = accessArrays[1];
-                modalContent += "User already has access to <span>" + secondaryRole + "</span> in the following course".pluralize(secondArray.length) + ": " +
+        if(secondRole.length > 0){
+                modalContent += "User already has access to <span>" + secondaryRole + "</span> in the following course".pluralize(secondRole.length) + ": " +
                 "<ul>";
-            for (var i = 0; i < secondArray.length; i++) {
-                    var course = secondArray[i];
+            for (var i = 0; i < secondRole.length; i++) {
+                    var course = secondRole[i];
                     var section = course.section.sectionify(true);
                     let name = course.courseName + " (" + course.courseNumber + " " + section[0] + " " + section[1].nescape() + ")";
                     modalContent += "<li>" + name + "</li>";
