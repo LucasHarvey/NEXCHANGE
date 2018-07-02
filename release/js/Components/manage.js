@@ -608,6 +608,20 @@ app.manage = {
         }
 
     },
+    
+    downloadStats: function(e){
+        this.disabled = true;
+        let id = this.id;
+        let xsrf = app.getCookie("xsrfToken");
+        
+        let url = "./v1/Admin/download.php?type=" + id.slice(15, id.length) + "&xsrfToken=" + xsrf;
+        var newWin = window.open(url, '_blank');  
+        
+        this.disabled = false;
+        if(!newWin || newWin.closed || typeof newWin.closed=='undefined') { 
+            new Modal("Error", MessageCode("PopUpBlocked"), null, null, "Okay").show();
+        }
+    }
 };
 
 app.startup.push(function manageStartup() {
@@ -632,4 +646,7 @@ app.startup.push(function manageStartup() {
     }
     
     document.body.onscroll = debounce(app.manage.scrollSearch, 250);
+    
+    document.getElementById("download_stats_global").onclick = app.manage.downloadStats;
+    document.getElementById("download_stats_user").onclick = app.manage.downloadStats;
 });
