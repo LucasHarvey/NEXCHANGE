@@ -8,9 +8,9 @@ if(getUserPrivilege() != "ADMIN"){
 
 $offset =  array_key_exists("page", $_GET) ? $_GET['page'] : 0;
 
-$allowedProps = array("studentId", "courseName", "courseNumber", "page");
-$changesKeysRemap = array("studentId" => "login_id", "courseName" => "course_name", "courseNumber" => "course_number", "page" => NULL);
-$columnWhereClause = array("login_id" => "=", "course_name" => "LIKE", "course_number" => "LIKE");
+$allowedProps = array("studentId", "lastName", "courseName", "courseNumber", "page");
+$changesKeysRemap = array("studentId" => "login_id", "lastName" => "last_name", "courseName" => "course_name", "courseNumber" => "course_number", "page" => NULL);
+$columnWhereClause = array("login_id" => "=", "last_name" => "LIKE", "course_name" => "LIKE", "course_number" => "LIKE");
 
 $whereStmt = generateWhereStatement($conn, $allowedProps, $changesKeysRemap, $columnWhereClause, $_GET);
 
@@ -18,7 +18,7 @@ $insertTypes = "";
 $insertVals = array();
 if(!empty($whereStmt[1])){
     foreach ($whereStmt[1] as $k=>$value) {
-        if(strpos($k, 'course_') === 0){
+        if(strpos($k, 'course_') === 0 || ($k == "last_name")){
             array_push($insertVals, '%'.$value.'%');
         }else{
             array_push($insertVals, $value);

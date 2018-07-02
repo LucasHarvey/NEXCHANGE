@@ -126,9 +126,16 @@ if(getUserPrivilege() != "ADMIN"){
                     <div class="userfield searchWhat_useraccess">
                         <input type="number" id="ua_studentId" placeholder="Student ID" min="1000000" max="9999999">
                     </div>
+                    <div class="userfield searchWhat_useraccess">
+                        <input type="text" id="ua_studentName" placeholder="Student Last Name" maxlength="60">
+                    </div>
 
                     <div class="userfield">
                         <input class="button" type="submit" id="searchButton" name="submit" value="Search">
+                    </div>
+                    <div class="userfield">
+                        <input class="button" id="download_stats_global" value="Download Global Statistics">
+                        <input class="button" id="download_stats_user" value="Download User Statistics">
                     </div>
 
                 </form>

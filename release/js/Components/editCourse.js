@@ -16,7 +16,7 @@ app.editCourse = {
         // Update the course input fields to match the original course:
         document.getElementById('courseName').value = app.editCourse.originalCourse.courseName;
         document.getElementById("courseNumber").value = app.editCourse.originalCourse.courseNumber;
-        document.getElementById("section").value = app.editCourse.originalCourse.section;
+        document.getElementById("section").value = app.editCourse.originalCourse.section.sectionify(true)[1];
         document.getElementById("teacherFullName").value = app.editCourse.originalCourse.teacherFullName;
         
         var season = app.editCourse.originalCourse.semester[0];

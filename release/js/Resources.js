@@ -97,9 +97,10 @@ let Resources = {
     },
     UserAccess: {
         location: "v1/useraccess.php",
-        SEARCH: function(studentId, courseName, courseNumber, page, successCallback, failureCallback) {
+        SEARCH: function(studentId, lastName, courseName, courseNumber, page, successCallback, failureCallback) {
             let data = {};
             if (studentId) data["studentId"] = studentId;
+            if (lastName) data["lastName"] = lastName;
             if (courseName) data["courseName"] = courseName;
             if (courseNumber) data["courseNumber"] = courseNumber;
             if (page) data["page"] = page;

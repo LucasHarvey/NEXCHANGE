@@ -116,6 +116,31 @@ app.notes = {
             descriptionP.className = "description";
             articleSection.appendChild(descriptionP);            
         }
+        
+        if(noteData.size){
+            var fileSize = parseFloat(noteData.size/1024**2).toFixed(2);
+    
+            if(fileSize < 1.00){
+               fileSize = parseFloat(noteData.size/1024).toFixed(0);
+               if(fileSize < 1){
+                   fileSize = parseFloat(noteData.size) + " Bytes";
+               } else {
+                   fileSize += " KB";
+               }
+            } else {
+                fileSize += " MB";
+            }
+
+            let sizeP = document.createElement("P");
+            sizeP.innerHTML = "File size: <span>" + fileSize + "</span>";;
+            articleSection.appendChild(sizeP);
+        }
+        
+         if(noteData.extension){
+            let extensionP = document.createElement("P");
+            extensionP.innerHTML = "File Extension: <span>" + "." + noteData.extension + "</span>";;
+            articleSection.appendChild(extensionP);
+        }
 
         let authorP = generatePTag("Notes taken by", noteData.user_name || "Anonymous", true);
         articleSection.appendChild(authorP);
