@@ -37,11 +37,12 @@ foreach($courses_id as $courseId){
     $course = database_get_row($conn, "SELECT course_name as courseName, course_number as courseNumber, section FROM courses WHERE id=?", "s", $courseId);
   
     // Verify that the access doesn't already exist
-    $hasAccess = database_get_row($conn, "SELECT * FROM user_access WHERE user_id=? AND course_id=?", "ss", array($user["id"], $courseId));
+    $hasAccess = database_get_row($conn, "SELECT role, course_name as courseName, course_number as courseNumber, section FROM user_access ua".
+                                            " INNER JOIN courses c ON ua.course_id=c.id WHERE ua.user_id=? AND ua.course_id=?", "ss", array($user["id"], $courseId));
     
     // If the user already has access, add the course to the $previousAccess array
     if($hasAccess){
-        array_push($previousAccess, $course);
+        array_push($previousAccess, $hasAccess);
         // Skip to the next course
         continue;
     }

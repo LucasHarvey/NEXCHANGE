@@ -8,6 +8,27 @@ app.postCourseSearch = {
     
     pagesLoaded: 0,
     paginationEnd: false,
+    
+    prepopulateCourses: function(data) {
+        let courseContainer = document.getElementById("courseContainer");
+        var course = document.createElement("p");
+        var courseName = data.payload.course.courseName;
+        var courseNumber = data.payload.course.courseNumber;
+        var courseId = data.payload.course.id;
+        course.innerText = courseName + " - " + courseNumber;
+        course.id = courseId;
+    
+        var removeButton = document.createElement("BUTTON");
+        removeButton.className = "removeButton";
+        removeButton.type = "button";
+        removeButton.innerText = "X";
+        removeButton.onclick = app.postCourseSearch.removeCourse;
+    
+        course.appendChild(removeButton);
+        courseContainer.appendChild(course);
+        
+        app.postCourseSearch.updateCourseContainerLabel();
+    },
 
     highlightRow: function(row) {
         row.originalColor = row.style.backgroundColor;
@@ -23,6 +44,7 @@ app.postCourseSearch = {
     removeCourse: function() {
         let course = this.parentElement;
         document.getElementById("courseContainer").removeChild(course);
+        app.postCourseSearch.updateCourseContainerLabel();
     },
 
     containsCourse: function(courseId) {
@@ -38,10 +60,13 @@ app.postCourseSearch = {
         event.preventDefault();
         let resultsTable = document.getElementById("results");
         let courseContainer = document.getElementById("courseContainer");
+        var repeatedCourses = [];
         for (var i = 1; i < resultsTable.rows.length; i++) {
             if (resultsTable.rows[i].highlighted == true) {
                 var courseId = resultsTable.rows[i].id;
                 if (app.postCourseSearch.containsCourse(courseId)) {
+                    app.postCourseSearch.unhighlightRow(resultsTable.rows[i]);
+                    repeatedCourses.push(resultsTable.rows[i].cells[0].innerText);
                     continue;
                 }
                 var course = document.createElement("SPAN");
@@ -61,6 +86,39 @@ app.postCourseSearch = {
                 courseContainer.appendChild(course);
                 app.postCourseSearch.unhighlightRow(resultsTable.rows[i]);
             }
+        }
+        if(repeatedCourses.length>0){
+            var modalContent = app.postCourseSearch.generateRepeatedCourses(repeatedCourses);
+            new Modal("Error", modalContent, null, {
+                text: "Okay"
+            }).show();
+        }
+        app.postCourseSearch.updateCourseContainerLabel();
+    },
+    
+    generateRepeatedCourses: function(repeatedCourses){
+        var content = "You have already added the following course".pluralize(repeatedCourses.length) + ": <ul>";
+        for(var i=0; i<repeatedCourses.length; i++){
+            content += "<li>"+repeatedCourses[i].nescape()+"</li>";
+        }
+        content += "</ul>"
+        return content;
+    },
+    
+     updateCourseContainerLabel: function(){
+        
+        let label = document.getElementById("courseContainerLabel");
+        let container = document.getElementById("courseContainer");
+        let childrenCount = container.children.length;
+        if(childrenCount > 0){
+            label.style.display = "block";
+            if(childrenCount == 1){
+                label.innerText = "Course:"
+            } else {
+                label.innerText = "Courses:";
+            }
+        } else {
+            label.style.display = "none";
         }
     },
 
@@ -381,4 +439,12 @@ app.startup.push(function postCourseSearchStartup() {
     app.postCourseSearch.updateYearInput();
 });
 
+app.afterStartup.push(function postCourseSearchAfterStartup() {
+    let courseId = app.getStore("grantAccessCourseId");
+    if (courseId) {
+        app.store("grantAccessCourseId", null);
+        Resources.Courses.GET(courseId, app.postCourseSearch.prepopulateCourses);
+    }
+    
+});
 

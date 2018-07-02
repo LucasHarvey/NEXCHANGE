@@ -33,7 +33,7 @@
             <h1>Forgot Password</h1>
             <p>
                 If the student ID and email match what we have in our databases, we will send you an email with a link to reset your password.
-                Please contact the Access Centre for assistance.
+                Please contact the Access Centre for further assistance.
             </p>
             
             <div class="userform-wrapper">

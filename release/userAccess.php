@@ -172,7 +172,7 @@ if(getUserPrivilege() != "ADMIN"){
                     </div>
 
                     <div class="userfield nocenteralign">
-                        <h3 class="courseContainerHeader">Courses:</h3>
+                        <h3 class="courseContainerHeader" id="courseContainerLabel" style="display: none;">Courses:</h3>
                         <div id="courseContainer" class="courseContainer"></div>
                     </div>
 

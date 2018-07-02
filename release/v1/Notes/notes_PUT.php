@@ -76,9 +76,10 @@ if(!empty($_FILES['file'])){
     $fileName = $noteData[0];
     $storageName = $noteData[1];
     $fileType = $noteData[2];
-    $fileSize = $noteData[3];
-    $md5 = $noteData[4];
-    $succeeded = $noteData[5];
+    $fileExtension = $noteData[3];
+    $fileSize = $noteData[4];
+    $md5 = $noteData[5];
+    $succeeded = $noteData[6];
 }
 
 // Update the note information 
@@ -107,8 +108,7 @@ $note = database_get_row($conn, "SELECT id, name, description, taken_on, created
 
 if($note == null){
     // Delete the file from the server
-    if(file_exists("./Files/".$storageName))
-		unlink("./Files/".$storageName);
+    deleteFile($storageName);
 	echoError($conn, 500, "DatabaseUpdateError");
 }
 
@@ -120,23 +120,25 @@ if(!empty($_FILES['file'])){
         echoError($conn, 404, "NoteNotFound");
     
     // Update the file information in the database
-    $result = updateNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileSize, $md5);
+    $result = updateNoteFile($conn, $note["id"], $fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5);
     
     // If the update failed, delete the most recent file
     if(!$result){
-        if(file_exists("./Files/".$storageName))
-            unlink("./Files/".$storageName);
+        // Delete the file from the server
+        deleteFile($storageName);
         echoError($conn, 500, "DatabaseUpdateError");
     } 
     
     // Delete the old file
-    if(!file_exists("./Files/".$oldStorageName) || !unlink("./Files/".$oldStorageName)){
+    if(!deleteFile($oldStorageName)){
         echoError($conn, 404, "NoteFileDeleteFailure");
     }
 }
 
 
 if(!database_commit($conn)){
+        // Delete the file from the server
+        deleteFile($storageName);
 	if(!database_rollback($conn)){
 	    $GLOBALS["NEXCHANGE_TRANSACTION"] = false;
 		echoError($conn, 500, "DatabaseRollbackError", "Could not rollback the transaction");
