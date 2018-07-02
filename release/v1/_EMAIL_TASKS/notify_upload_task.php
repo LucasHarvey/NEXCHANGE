@@ -15,7 +15,8 @@ function notify_note_upload_email_task($conn, $users, $noteId){
     $message = "New notes were uploaded by a notetaker.\n\nNote Details\n\nName: ".$note['name'].
         ($note['description'] ? "\nDescription: ".$note['description'] : "").
         "\nTaken On: ".$note['taken_on'].
-        "\nFor: ".$note['course_name']." (".$note['course_number'].")\n\nYou can login at: $link";
+        "\nFor: ".$note['course_name']." (".$note['course_number'].")\n\nYou can login at: $link".
+        "\n\n\nTo unsubscribe, login and toggle the 'Notify Me' option.";
     
     $resp = array();
     foreach ($users as $user) {

@@ -21,16 +21,17 @@ function moveFiles(){
 				$fileName = $files['name'][$key];
 				$fileSize = $files['size'][$key];
 				$fileType = $files['type'][$key];
+				$fileExtension = getExtension($fileName, true);
 				$md5 = md5_file($files['tmp_name'][$key]);
 	    		
 	    		// Generate a unique file name for storage using the file content
 	    		// If the file happens to already exist, change the unique id until it doesn't
 	    		do{
 	    		    $storageName =  uniqid() . getExtension($fileName);
-	    		}while(file_exists("./Files/".$storageName));
+	    		}while(file_exists($GLOBALS['REL_FILES_PATH'].$storageName));
 				
 				// Add the proper directory
-				$relPath = "./Files/" . $storageName;
+				$relPath = $GLOBALS['REL_FILES_PATH'] . $storageName;
 				
 				// Move the temporary file to the Files folder
 			    move_uploaded_file($tmp, $relPath);
@@ -51,7 +52,7 @@ function moveFiles(){
 			    	"name" => $fileName, 
 			    	"md5" => $md5));
 			    
-				$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5, $succeeded);
+				$noteFileData = array($fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5, $succeeded);
 			
 				return $noteFileData;
 				
@@ -71,7 +72,7 @@ function moveFiles(){
 	    	// If the file happens to already exist, change the unique id until it doesn't
 			do{
 			    $storageName = uniqid().".zip";
-			}while(file_exists("./Files/".$storageName));
+			}while(file_exists($GLOBALS['REL_FILES_PATH'].$storageName));
 			
 			// Use the name of the first file as the note name for the zip
 			$fileName = $files['name'][0];
@@ -89,7 +90,7 @@ function moveFiles(){
 			$fileName = cleanFileName($fileName, true);
 			
 			// Add the proper directory 
-			$relPath = "./Files/" . $storageName;
+			$relPath = $GLOBALS['REL_FILES_PATH'] . $storageName;
 			
 			if ($zip->open($relPath, ZipArchive::CREATE) === TRUE){
 			    
@@ -116,10 +117,11 @@ function moveFiles(){
 				
 			// Get the file size of the zip
 			$fileSize = filesize($relPath);
-			$fileType = "zip";
+			$fileType = "application/zip";
+			$fileExtension = "zip";
 			$md5 = md5_file($relPath);
 			
-			$noteFileData = array($fileName, $storageName, $fileType, $fileSize, $md5, $succeeded);
+			$noteFileData = array($fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5, $succeeded);
 			
 			return $noteFileData;
 				
@@ -141,12 +143,12 @@ function getFileError($errorNo){
     }
 }
 
-function insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5){
-	$insertTypes = "ssssis";
-	$insertValues = array($noteId,$fileName,$storageName,$fileType,$fileSize,$md5);
+function insertNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5){
+	$insertTypes = "sssssis";
+	$insertValues = array($noteId,$fileName,$storageName,$fileType,$fileExtension, $fileSize,$md5);
 
 	return database_insert($conn, 
-		"INSERT INTO notefiles (note_id, file_name, storage_name, type, size, md5) VALUES (?,?,?,?,?,?)",
+		"INSERT INTO notefiles (note_id, file_name, storage_name, type, extension, size, md5) VALUES (?,?,?,?,?,?,?)",
 		$insertTypes, $insertValues, true);
 }
 
@@ -160,13 +162,13 @@ function retrieveStorageName($conn, $noteId){
 	
 }
 
-function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileSize, $md5){
+function updateNoteFile($conn, $noteId, $fileName, $storageName, $fileType, $fileExtension, $fileSize, $md5){
  
-	$insertTypes = "sssiss";
-	$insertValues = array($fileName,$storageName,$fileType,$fileSize,$md5,$noteId);
+	$insertTypes = "ssssiss";
+	$insertValues = array($fileName,$storageName,$fileType, $fileExtension, $fileSize,$md5,$noteId);
 	
 	return  database_update($conn,
-	    "UPDATE notefiles SET file_name=?, storage_name=?, type=?, size=?, md5=? WHERE note_id=? LIMIT 1",
+	    "UPDATE notefiles SET file_name=?, storage_name=?, type=?, extension=?, size=?, md5=? WHERE note_id=? LIMIT 1",
 		$insertTypes, $insertValues, true);
 }
 
@@ -189,9 +191,11 @@ function validateUploadedFiles($conn){
     }
 }
 
-function getExtension($fileName){
+function getExtension($fileName, $withoutPeriod=false){
 	$fileDotSeparated = explode('.', $fileName); //MUST be on 2 lines.
     $ext = strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
+    
+    if($withoutPeriod) return $ext;
     
     return ".".$ext;
 }
@@ -207,6 +211,14 @@ function cleanFileName($fileName, $zip=false){
 		return $newFileName .= ".zip";
 	}
 	return $newFileName . strtolower(end($fileDotSeparated)); 
+}
+
+function deleteFile($storageName){
+	if(file_exists($GLOBALS['REL_FILES_PATH'].$storageName)){
+		if(unlink($GLOBALS['REL_FILES_PATH'].$storageName)) return true;
+	}
+	
+	return false;
 }
 
 

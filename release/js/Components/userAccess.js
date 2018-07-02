@@ -5,24 +5,6 @@ var app = app || {
 };
 
 app.useraccess = {
-    prepopulateCourses: function(data) {
-        let courseContainer = document.getElementById("courseContainer");
-        var course = document.createElement("p");
-        var courseName = data.payload.course.courseName;
-        var courseNumber = data.payload.course.courseNumber;
-        var courseId = data.payload.course.id;
-        course.innerText = courseName + " - " + courseNumber;
-        course.id = courseId;
-
-        var removeButton = document.createElement("BUTTON");
-        removeButton.className = "removeButton";
-        removeButton.type = "button";
-        removeButton.innerText = "X";
-        removeButton.onclick = app.postCourseSearch.removeCourse;
-
-        course.appendChild(removeButton);
-        courseContainer.appendChild(course);
-    },
     
     clearForm: function(){
         document.getElementById('studentId').value = "";
@@ -75,6 +57,7 @@ app.useraccess = {
         }
 
         let role = response.payload.role == "NOTETAKER" ? "take notes" : "receive notes";
+        let secondaryRole = response.payload.role == "NOTETAKER" ? "receive notes" : "take notes";
 
         let modalContent = "";
         if (courses.length > 0) {
@@ -91,17 +74,41 @@ app.useraccess = {
             modalContent += "</ul>";
         }
         
-        if(previousAccess.length > 0){
-            modalContent += "User already has access to <span>" + role + "</span> in the following course".pluralize(previousAccess.length) + ": " +
-                "<ul>";
-
-            for (var i = 0; i < previousAccess.length; i++) {
-                var course = previousAccess[i];
-                var section = course.section.sectionify(true);
-                let name = course.courseName + " (" + course.courseNumber + " " + section[0] + " " + section[1].nescape() + ")";
-                modalContent += "<li>" + name + "</li>";
+        var accessArrays = [[],[]];
+        
+        for (var i = 0; i < previousAccess.length; i++) {
+            if(previousAccess[i].role == response.payload.role){
+                accessArrays[0].push(previousAccess[i]);
+            } else {
+                accessArrays[1].push(previousAccess[i]);
             }
-
+        }
+        
+        if(accessArrays[0].length > 0){
+            var firstArray = accessArrays[0];
+                modalContent += "User already has access to <span>" + role + "</span> in the following course".pluralize(firstArray.length) + ": " +
+                "<ul>";
+            for (var i = 0; i < firstArray.length; i++) {
+                    var course = firstArray[i];
+                    var section = course.section.sectionify(true);
+                    let name = course.courseName + " (" + course.courseNumber + " " + section[0] + " " + section[1].nescape() + ")";
+                    modalContent += "<li>" + name + "</li>";
+            }
+            
+            modalContent += "</ul>";
+        }
+        
+        if(accessArrays[1].length > 0){
+            var secondArray = accessArrays[1];
+                modalContent += "User already has access to <span>" + secondaryRole + "</span> in the following course".pluralize(secondArray.length) + ": " +
+                "<ul>";
+            for (var i = 0; i < secondArray.length; i++) {
+                    var course = secondArray[i];
+                    var section = course.section.sectionify(true);
+                    let name = course.courseName + " (" + course.courseNumber + " " + section[0] + " " + section[1].nescape() + ")";
+                    modalContent += "<li>" + name + "</li>";
+            }
+            
             modalContent += "</ul>";
         }
 
@@ -218,7 +225,6 @@ app.useraccess = {
         if (month >= 5 && month < 8) return 4; //summer
         return 1; //fall
     }
-
 };
 
 app.startup.push(function userAccessStartup() {
@@ -234,10 +240,3 @@ app.startup.push(function userAccessStartup() {
     }
 });
 
-app.afterStartup.push(function userAccessAfterStartup() {
-    let courseId = app.getStore("grantAccessCourseId");
-    if (courseId) {
-        app.store("grantAccessCourseId", null);
-        Resources.Courses.GET(courseId, app.useraccess.prepopulateCourses);
-    }
-});

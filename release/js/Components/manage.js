@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal,generateDeleteConfirmationModal,debounce,location,generatePTag */
+/* global Resources,MessageCode,Modal,generateDeleteConfirmationModal,debounce,location,generatePTag,history */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -68,12 +68,17 @@ app.manage = {
             if(user.isNoteTaker) article.description.appendChild(generatePTag("Author of", user.notesAuthored + " note".pluralize(user.notesAuthored)));
             article.description.appendChild(generatePTag("User Created On", (new Date(user.created.replace(/-/g, '\/'))).toPrettyDate()));
             
-            article.button.innerHTML = "View Student Notes";
-            article.button.id = "UA" + i + "_" + user.id;
-            article.button.onclick = function() {
-                var studentId = this.id.split("_")[1];
-                location.assign("./notes?studentId=" + studentId);
-            };
+            if(user.isNoteTaker){
+                article.button.innerHTML = "View Student Notes";
+                article.button.id = "UA" + i + "_" + user.id;
+                article.button.onclick = function() {
+                    var studentId = this.id.split("_")[1];
+                    location.assign("./notes?studentId=" + studentId);
+                };
+            } else {
+                article.section.children[1].removeChild(article.button);
+            }
+            
             article.button2.innerHTML = "Delete Account";
             article.button2.className = "warning";
             article.button2.id = "UA" + i + "_" + user.id;
@@ -87,6 +92,7 @@ app.manage = {
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='manage_deleteAccountPw'><p class='error'></p>", {
                         text: "Yes, DELETE Account",
                         callback: function() {
+                            this.confirmButton.disabled = true;
                             app.manage._deleteAccount.call(this, studentId, button2);
                         }
                     }
@@ -96,15 +102,17 @@ app.manage = {
         }
     },
     _deleteAccount: function(studentId, submitButton) {
+        var that = this;
+    
         var pass = document.getElementById("manage_deleteAccountPw").value;
         if (!pass) {
             document.getElementById("manage_deleteAccountPw").nextSibling.innerHTML = "Please enter password.";
+            that.confirmButton.disabled = false;
             return;
         }
         // Disable the "Delete account" button
         submitButton.disabled = true;
         
-        var that = this;
         Resources.Users.DELETE(studentId, pass, function(data) {
             that.hide();
             new Modal("Account Deleted", "User Account with Student ID: " + data.payload.studentId + " has been deleted successfully.", null, null, "Okay").show();
@@ -115,6 +123,8 @@ app.manage = {
             if(data.messageCode == "AuthenticationFailed"){
                 // Enable the submit button
                 submitButton.disabled = false;
+                
+                that.confirmButton.disabled = false;
                 
                 document.getElementById("manage_deleteAccountPw").nextSibling.innerHTML = "Incorrect Password.";
                 return;
@@ -185,6 +195,7 @@ app.manage = {
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='manage_deleteCoursePw'><p></p>", {
                         text: "Yes, DELETE Course",
                         callback: function() {
+                            this.confirmButton.disabled = true;
                             app.manage._deleteCourse.call(this, courseId, button4);
                         }
                     }
@@ -196,16 +207,18 @@ app.manage = {
     },
     
     _deleteCourse: function(courseId, submitButton) {
+        var that = this;
+                
         var pass = document.getElementById("manage_deleteCoursePw").value;
         if (!pass) {
             document.getElementById("manage_deleteCoursePw").nextSibling.innerHTML = "Please enter password.";
+            that.confirmButton.disabled = false;
             return;
         }
         
         // Disable the "Delete course" button
         submitButton.disabled = true;
-        
-        var that = this;
+    
         Resources.Courses.DELETE(courseId, pass, function(data) {
             that.hide();
             
@@ -222,6 +235,8 @@ app.manage = {
             if(data.messageCode == "AuthenticationFailed"){
                 // Enable the submit button
                 submitButton.disabled = false;
+                
+                that.confirmButton.disabled = false;
                 
                 document.getElementById("manage_deleteCoursePw").nextSibling.innerHTML = "Incorrect Password.";
                 document.getElementById("manage_deleteCoursePw").nextSibling.className = "error";
@@ -264,14 +279,19 @@ app.manage = {
             if(ua.role=="NOTETAKER") article.description.appendChild(generatePTag("Author of", ua.notesAuthored + " note".pluralize(ua.notesAuthored) + " (for this class)"));
             article.description.appendChild(generatePTag("Created On", new Date(ua.created.replace(/-/g, '\/')).toPrettyDate()));
             article.description.appendChild(generatePTag("Expires On", new Date(ua.expires_on).toPrettyDate()));
-
-            article.button.innerHTML = "View Notes";
-            article.button.id = "UA2" + i + "_" + ua.userId + "_" + ua.courseId;
-            article.button.onclick = function(e) {
-                var userId = this.id.split("_")[1];
-                var courseId = this.id.split("_")[2];
-                location.assign("./notes?studentId=" + userId + "&courseId=" + courseId);
-            };
+            
+            if(ua.role=="NOTETAKER"){
+                article.button.innerHTML = "View Notes";
+                article.button.id = "UA2" + i + "_" + ua.userId + "_" + ua.courseId;
+                article.button.onclick = function(e) {
+                    var userId = this.id.split("_")[1];
+                    var courseId = this.id.split("_")[2];
+                    location.assign("./notes?studentId=" + userId + "&courseId=" + courseId);
+                };
+            } else {
+                article.section.children[1].removeChild(article.button);
+            }
+            
             article.button2.innerHTML = "Revoke Access";
             article.button2.className = "warning";
             article.button2.id = "UA" + i + "_" + ua.userId + "_" + ua.courseId;
@@ -304,6 +324,16 @@ app.manage = {
         }
         return "student";
     },
+    
+    _selectSearchType: function(type){
+        let searchWhat = document.getElementsByName("searchWhat");
+        for (var i = 0; i < searchWhat.length; i++) {
+            if (searchWhat[i].value == type) {
+                searchWhat[i].checked = true;
+            }
+        }
+    },
+    
     _searchCourse: function() {
         let teacherName = document.getElementById("teacherFullName").value;
         let courseName = document.getElementById("courseName").value;
@@ -359,6 +389,13 @@ app.manage = {
             sem: formattedSemester
         };
         
+        let searchWhat = app.manage._getSearchType();
+        let stateObj = {
+            searchWhat: searchWhat,
+            searchData: app.manage.searchData
+        };
+        history.replaceState(stateObj, "Manage | NEXCHANGE", "manage");
+        
         // Disable the search form
         document.getElementById("searchButton").disabled = true;
         document.getElementById("searchData").removeEventListener('submit', app.manage.search);
@@ -375,6 +412,13 @@ app.manage = {
             studentId: studentId,
         };
         
+        let searchWhat = app.manage._getSearchType();
+        let stateObj = {
+            searchWhat: searchWhat,
+            searchData: app.manage.searchData
+        };
+        history.replaceState(stateObj, "Manage | NEXCHANGE", "manage");
+        
         // Disable the search form
         document.getElementById("searchButton").disabled = true;
         document.getElementById("searchData").removeEventListener('submit', app.manage.search);
@@ -385,19 +429,28 @@ app.manage = {
         let courseName = document.getElementById("ua_courseName").value;
         let courseNumber = document.getElementById("ua_courseNumber").value;
         let studentId = document.getElementById("ua_studentId").value;
+        let lastName = document.getElementById("ua_studentName").value;
         
         app.manage.searchData = {
             type: "access",
             studentId: studentId,
+            lastName: lastName,
             cname: courseName,
             cnumber: courseNumber,
         };
+        
+        let searchWhat = app.manage._getSearchType();
+        let stateObj = {
+            searchWhat: searchWhat,
+            searchData: app.manage.searchData
+        };
+        history.replaceState(stateObj, "Manage | NEXCHANGE", "manage");
         
         // Disable the search form
         document.getElementById("searchButton").disabled = true;
         document.getElementById("searchData").removeEventListener('submit', app.manage.search);
 
-        Resources.UserAccess.SEARCH(studentId, courseName, courseNumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
+        Resources.UserAccess.SEARCH(studentId, lastName, courseName, courseNumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
     },
     searchSuccess: function(data) {
         // Enable the search form
@@ -441,6 +494,7 @@ app.manage = {
         document.getElementById("ua_courseName").value = "";
         document.getElementById("ua_courseNumber").value = "";
         document.getElementById("ua_studentId").value = "";
+        document.getElementById("ua_studentName").value = "";
     },
     
     searchFailure: function(response){
@@ -508,7 +562,7 @@ app.manage = {
                 Resources.Courses.SEARCH(data.tname, data.cname, data.cnumber, data.sec, data.sem, this.pagesLoaded, this.searchSuccess, this.searchFailure);
                 break;
             case "access":
-                Resources.UserAccess.SEARCH(data.studentId, data.cname, data.cnumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
+                Resources.UserAccess.SEARCH(data.studentId, data.lastName, data.cname, data.cnumber, this.pagesLoaded, this.searchSuccess, this.searchFailure);
                 break;
             case "student":
                 Resources.Users.SEARCH(data.name, data.studentId, this.pagesLoaded, this.searchSuccess, this.searchFailure);
@@ -583,6 +637,13 @@ app.startup.push(function manageStartup() {
 
     document.getElementById("season").addEventListener("change", app.manage.updateYearInput);
     app.manage.updateYearInput();
+    
+    if(history.state){
+        app.manage.searchData = history.state.searchData;
+        app.manage._selectSearchType(history.state.searchWhat);
+        app.manage.toggleSearchFields();
+        app.manage.searchPaged(app.manage.searchData);
+    }
     
     document.body.onscroll = debounce(app.manage.scrollSearch, 250);
     
