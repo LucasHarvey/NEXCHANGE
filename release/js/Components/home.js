@@ -347,6 +347,4 @@ app.afterStartup.push(function userHomeAfterStartup() {
 
     document.body.onscroll = debounce(app.home.getNotes, 250);
     app.home.getCourses();
-    
-
 });
