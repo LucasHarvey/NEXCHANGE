@@ -112,11 +112,7 @@ app.postCourseSearch = {
         let childrenCount = container.children.length;
         if(childrenCount > 0){
             label.style.display = "block";
-            if(childrenCount == 1){
-                label.innerText = "Course:"
-            } else {
-                label.innerText = "Courses:";
-            }
+                label.innerText = "Course".pluralize(childrenCount)+":"
         } else {
             label.style.display = "none";
         }
