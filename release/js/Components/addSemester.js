@@ -98,24 +98,27 @@ app.addSemester = {
         if(newSemesterStart == "") newSemesterStart = null;
         if(newSemesterEnd == "") newSemesterEnd = null;
         
-        if(newSemesterStart != null){
+        if(newSemesterStart != null)
             newSemesterStart = new Date(newSemesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
-        } else {
+
+        if(newSemesterEnd != null)
+            newSemesterEnd = new Date(newSemesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
+            
+        if(newSemesterEnd != null && newSemesterStart == null){
             new Modal("Error", MessageCode("MissingArgumentSemesterStart"), null, {
                 text: "Okay"
             }).show();
             return;
         }
-
-        if(newSemesterEnd != null){
-            newSemesterEnd = new Date(newSemesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
-        } else {
+            
+        if(newSemesterStart != null && newSemesterEnd == null){
             new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
                 text: "Okay"
             }).show();
             return;
         }
-
+        
+        if(newSemesterStart != null && newSemesterEnd != null)
         if(newSemesterEnd <= newSemesterStart){
             new Modal("Error", MessageCode("SemesterDatesNotValid"), null, {
                 text: "Okay"
@@ -123,10 +126,10 @@ app.addSemester = {
             return;
         }
         
-        
         var newMarchBreakEnabled = document.getElementById("newHideFields");
 
         if(newMarchBreakEnabled.checked){
+            
             if(document.getElementById("newMarchBreakStart").value){
                 newMarchBreakStart = new Date(document.getElementById("newMarchBreakStart").value.replace(/-/g, '\/').replace(/T.+/, ''));
             } else {
@@ -148,6 +151,20 @@ app.addSemester = {
             if(newMarchBreakEnd <= newMarchBreakStart){
                 new Modal("Error", MessageCode("MarchBreakNotValid"), null, {
                     text: "Okay"
+                }).show();
+                return;
+            }
+            
+            if(newSemesterStart == null){
+                new Modal("Error", MessageCode("MissingArgumentSemesterStart"), null, {
+                text: "Okay"
+                }).show();
+                return;
+            }
+            
+            if(newSemesterEnd == null){
+                new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
+                text: "Okay"
                 }).show();
                 return;
             }
