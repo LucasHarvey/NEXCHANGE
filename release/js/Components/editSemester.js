@@ -5,7 +5,7 @@ var app = app || {
     afterStartup: []
 };
 
-app.semester = {
+app.editSemester = {
     originalDates: undefined,
     toggleMarchBreak: function(){
         let checkbox = document.getElementById("hideFields");
@@ -19,7 +19,7 @@ app.semester = {
     
     submitDatesSuccess: function(response) {
         // Enable the form
-        document.getElementById('semesterDates').addEventListener('submit', app.semester.submitDates);
+        document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
         document.getElementById("submitDates").disabled = false;
         
         new Modal("Semester Dates Updated", MessageCode(response.payload.messageCode), {
@@ -37,7 +37,7 @@ app.semester = {
         var year = document.getElementById("semesterYear").value;
         var season = document.getElementById("semesterSeason").value;
         
-        var semesterCode = app.semester.validateSemester(season,year);
+        var semesterCode = app.editSemester.validateSemester(season,year);
         if(!semesterCode) return;
         
         var oldSemesterStart = null;
@@ -186,10 +186,10 @@ app.semester = {
         
         if(changes.semesterStart !== undefined || changes.semesterEnd !== undefined || changes.marchBreakStart !== undefined || changes.marchBreakEnd !== undefined){
             // Disable the form
-            document.getElementById('semesterDates').removeEventListener('submit', app.semester.submitDates);
+            document.getElementById('semesterDates').removeEventListener('submit', app.editSemester.submitDates);
             document.getElementById("submitDates").disabled = true;
             
-            Resources.Semester.POST(semesterCode, changes.semesterStart, changes.semesterEnd, changes.marchBreakStart, changes.marchBreakEnd, app.semester.submitDatesSuccess);
+            Resources.Semester.POST(semesterCode, changes.semesterStart, changes.semesterEnd, changes.marchBreakStart, changes.marchBreakEnd, app.editSemester.submitDatesSuccess);
         } else {
             new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();
         }
@@ -198,7 +198,7 @@ app.semester = {
     populateDates: function(response){
         
         // Enable the form
-        document.getElementById('semesterDates').addEventListener('submit', app.semester.submitDates);
+        document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
         document.getElementById("submitDates").disabled = false;
         
         let data = response.payload;
@@ -222,7 +222,7 @@ app.semester = {
             marchBreakEnabled.checked = false;
         }
         
-        app.semester.toggleMarchBreak();
+        app.editSemester.toggleMarchBreak();
         
     },
     
@@ -273,42 +273,42 @@ app.semester = {
     
     updateFields: function(){
         // Disable the form
-        document.getElementById('semesterDates').removeEventListener('submit', app.semester.submitDates);
+        document.getElementById('semesterDates').removeEventListener('submit', app.editSemester.submitDates);
         document.getElementById("submitDates").disabled = true;
             
         var year = document.getElementById("semesterYear").value;
         var season = document.getElementById("semesterSeason").value;
         
-        var semesterCode = app.semester.validateSemester(season,year);
+        var semesterCode = app.editSemester.validateSemester(season,year);
         if(!semesterCode){
             // Enable the form
-            document.getElementById('semesterDates').addEventListener('submit', app.semester.submitDates);
+            document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
             document.getElementById("submitDates").disabled = false;
             return;
         }
     
-        Resources.Semester.GET(semesterCode, app.semester.populateDates);
+        Resources.Semester.GET(semesterCode, app.editSemester.populateDates);
     }
 }
 
 app.startup.push(function semesterStartup() {
-    app.semester.submitDates = app.semester.submitDates.bind(app.submitDates);
+    app.editSemester.submitDates = app.editSemester.submitDates.bind(app.editSemester);
     
-    document.getElementById("hideFields").addEventListener("change", app.semester.toggleMarchBreak);
-    document.getElementById("semesterDates").addEventListener("submit", app.semester.submitDates);
+    document.getElementById("hideFields").addEventListener("change", app.editSemester.toggleMarchBreak);
+    document.getElementById("semesterDates").addEventListener("submit", app.editSemester.submitDates);
     
-    document.getElementById("semesterSeason").selectedIndex = app.semester.getDefaultSeason();
+    document.getElementById("semesterSeason").selectedIndex = app.editSemester.getDefaultSeason();
     document.getElementById("semesterYear").value = new Date().getFullYear();
     
-    document.getElementById("semesterSeason").addEventListener("change", app.semester.updateFields);
-    document.getElementById("semesterYear").addEventListener("change", app.semester.updateFields);
+    document.getElementById("semesterSeason").addEventListener("change", app.editSemester.updateFields);
+    document.getElementById("semesterYear").addEventListener("change", app.editSemester.updateFields);
     
 });
 
 
 app.afterStartup.push(function semesterAfterStartup() {
     //POPULATE THE FIELDS
-    app.semester.updateFields();
+    app.editSemester.updateFields();
 });
 
 

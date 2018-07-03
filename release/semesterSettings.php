@@ -31,8 +31,8 @@ if(getUserPrivilege() != "ADMIN"){
     <script async type="text/javascript" src="js/Components/modal.js?v=4"></script>
     <script async type="text/javascript" src="js/Components/user.js?v=4"></script>
 
-    <script async type="text/javascript" src="js/Components/addCourses.js?v=4"></script>
-    <script async type="text/javascript" src="js/Components/semester.js?v=4"></script>
+    <script async type="text/javascript" src="js/Components/addSemester.js?v=4"></script>
+    <script async type="text/javascript" src="js/Components/editSemester.js?v=4"></script>
     
     <script async type="text/javascript" src="js/Components/dateFormatting.js?v=4"></script>
 
@@ -58,10 +58,10 @@ if(getUserPrivilege() != "ADMIN"){
         <aside class="aside1"></aside>
         <div class="main">
 
-            <h1>Add Courses</h1>
+            <h1>Add Semester</h1>
 
             <div class="userform-wrapper">
-                <form id="addCourses" class="userform">
+                <form id="addSemester" class="userform">
     
                     <div class="userfield">
                         <label>Select file: </label>
@@ -92,13 +92,42 @@ if(getUserPrivilege() != "ADMIN"){
                     </div>
                     
                     <div class="userfield">
-                        <input class="button" type="submit" id="submit" value="Upload CSV of Courses">
+                        <label for="semesterStart" class="semesterLabel">Semester Start: </label>
+                        <input type="date" id="newSemesterStart">
+                    </div>
+                    
+                    <div class="userfield">
+                        <label for="semesterEnd" class="semesterLabel">Semester End: </label>
+                        <input type="date" id="newSemesterEnd">
+                    </div>
+                    
+                     <div class="userfield" id="hideMarchBreak"> 
+                        <label for="hideFields" class="marchBreakBox">March Break</label>
+                        <input type="checkbox" id="newHideFields">
+                    </div>
+                    
+                    <div id="newMarchBreakFields" style="display:none">
+                        
+                        <div class="userfield">
+                            <label for="marchBreakStart" class="semesterLabel">March Break Start: </label>
+                            <input type="date" id="newMarchBreakStart">
+                        </div>
+                        
+                        <div class="userfield">
+                            <label for="marchBreakEnd" class="semesterLabel">March Break End: </label>
+                            <input type="date" id="newMarchBreakEnd">
+                        </div>
+                    
+                    </div>
+                    
+                    <div class="userfield">
+                        <input class="button" type="submit" id="submit" value="Create Semester">
                     </div>
                     
                 </form>
             </div>
             
-            <h1>Semester Dates</h1>
+            <h1>Edit Semester</h1>
             
             <div class="userform-wrapper">
                 <form id="semesterDates" class="userform">
