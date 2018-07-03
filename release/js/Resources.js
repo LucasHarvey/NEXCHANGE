@@ -236,12 +236,16 @@ let Resources = {
             };
             return app.get(Resources.Courses, data, successCallback, failureCallback);
         },
-        POST: function(semester, files, password, successCallback, failureCallback) {
+        POST: function(semesterCode, files, newSemesterStart, newSemesterEnd, newMarchBreakStart, newMarchBreakEnd, password, successCallback, failureCallback) {
             var formData = new FormData();
-            formData.append("semesterCode", semester);
+            formData.append("semesterCode", semesterCode);
             for (var i = 0; i < files.length; i++) {
                 formData.append("file[]", files[i]);
             }
+            formData.append("newSemesterStart", newSemesterStart);
+            formData.append("newSemesterEnd", newSemesterEnd);
+            formData.append("newMarchBreakStart", newMarchBreakStart);
+            formData.append("newMarchBreakEnd", newMarchBreakEnd);
             formData.append("password", window.btoa(password));
 
             let request = app._generateRequest(successCallback, failureCallback, {
