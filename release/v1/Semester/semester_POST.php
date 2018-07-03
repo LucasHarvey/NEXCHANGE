@@ -1,96 +1,58 @@
 <?php
-
 $conn = database_connect();
 
-if(getUserPrivilege() != "ADMIN"){
-    echoError($conn, 403, "AuthorizationFailed");
-}
+$newSemesterStart = null;
+$newSemesterEnd = null;
+$newMarchBreakStart = null;
+$newMarchBreakEnd = null;
 
-requiredParams($conn, $_JSON, array("semesterCode"));
+$semesterCode = $_POST["semesterCode"];
 
-$semesterCode = $_JSON["semesterCode"];
-
-$season = ["I", "W", "S", "F"];
-
-if(!in_array($semesterCode[0], $season) || strlen($semesterCode) != 5)
-    echoError($conn, 400, "SemesterNotValid");
-
-$year = substr($semesterCode, 1);
-
-if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
-    echoError($conn, 400, "SemesterNotValid");
-
-$semesterStart = null;
-$semesterEnd = null;
-$marchBreakStart = null;
-$marchBreakEnd = null;
-
-if(array_key_exists("semesterStart", $_JSON))
-    $semesterStart = $_JSON["semesterStart"];
-if(array_key_exists("semesterEnd", $_JSON))
-    $semesterEnd = $_JSON["semesterEnd"];
-if(array_key_exists("marchBreakStart", $_JSON))
-    $marchBreakStart = $_JSON["marchBreakStart"];
-if(array_key_exists("marchBreakEnd", $_JSON))
-    $marchBreakEnd = $_JSON["marchBreakEnd"];
+if(array_key_exists($_POST, "newSemesterStart"))
+    $newSemesterStart = $_POST["newSemesterStart"];
+if(array_key_exists($_POST, "newSemesterEnd"))
+    $newSemesterEnd = $_POST["newSemesterEnd"];
+if(array_key_exists($_POST, "newMarchBreakStart"))
+    $newMarchBreakStart = $_POST["newMarchBreakStart"];
+if(array_key_exists($_POST, "newMarchBreakEnd"))
+    $newMarchBreakEnd = $_POST["newMarchBreakEnd"];
     
-if(!database_start_transaction($conn)){
-	echoError($conn, 500, "DatabaseUpdateError", "Could not start transaction.");
-}
+$coursesForSemester = database_get_row("SELECT id FROM courses WHERE semester=? LIMIT 1", "s", $semesterCode);
+$semesterExists = database_get_row("SELECT semester_code FROM semester_dates WHERE semester_code=? LIMIT 1", "s", $semesterCode);
 
-$semester = database_get_row($conn, "SELECT * from semester_dates WHERE semester_code=?", "s", $semesterCode);
-
-if($semester != null){
+if($coursesForSemester == null && $semesterExists == null){
+    // If no courses with semester code in DB, newSemesterStart and newSemesterEnd must by present
+    requiredParams($conn, $_POST, array("newSemesterStart", "newSemesterEnd"));
     
-    // Change the insert keys
-    $allowedProps = array("semesterStart", "semesterEnd", "marchBreakStart", "marchBreakEnd");
-    $changesKeysRemap = array(
-    "semesterStart" => "semester_start", 
-    "semesterEnd" => "semester_end",
-    "marchBreakStart" => "march_break_start",
-    "marchBreakEnd" => "march_break_end"
-    );
+    // Semester end must be after semester start
+    if($newSemesterEnd <= $newSemesterStart)
+        echoError($conn, 400, "SemesterDatesNotValid");
+    
+    if($newMarchBreakStart != null && $newMarchBreakEnd != null){
+        // March break end must be after march break start
+        if($newMarchBreakEnd <= $newMarchBreakStart)
+        echoError($conn, 400, "MarchBreakNotValid");
+    }
 
-    $changes = array();
-    foreach($_JSON as $key => $value ){
-        if(in_array($key, $allowedProps)){
-            if(in_array($key, array_keys($changesKeysRemap))){
-                $key = $changesKeysRemap[$key];
-            }
-            $changes[$key] = $value;
-        }
+    // If march break end is present, march break start must be present
+    if($newMarchBreakEnd != null && $newMarchBreakStart == null){
+        echoError($conn, 400, "MissingArgumentMarchBreakStart");
+    }
+
+    // If march break start is present, march break end must be present
+    if($newMarchBreakStart != null && $newMarchBreakEnd == null){
+        echoError($conn, 400, "MissingArgumentMarchBreakEnd");
     }
     
-    $colNames = array();
-    $insertTypes = "";
-    $insertValues = array();
-    foreach($changes as $key => $value){
-        $insertTypes = $insertTypes."s";
-        array_push($insertValues, $value);
-        array_push($colNames, $key . "=?");
-    }
-    $cols = implode(",", $colNames);
-    $insertTypes = $insertTypes."s";
-    array_push($insertValues, $semesterCode);
-    
-    database_update($conn, "UPDATE semester_dates SET $cols WHERE semester_code=?", $insertTypes, $insertValues);
+    $insertTypes = "sssss";
+    $insertVals = array($semesterCode, $newSemesterStart, $newSemesterEnd, $newMarchBreakStart, $newMarchBreakEnd);
+        
+    // INSERT the semester into the DB
+    database_insert($conn, "INSERT INTO semester_dates (semester_code, semester_start, semester_end, march_break_start, march_break_end) VALUES (?,?,?,?,?)", $insertTypes, $insertVals);
 } else {
-    
-    $insertValues = array($semesterCode, $semesterStart, $semesterEnd, $marchBreakStart, $marchBreakEnd);
-    database_insert($conn, "INSERT INTO semester_dates (semester_code, semester_start, semester_end, march_break_start, march_break_end) VALUES (?,?,?,?,?)",
-                        "sssss", $insertValues);
-}
-                        
-if(!database_commit($conn)){
-	if(!database_rollback($conn)){
-	    $GLOBALS["NEXCHANGE_TRANSACTION"] = false;
-		echoError($conn, 500, "DatabaseRollbackError", "Could not rollback the transaction");
-	}
-	echoError($conn, 500, "DatabaseCommitError", "Could not commit transaction.");
+    if($newSemesterStart != null || $newSemesterEnd != null || $newMarchBreakStart != null || $newMarchBreakEnd != null)
+        echoError($conn, 400, "SemesterExists");
 }
 
-echoSuccess($conn, array(
-    "messageCode" => "SemesterSettingsUpdated"
-));
 
 ?>

@@ -1,5 +1,4 @@
 <?php
-$conn = database_connect();
 
 $userId = getUserFromToken();
 
@@ -10,6 +9,7 @@ if(getUserPrivilege() != "ADMIN"){
 
 requiredParams($conn, $_POST, array("semesterCode", "password"));
 
+$semesterCode = $_POST["semesterCode"];
 $password = $_POST["password"];
 
 $password = base64_decode($password);
@@ -21,7 +21,6 @@ if(!password_verify($password, $user["passwordhash"])){
 if(empty($_FILES['file'])){
     echoError($conn, 400, "NoFilesUploaded");
 }
-$semesterCode = $_POST["semesterCode"];
 
 $season = ["I", "W", "S", "F"];
 
