@@ -44,8 +44,10 @@ function MessageCode(code){
         UserDownloadNotesDenied: "You have not been granted rights to download notes for this course.",
         UserAlreadyRegisteredInCourse: "This user is already signed up to be a notetaker or a student in this course.",
         SemesterUpdated: "The dates have been updated successfully.",
-        SemesterDoesNotExist: "The semester has not been created yet.",
+        SemesterUpdateFailedDNE: "The semester dates could not be updated because the semester has not been created yet.",
+        SemesterFetchFailedDNE: "The semester dates could not be loaded because the semester has not been created yet.",
         SemesterExists: "The semester already exists. To add new courses, leave the semester dates empty. To change the semester dates, please use the module below.",
+        SemesterPast: "There already exists a more recent semester.",
     
         MissingArgument: "An argument is missing from the request. Make sure all fields were entered properly.",
         MissingArgumentFirstName: "First name was left empty.",

@@ -7,9 +7,6 @@ if(getUserPrivilege() != "ADMIN"){
     echoError($conn, 403, "AuthorizationFailed");
 }
 
-requiredParams($conn, $_POST, array("semesterCode", "password"));
-
-$semesterCode = $_POST["semesterCode"];
 $password = $_POST["password"];
 
 $password = base64_decode($password);
@@ -21,16 +18,6 @@ if(!password_verify($password, $user["passwordhash"])){
 if(empty($_FILES['file'])){
     echoError($conn, 400, "NoFilesUploaded");
 }
-
-$season = ["I", "W", "S", "F"];
-
-if(!in_array($semesterCode[0], $season) || strlen($semesterCode) != 5)
-    echoError($conn, 400, "SemesterNotValid");
-
-$year = substr($semesterCode, 1);
-
-if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
-    echoError($conn, 400, "SemesterNotValid");
 
 $allowed = ['csv'];
 $MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb

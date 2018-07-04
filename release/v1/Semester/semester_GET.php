@@ -25,8 +25,10 @@ if(!database_start_transaction($conn)){
 }
 
 $semesterDetails = database_get_row($conn, "SELECT semester_start as semesterStart, semester_end as semesterEnd, march_break_start as marchBreakStart, march_break_end as marchBreakEnd ".
-											"FROM semester_dates WHERE semester_code=?", "s", $semesterCode);
+											"FROM semesters WHERE semester_code=?", "s", $semesterCode);
 
+if($semesterDetails == null)
+	echoError($conn, 400, "SemesterFetchFailedDNE");
 
 if(!database_commit($conn)){
 	if(!database_rollback($conn)){

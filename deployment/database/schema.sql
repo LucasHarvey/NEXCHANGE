@@ -2,7 +2,7 @@ use nexchange;
 
 -- DROP EVERYTHING
 SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS semester_dates;
+DROP TABLE IF EXISTS semesters;
 DROP TABLE IF EXISTS log_notifications_sent;
 DROP TABLE IF EXISTS login_attempts;
 DROP TABLE IF EXISTS log_user_logins;
@@ -24,12 +24,13 @@ DROP TRIGGER IF EXISTS before_insert_on_notes;
 DROP FUNCTION IF EXISTS getLastClassForgotten;
 
 -- Create the tables
-CREATE TABLE semester_dates (
+CREATE TABLE semesters (
     semester_code VARCHAR(5) NOT NULL,
     semester_start DATE DEFAULT NULL,
     semester_end DATE DEFAULT NULL,
     march_break_start DATE DEFAULT NULL,
-    march_break_end DATE DEFAULT NULL
+    march_break_end DATE DEFAULT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE log_notifications_sent (
@@ -216,26 +217,7 @@ BEGIN
     DECLARE marchBreakStart DATE;
     DECLARE marchBreakEnd DATE;
     
-    SET day = DAY(CURDATE());
-    SET month = MONTH(CURDATE());
-    SET year = YEAR(CURDATE());
-    
-    /*Fall from August 16 to December 19*/
-    SET season = "F";
-    /*Intersession from December 20 to January 14*/
-    IF ((month = 12 AND day >= 20) OR (month = 1 AND day < 15)) THEN
-        SET season = "I";
-    END IF;
-    /*Winter from January 15 to May 25*/
-    IF (((month = 1 AND day >= 15) OR month > 1) AND ((month = 5 AND day <= 25) OR month < 5)) THEN
-        SET season = "W";
-    END IF;
-    /*Summer from May 26 to August 15*/
-    IF (((month = 5 AND day > 25) OR month > 5) AND ((month = 8 AND day <= 15) OR month < 8)) THEN
-        SET season = "S";
-    END IF;
-    
-    SET semesterCode = CONCAT(season, year);
+    SELECT semester_code INTO semesterCode FROM semesters WHERE NOW() BETWEEN semester_start AND semester_end ORDER BY created DESC LIMIT 1;
     
     /*Constants: 
         Get the date of the last note, 
@@ -244,10 +226,19 @@ BEGIN
     SELECT DATE(created) INTO lastNote FROM notes WHERE course_id = courseId AND user_id = userId ORDER BY created DESC limit 1;
     SELECT GROUP_CONCAT(days_of_week SEPARATOR '') INTO courseDaysOfWeek FROM course_times GROUP BY course_id HAVING course_id = courseId;
     
-    SELECT semester_start INTO semesterStart FROM semester_dates WHERE semester_code=semesterCode;
-    SELECT semester_end INTO semesterEnd FROM semester_dates WHERE semester_code=semesterCode;
-    SELECT march_break_start INTO marchBreakStart FROM semester_dates WHERE semester_code=semesterCode;
-    SELECT march_break_end INTO marchBreakEnd FROM semester_dates WHERE semester_code=semesterCode;
+    SELECT semester_start INTO semesterStart FROM semesters WHERE semester_code=semesterCode;
+    SELECT semester_end INTO semesterEnd FROM semesters WHERE semester_code=semesterCode;
+    
+    IF semester_start = NULL THEN 
+        SIGNAL SQLSTATE '22004' SET MESSAGE_TEXT = "The semester start date cannot be null.";
+    END IF;
+    
+    IF semester_end = NULL THEN 
+        SIGNAL SQLSTATE '22004' SET MESSAGE_TEXT = "The semester end date cannot be null.";
+    END IF;
+    
+    SELECT march_break_start INTO marchBreakStart FROM semesters WHERE semester_code=semesterCode;
+    SELECT march_break_end INTO marchBreakEnd FROM semesters WHERE semester_code=semesterCode;
     
     /*Did the user never upload a note? If so set it to date user access was created*/
     IF (lastNote IS NULL) THEN
@@ -259,18 +250,14 @@ BEGIN
     lookForClass: WHILE DATEDIFF(DATE(NOW()), loop_date) > dateDiffAllowed DO
         SELECT ELT(DAYOFWEEK(loop_date), "U", "M", "T", "W", "R", "F", "S") INTO loop_data_dateCode;
         
-        /*Is the loop date after the semester started?*/
-        IF (semesterStart != NULL) THEN
-            IF(loop_date < semesterStart) THEN 
-                ITERATE lookForClass;
-            END IF;
+        /*Is the loop date before the semester started?*/
+        IF(loop_date < semesterStart) THEN 
+            ITERATE lookForClass;
         END IF;
         
         /*Is the current date at least one week before the semester ends?*/
-        IF (semesterEnd != NULL) THEN 
-            IF(NOW() > DATE_SUB(semesterEnd, INTERVAL 7 DAY)) THEN
-                ITERATE lookForClass;
-            END IF;
+        IF(NOW() > DATE_SUB(semesterEnd, INTERVAL 7 DAY)) THEN
+            ITERATE lookForClass;
         END IF;
         
         /*Is the loop date during the March break?*/

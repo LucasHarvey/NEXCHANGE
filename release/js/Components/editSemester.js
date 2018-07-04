@@ -31,6 +31,15 @@ app.editSemester = {
         
     },
     
+    submitDatesFailure: function(response){
+        // Enable the form
+        document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
+        document.getElementById("submitDates").disabled = false;
+        
+        app.handleFailure(response);
+        
+    },
+    
     submitDates: function(event){
         event.preventDefault();
     
@@ -124,10 +133,11 @@ app.editSemester = {
                     changes.semesterStart = app.dateFormatting.parseSubmissionDate(semesterStart);
                 }
             }
-        }
-        
-        if(semesterStart == null && oldSemesterStart != null){
-            changes.semesterStart = null;
+        } else {
+            new Modal("Error", MessageCode("MissingArgumentSemesterStart"), null, {
+                text: "Okay"
+            }).show();
+            return;
         }
         
         // SEMESTER END VALIDATION
@@ -142,10 +152,11 @@ app.editSemester = {
                     changes.semesterEnd = app.dateFormatting.parseSubmissionDate(semesterEnd);
                 }
             }
-        }
-
-        if(semesterEnd == null && oldSemesterEnd != null){
-            changes.semesterEnd = null;
+        } else {
+            new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
+                text: "Okay"
+            }).show();
+            return;
         }
         
         // MARCH BREAK START VALIDATION
@@ -189,7 +200,7 @@ app.editSemester = {
             document.getElementById('semesterDates').removeEventListener('submit', app.editSemester.submitDates);
             document.getElementById("submitDates").disabled = true;
             
-            Resources.Semester.POST(semesterCode, changes.semesterStart, changes.semesterEnd, changes.marchBreakStart, changes.marchBreakEnd, app.editSemester.submitDatesSuccess);
+            Resources.Semester.PUT(semesterCode, changes.semesterStart, changes.semesterEnd, changes.marchBreakStart, changes.marchBreakEnd, app.editSemester.submitDatesSuccess, app.editSemester.submitDatesFailure);
         } else {
             new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();
         }
@@ -223,6 +234,33 @@ app.editSemester = {
         }
         
         app.editSemester.toggleMarchBreak();
+        
+    },
+    
+    getDatesFailure: function(response){
+        
+        // Enable the form
+        document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
+        document.getElementById("submitDates").disabled = false;
+        
+        this.originalDates = undefined;
+        
+        var semesterStartField = document.getElementById("semesterStart");
+        var semesterEndField = document.getElementById("semesterEnd");
+        var marchBreakStartField = document.getElementById("marchBreakStart");
+        var marchBreakEndField = document.getElementById("marchBreakEnd");
+        var marchBreakEnabled = document.getElementById("hideFields");
+        
+        semesterStartField.value = "";
+        semesterEndField.value = "";
+        marchBreakStartField.value = "";
+        marchBreakEndField.value = "";
+    
+        marchBreakEnabled.checked = false;
+        
+        app.editSemester.toggleMarchBreak();
+        
+        app.handleFailure(response);
         
     },
     
@@ -287,7 +325,7 @@ app.editSemester = {
             return;
         }
     
-        Resources.Semester.GET(semesterCode, app.editSemester.populateDates);
+        Resources.Semester.GET(semesterCode, app.editSemester.populateDates, app.editSemester.getDatesFailure);
     }
 }
 

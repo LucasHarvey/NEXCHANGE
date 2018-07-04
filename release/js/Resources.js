@@ -236,28 +236,6 @@ let Resources = {
             };
             return app.get(Resources.Courses, data, successCallback, failureCallback);
         },
-        POST: function(semesterCode, files, newSemesterStart, newSemesterEnd, newMarchBreakStart, newMarchBreakEnd, password, successCallback, failureCallback) {
-            var formData = new FormData();
-            formData.append("semesterCode", semesterCode);
-            for (var i = 0; i < files.length; i++) {
-                formData.append("file[]", files[i]);
-            }
-            formData.append("newSemesterStart", newSemesterStart);
-            formData.append("newSemesterEnd", newSemesterEnd);
-            formData.append("newMarchBreakStart", newMarchBreakStart);
-            formData.append("newMarchBreakEnd", newMarchBreakEnd);
-            formData.append("password", window.btoa(password));
-
-            let request = app._generateRequest(successCallback, failureCallback, {
-                disableAuthResult: true //Let failure handle it
-            });
-            request.open("POST", this.location);
-            request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
-            // Enable the loading spinner 
-            document.body.classList.add("load");
-            request.send(formData);
-            return request;
-        },
         
         PUT: function(courseId, teacherFullName, courseName, courseNumber, section, semester, successCallback, failureCallback){
             let data = {
@@ -295,7 +273,29 @@ let Resources = {
         GET: function(semesterCode, successCallback, failureCallback){
             return app.get(Resources.Semester, {semesterCode: semesterCode}, successCallback, failureCallback);
         },
-        POST: function(semesterCode, semesterStart, semesterEnd, marchBreakStart, marchBreakEnd, successCallback, failureCallback){
+        POST: function(semesterCode, files, newSemesterStart, newSemesterEnd, newMarchBreakStart, newMarchBreakEnd, password, successCallback, failureCallback) {
+            var formData = new FormData();
+            formData.append("semesterCode", semesterCode);
+            for (var i = 0; i < files.length; i++) {
+                formData.append("file[]", files[i]);
+            }
+            formData.append("newSemesterStart", newSemesterStart);
+            formData.append("newSemesterEnd", newSemesterEnd);
+            formData.append("newMarchBreakStart", newMarchBreakStart);
+            formData.append("newMarchBreakEnd", newMarchBreakEnd);
+            formData.append("password", window.btoa(password));
+
+            let request = app._generateRequest(successCallback, failureCallback, {
+                disableAuthResult: true //Let failure handle it
+            });
+            request.open("POST", this.location);
+            request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
+            // Enable the loading spinner 
+            document.body.classList.add("load");
+            request.send(formData);
+            return request;
+        },
+        PUT: function(semesterCode, semesterStart, semesterEnd, marchBreakStart, marchBreakEnd, successCallback, failureCallback){
             
             let data = {};
             data["semesterCode"] = semesterCode;
