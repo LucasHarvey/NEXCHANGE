@@ -36,13 +36,13 @@ if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
 
 if($semesterStart != null && $semesterEnd != null){
     // Semester end must be after semester start
-    if($semesterEnd <= $semesterStart)
+    if(strtotime($semesterEnd) <= strtotime($semesterStart))
         echoError($conn, 400, "SemesterDatesNotValid");
 }
 
 if($marchBreakStart != null && $marchBreakEnd != null){
     // March break end must be after march break start
-    if($marchBreakEnd <= $marchBreakStart)
+    if(strtotime($marchBreakEnd) <= strtotime($marchBreakStart))
         echoError($conn, 400, "MarchBreakNotValid");
 }
     
@@ -50,10 +50,10 @@ if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseUpdateError", "Could not start transaction.");
 }
 
-$semester = database_get_row($conn, "SELECT semester_code from semester_dates WHERE semester_code=?", "s", $semesterCode);
+$semester = database_get_row($conn, "SELECT semester_code from semesters WHERE semester_code=?", "s", $semesterCode);
 
 if($semester == null)
-    echoError($conn, 400, "SemesterDoesNotExist");
+    echoError($conn, 400, "SemesterUpdateFailedDNE");
 
 // Change the insert keys
 $allowedProps = array("semesterStart", "semesterEnd", "marchBreakStart", "marchBreakEnd");
@@ -86,7 +86,7 @@ $cols = implode(",", $colNames);
 $insertTypes = $insertTypes."s";
 array_push($insertValues, $semesterCode);
 
-database_update($conn, "UPDATE semester_dates SET $cols WHERE semester_code=?", $insertTypes, $insertValues);
+database_update($conn, "UPDATE semesters SET $cols WHERE semester_code=?", $insertTypes, $insertValues);
 
                         
 if(!database_commit($conn)){

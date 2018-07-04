@@ -63,9 +63,12 @@ app.addSemester = {
         // Empty the course input fields: 
         app.addSemester.reset();
         
-        new Modal("Courses Added", MessageCode("CoursesCreated") + "<br>" + data.payload.output, null, {
+        new Modal("Courses Added", MessageCode("CoursesCreated") + "<br>" + data.payload.output, {
+                    callback: function(){
+                        window.location.reload();
+                    },
                     text: "Okay"
-                }).show();
+                }, false).show();
     },
     
     submitSemesterFailure: function(data){
@@ -184,7 +187,7 @@ app.addSemester = {
                         text: "Yes, UPLOAD Courses",
                         callback: function() {
                             this.confirmButton.disabled = true;
-                            app.addSemester._uploadCourses.call(this, semesterCode, file, newSemesterStart, newSemesterEnd, newMarchBreakStart, newMarchBreakEnd);
+                            app.addSemester._uploadSemester.call(this, semesterCode, file, newSemesterStart, newSemesterEnd, newMarchBreakStart, newMarchBreakEnd);
                         }
                     }
                 ).show();
