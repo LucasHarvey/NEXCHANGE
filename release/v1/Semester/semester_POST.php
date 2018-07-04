@@ -1,24 +1,9 @@
 <?php
 $conn = database_connect();
 
-$newSemesterStart = null;
-$newSemesterEnd = null;
-$newMarchBreakStart = null;
-$newMarchBreakEnd = null;
-
 requiredParams($conn, $_POST, array("semesterCode", "password"));
 
 $semesterCode = $_POST["semesterCode"];
-$created = date('Y-m-d H:i:s');
-
-if(array_key_exists($_POST, "newSemesterStart"))
-    $newSemesterStart = $_POST["newSemesterStart"];
-if(array_key_exists($_POST, "newSemesterEnd"))
-    $newSemesterEnd = $_POST["newSemesterEnd"];
-if(array_key_exists($_POST, "newMarchBreakStart"))
-    $newMarchBreakStart = $_POST["newMarchBreakStart"];
-if(array_key_exists($_POST, "newMarchBreakEnd"))
-    $newMarchBreakEnd = $_POST["newMarchBreakEnd"];
     
 $seasons = ["I", "W", "S", "F"];
 
@@ -30,16 +15,29 @@ $year = substr($semesterCode, 1);
 if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
     echoError($conn, 400, "SemesterNotValid");
     
-$coursesForSemester = database_get_row("SELECT id FROM courses WHERE semester=? LIMIT 1", "s", $semesterCode);
-$semesterExists = database_get_row("SELECT semester_code FROM semesters WHERE semester_code=? LIMIT 1", "s", $semesterCode);
+$coursesForSemester = database_get_row($conn, "SELECT id FROM courses WHERE semester=? LIMIT 1", "s", $semesterCode);
+$semesterExists = database_get_row($conn, "SELECT semester_code FROM semesters WHERE semester_code=? LIMIT 1", "s", $semesterCode);
 
 if(!isNewSemester($conn, $semesterCode))
     echoError($conn, 400, "SemesterOutdated");
 
 if($coursesForSemester == null && $semesterExists == null){
     // If no courses with semester code in DB, newSemesterStart and newSemesterEnd must by present
-    requiredParams($conn, $_POST, array("newSemesterStart", "newSemesterEnd"));
+    requiredParams($conn, $_POST, array("newSemesterStart", "newSemesterEnd", "newMarchBreakStart", "newMarchBreakEnd"));
     
+    $created = date('Y-m-d H:i:s');
+
+    $newSemesterStart = $_POST["newSemesterStart"];
+    $newSemesterEnd = $_POST["newSemesterEnd"];
+    $newMarchBreakStart = $_POST["newMarchBreakStart"];
+    $newMarchBreakEnd = $_POST["newMarchBreakEnd"];
+    
+    if($newSemesterStart == null)
+        echoError($conn, 400, "MissingArgumentSemesterStart");
+    
+    if($newSemesterEnd == null)
+        echoError($conn, 400, "MissingArgumentSemesterEnd");
+           
     // Semester end must be after semester start
     if(strtotime($newSemesterEnd) <= strtotime($newSemesterStart))
         echoError($conn, 400, "SemesterDatesNotValid");
@@ -71,7 +69,7 @@ if($coursesForSemester == null && $semesterExists == null){
 }
 
 function isNewSemester($conn, $semesterCode){
-    $latestSemesterCode = database_get_row($conn, "SELECT semester_code FROM semesters ORDER BY created DESC LIMIT 1")["semester_code"];
+    $latestSemesterCode = database_get_row($conn, "SELECT semester_code FROM semesters ORDER BY created DESC LIMIT 1", "", array())["semester_code"];
     if($latestSemesterCode == null)
         return true;
     
