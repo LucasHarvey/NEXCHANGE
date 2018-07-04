@@ -121,7 +121,7 @@ if(getUserPrivilege() != "ADMIN"){
                     </div>
                     
                     <div class="userfield">
-                        <input class="button" type="submit" id="submit" value="Create Semester">
+                        <input class="button" type="submit" id="submit" value="Upload Semester Courses/Dates">
                     </div>
                     
                 </form>

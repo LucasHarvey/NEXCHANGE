@@ -54,14 +54,16 @@ app.editSemester = {
         var oldMarchBreakStart = null;
         var oldMarchBreakEnd = null;
         
-        if(this.originalDates.semesterStart)
+        if(this.originalDates !== undefined){
+            if(this.originalDates.semesterStart)
             oldSemesterStart = new Date(this.originalDates.semesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
-        if(this.originalDates.semesterEnd)
-            oldSemesterEnd = new Date(this.originalDates.semesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
-        if(this.originalDates.marchBreakStart)
-            oldMarchBreakStart = new Date(this.originalDates.marchBreakStart.replace(/-/g, '\/').replace(/T.+/, ''));
-        if(this.originalDates.marchBreakEnd)
-            oldMarchBreakEnd = new Date(this.originalDates.marchBreakEnd.replace(/-/g, '\/').replace(/T.+/, ''));
+            if(this.originalDates.semesterEnd)
+                oldSemesterEnd = new Date(this.originalDates.semesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
+            if(this.originalDates.marchBreakStart)
+                oldMarchBreakStart = new Date(this.originalDates.marchBreakStart.replace(/-/g, '\/').replace(/T.+/, ''));
+            if(this.originalDates.marchBreakEnd)
+                oldMarchBreakEnd = new Date(this.originalDates.marchBreakEnd.replace(/-/g, '\/').replace(/T.+/, ''));
+        }
         
         var semesterStart = document.getElementById("semesterStart").value;
         var semesterEnd = document.getElementById("semesterEnd").value;
@@ -214,7 +216,7 @@ app.editSemester = {
         
         let data = response.payload;
         
-        this.originalDates = data;
+        app.editSemester.originalDates = data;
         
         var semesterStartField = document.getElementById("semesterStart");
         var semesterEndField = document.getElementById("semesterEnd");
@@ -243,7 +245,7 @@ app.editSemester = {
         document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
         document.getElementById("submitDates").disabled = false;
         
-        this.originalDates = undefined;
+        app.editSemester.originalDates = undefined;
         
         var semesterStartField = document.getElementById("semesterStart");
         var semesterEndField = document.getElementById("semesterEnd");

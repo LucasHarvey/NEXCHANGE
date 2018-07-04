@@ -97,33 +97,32 @@ app.addSemester = {
         
         var newSemesterStart = document.getElementById("newSemesterStart").value;
         var newSemesterEnd = document.getElementById("newSemesterEnd").value;
-        var newMarchBreakStart = null;
-        var newMarchBreakEnd = null;
+        var newMarchBreakStart = "";
+        var newMarchBreakEnd = "";
         
-        if(newSemesterStart == "") newSemesterStart = null;
-        if(newSemesterEnd == "") newSemesterEnd = null;
-        
-        if(newSemesterStart != null)
+        if(newSemesterStart != ""){
             newSemesterStart = new Date(newSemesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
+        }
 
-        if(newSemesterEnd != null)
+        if(newSemesterEnd != ""){
             newSemesterEnd = new Date(newSemesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
-            
-        if(newSemesterEnd != null && newSemesterStart == null){
+        }
+
+        if(newSemesterEnd != "" && newSemesterStart == ""){
             new Modal("Error", MessageCode("MissingArgumentSemesterStart"), null, {
                 text: "Okay"
             }).show();
             return;
         }
             
-        if(newSemesterStart != null && newSemesterEnd == null){
+        if(newSemesterStart != "" && newSemesterEnd == ""){
             new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
                 text: "Okay"
             }).show();
             return;
         }
         
-        if(newSemesterStart != null && newSemesterEnd != null)
+        if(newSemesterStart != "" && newSemesterEnd != "")
         if(newSemesterEnd <= newSemesterStart){
             new Modal("Error", MessageCode("SemesterDatesNotValid"), null, {
                 text: "Okay"
@@ -135,7 +134,7 @@ app.addSemester = {
 
         if(newMarchBreakEnabled.checked){
             
-            if(document.getElementById("newMarchBreakStart").value){
+            if(document.getElementById("newMarchBreakStart").value != ""){
                 newMarchBreakStart = new Date(document.getElementById("newMarchBreakStart").value.replace(/-/g, '\/').replace(/T.+/, ''));
             } else {
                 new Modal("Error", MessageCode("MissingArgumentMarchBreakStart"), null, {
@@ -144,7 +143,7 @@ app.addSemester = {
                 return;
             }
 
-            if(document.getElementById("newMarchBreakEnd").value){
+            if(document.getElementById("newMarchBreakEnd").value != ""){
                 newMarchBreakEnd = new Date(document.getElementById("newMarchBreakEnd").value.replace(/-/g, '\/').replace(/T.+/, ''));
             } else {
                 new Modal("Error", MessageCode("MissingArgumentMarchBreakEnd"), null, {
@@ -160,20 +159,32 @@ app.addSemester = {
                 return;
             }
             
-            if(newSemesterStart == null){
+            if(newSemesterStart == ""){
                 new Modal("Error", MessageCode("MissingArgumentSemesterStart"), null, {
                 text: "Okay"
                 }).show();
                 return;
             }
             
-            if(newSemesterEnd == null){
+            if(newSemesterEnd == ""){
                 new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
                 text: "Okay"
                 }).show();
                 return;
             }
         }
+        
+        if(newSemesterStart != "")
+            newSemesterStart = app.dateFormatting.parseSubmissionDate(newSemesterStart);
+            
+        if(newSemesterEnd != "")
+            newSemesterEnd = app.dateFormatting.parseSubmissionDate(newSemesterEnd);
+            
+        if(newMarchBreakStart != "")
+            newMarchBreakStart = app.dateFormatting.parseSubmissionDate(newMarchBreakStart);
+            
+        if(newMarchBreakEnd != "")
+            newMarchBreakEnd = app.dateFormatting.parseSubmissionDate(newMarchBreakEnd);
 
         let seasonSelector = document.getElementById("season");
         var season = seasonSelector.value;

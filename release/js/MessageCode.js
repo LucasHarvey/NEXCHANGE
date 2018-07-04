@@ -44,9 +44,9 @@ function MessageCode(code){
         UserDownloadNotesDenied: "You have not been granted rights to download notes for this course.",
         UserAlreadyRegisteredInCourse: "This user is already signed up to be a notetaker or a student in this course.",
         SemesterUpdated: "The dates have been updated successfully.",
-        SemesterUpdateFailedDNE: "The semester dates could not be updated because the semester has not been created yet.",
-        SemesterFetchFailedDNE: "The semester dates could not be loaded because the semester has not been created yet.",
-        SemesterExists: "The semester already exists. To add new courses, leave the semester dates empty. To change the semester dates, please use the module below.",
+        SemesterUpdateFailedDNE: "The semester dates could not be updated because the semester has not been created yet. To create the semester, use the module above.",
+        SemesterFetchFailedDNE: "The semester dates could not be loaded because the semester has not been created yet. To create the semester, use the module above.",
+        SemesterExists: "The semester already exists. To add new courses, leave the semester dates empty. To change the semester dates, use the module below.",
         SemesterOutdated: "There already exists a more recent semester.",
     
         MissingArgument: "An argument is missing from the request. Make sure all fields were entered properly.",
@@ -79,6 +79,7 @@ function MessageCode(code){
         MissingArgumentSemesterEnd: "Please select the semester end date.",
         MissingArgumentMarchBreakStart: "Please select a start date for the March break.",
         MissingArgumentMarchBreakEnd: "Please select an end date for the March break.",
+        MissingArgumentSemesterCode: "Please enter a valid semester",
     
         NoteNameNotValid: "Note name is too long: maximum 60 characters.",
         DescriptionNotValid: "Description is too long: maximum 500 characters.",

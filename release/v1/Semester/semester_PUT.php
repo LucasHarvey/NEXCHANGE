@@ -74,6 +74,11 @@ foreach($_JSON as $key => $value ){
     }
 }
 
+// Ensure that changes can be made
+if(empty($changes)){ //No legal changes can be made
+    echoError($conn, 400, "NoChangesToMake");
+}
+
 $colNames = array();
 $insertTypes = "";
 $insertValues = array();
