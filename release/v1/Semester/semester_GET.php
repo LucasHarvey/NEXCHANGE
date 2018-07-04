@@ -10,9 +10,9 @@ requiredParams($conn, $_GET, array("semesterCode"));
 
 $semesterCode = $_GET["semesterCode"];
 
-$season = ["I", "W", "S", "F"];
+$seasons = ["I", "W", "S", "F"];
 
-if(!in_array($semesterCode[0], $season) || strlen($semesterCode) != 5)
+if(!in_array($semesterCode[0], $seasons) || strlen($semesterCode) != 5)
     echoError($conn, 400, "SemesterNotValid");
 
 $year = substr($semesterCode, 1);

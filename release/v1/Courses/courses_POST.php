@@ -1,20 +1,5 @@
 <?php
 
-$userId = getUserFromToken();
-
-// Verify that the user is an admin
-if(getUserPrivilege() != "ADMIN"){
-    echoError($conn, 403, "AuthorizationFailed");
-}
-
-$password = $_POST["password"];
-
-$password = base64_decode($password);
-$user = database_get_row($conn, "SELECT passwordhash FROM users WHERE id=?", "s", $userId);
-if(!password_verify($password, $user["passwordhash"])){
-    echoError($conn, 401, "AuthenticationFailed");
-}
-
 if(empty($_FILES['file'])){
     echoError($conn, 400, "NoFilesUploaded");
 }

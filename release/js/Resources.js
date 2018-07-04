@@ -308,7 +308,7 @@ let Resources = {
                 return;
             }
 
-            return app.post(Resources.Semester, data, successCallback, failureCallback);
+            return app.put(Resources.Semester, data, successCallback, failureCallback);
         }
     }
 };
