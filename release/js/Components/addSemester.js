@@ -59,6 +59,7 @@ app.addSemester = {
         // Enable the form
         document.getElementById('submit').disabled = false;
         document.getElementById('addSemester').addEventListener('submit', app.addSemester.submitSemester);
+        app.addSemester.uploadInProgress = false;
 
         // Empty the course input fields: 
         app.addSemester.reset();
@@ -72,6 +73,7 @@ app.addSemester = {
     },
     
     submitSemesterFailure: function(data){
+        
         // Enable the form
         document.getElementById('submit').disabled = false;
         document.getElementById('addSemester').addEventListener('submit', app.addSemester.submitSemester);

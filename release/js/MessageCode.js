@@ -47,7 +47,7 @@ function MessageCode(code){
         SemesterUpdateFailedDNE: "The semester dates could not be updated because the semester has not been created yet.",
         SemesterFetchFailedDNE: "The semester dates could not be loaded because the semester has not been created yet.",
         SemesterExists: "The semester already exists. To add new courses, leave the semester dates empty. To change the semester dates, please use the module below.",
-        SemesterPast: "There already exists a more recent semester.",
+        SemesterOutdated: "There already exists a more recent semester.",
     
         MissingArgument: "An argument is missing from the request. Make sure all fields were entered properly.",
         MissingArgumentFirstName: "First name was left empty.",
