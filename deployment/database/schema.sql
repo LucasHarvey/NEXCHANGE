@@ -33,14 +33,6 @@ CREATE TABLE semesters (
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE log_notifications_sent (
-    user_id CHAR(36) NOT NULL,
-    notification_code INT(2), -- 1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password, +10 for maybe (async)
-    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-);
-
 CREATE TABLE users (
     id CHAR(36) NOT NULL,
     login_id CHAR(7) NOT NULL UNIQUE,
@@ -57,6 +49,23 @@ CREATE TABLE users (
     passresetcreated TIMESTAMP,
     
     PRIMARY KEY (id)
+);
+
+CREATE TABLE log_notifications_sent (
+    user_id CHAR(36) NOT NULL,
+    notification_code INT(2), -- 1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password, +10 for maybe (async)
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Create the tables
+CREATE TABLE log_notifications_sent (
+    user_id CHAR(36) NOT NULL,
+    notification_code INT(2), -- 1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password, +10 for maybe (async)
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE login_attempts (
