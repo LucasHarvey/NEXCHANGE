@@ -26,8 +26,8 @@ DROP FUNCTION IF EXISTS getLastClassForgotten;
 -- Create the tables
 CREATE TABLE semesters (
     semester_code VARCHAR(5) NOT NULL,
-    semester_start DATE DEFAULT NULL,
-    semester_end DATE DEFAULT NULL,
+    semester_start DATE NOT NULL,
+    semester_end DATE NOT NULL,
     march_break_start DATE DEFAULT NULL,
     march_break_end DATE DEFAULT NULL,
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
