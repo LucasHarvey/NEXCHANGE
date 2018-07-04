@@ -34,7 +34,7 @@ $coursesForSemester = database_get_row("SELECT id FROM courses WHERE semester=? 
 $semesterExists = database_get_row("SELECT semester_code FROM semesters WHERE semester_code=? LIMIT 1", "s", $semesterCode);
 
 if(!isNewSemester($conn, $semesterCode))
-    echoError($conn, 400, "SemesterPast");
+    echoError($conn, 400, "SemesterOutdated");
 
 if($coursesForSemester == null && $semesterExists == null){
     // If no courses with semester code in DB, newSemesterStart and newSemesterEnd must by present
