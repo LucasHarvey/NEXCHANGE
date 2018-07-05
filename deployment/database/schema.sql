@@ -2,6 +2,7 @@ use nexchange;
 
 -- DROP EVERYTHING
 SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS semesters;
 DROP TABLE IF EXISTS log_notifications_sent;
 DROP TABLE IF EXISTS login_attempts;
 DROP TABLE IF EXISTS log_user_logins;
@@ -22,6 +23,16 @@ DROP TRIGGER IF EXISTS before_insert_on_notes;
 
 DROP FUNCTION IF EXISTS getLastClassForgotten;
 
+-- Create the tables
+CREATE TABLE semesters (
+    semester_code VARCHAR(5) NOT NULL,
+    semester_start DATE NOT NULL,
+    semester_end DATE NOT NULL,
+    march_break_start DATE DEFAULT NULL,
+    march_break_end DATE DEFAULT NULL,
+    created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE users (
     id CHAR(36) NOT NULL,
     login_id CHAR(7) NOT NULL UNIQUE,
@@ -38,6 +49,14 @@ CREATE TABLE users (
     passresetcreated TIMESTAMP,
     
     PRIMARY KEY (id)
+);
+
+CREATE TABLE log_notifications_sent (
+    user_id CHAR(36) NOT NULL,
+    notification_code INT(2), -- 1: notify students; 2: notify notetakers (reminder); 3: reset password; 4: temporary password, +10 for maybe (async)
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Create the tables
@@ -197,13 +216,38 @@ BEGIN
     DECLARE courseDaysOfWeek CHAR(7);
     DECLARE loop_data_dateCode CHAR(1);
     DECLARE loop_date DATE;
-
+    DECLARE day VARCHAR(2);
+    DECLARE month VARCHAR(2);
+    DECLARE year VARCHAR (4);
+    DECLARE season CHAR(1);
+    DECLARE semesterCode VARCHAR(5);
+    DECLARE semesterStart DATE;
+    DECLARE semesterEnd DATE;
+    DECLARE marchBreakStart DATE;
+    DECLARE marchBreakEnd DATE;
+    
+    SELECT semester_code INTO semesterCode FROM semesters WHERE NOW() BETWEEN semester_start AND semester_end ORDER BY created DESC LIMIT 1;
+    
     /*Constants: 
         Get the date of the last note, 
         Get the all days of classes
     */
     SELECT DATE(created) INTO lastNote FROM notes WHERE course_id = courseId AND user_id = userId ORDER BY created DESC limit 1;
     SELECT GROUP_CONCAT(days_of_week SEPARATOR '') INTO courseDaysOfWeek FROM course_times GROUP BY course_id HAVING course_id = courseId;
+    
+    SELECT semester_start INTO semesterStart FROM semesters WHERE semester_code=semesterCode;
+    SELECT semester_end INTO semesterEnd FROM semesters WHERE semester_code=semesterCode;
+    
+    IF semester_start = NULL THEN 
+        SIGNAL SQLSTATE '22004' SET MESSAGE_TEXT = "The semester start date cannot be null.";
+    END IF;
+    
+    IF semester_end = NULL THEN 
+        SIGNAL SQLSTATE '22004' SET MESSAGE_TEXT = "The semester end date cannot be null.";
+    END IF;
+    
+    SELECT march_break_start INTO marchBreakStart FROM semesters WHERE semester_code=semesterCode;
+    SELECT march_break_end INTO marchBreakEnd FROM semesters WHERE semester_code=semesterCode;
     
     /*Did the user never upload a note? If so set it to date user access was created*/
     IF (lastNote IS NULL) THEN
@@ -212,15 +256,32 @@ BEGIN
 
     /*Start counting from the next day of the last note.*/
     SET loop_date = DATE_ADD(lastNote, INTERVAL 1 DAY);
-    WHILE DATEDIFF(DATE(NOW()), loop_date) > dateDiffAllowed DO
+    lookForClass: WHILE DATEDIFF(DATE(NOW()), loop_date) > dateDiffAllowed DO
         SELECT ELT(DAYOFWEEK(loop_date), "U", "M", "T", "W", "R", "F", "S") INTO loop_data_dateCode;
+        
+        /*Is the loop date before the semester started?*/
+        IF(loop_date < semesterStart) THEN 
+            ITERATE lookForClass;
+        END IF;
+        
+        /*Is the current date at least one week before the semester ends?*/
+        IF(NOW() > DATE_SUB(semesterEnd, INTERVAL 7 DAY)) THEN
+            ITERATE lookForClass;
+        END IF;
+        
+        /*Is the loop date during the March break?*/
+        IF (marchBreakStart != NULL && marchBreakEnd != NULL) THEN
+            IF(loop_date BETWEEN marchBreakStart AND marchBreakEnd) THEN
+                ITERATE lookForClass;
+            END IF;
+        END IF;
         
         IF (LOCATE(loop_data_dateCode, courseDaysOfWeek) > 0) THEN
             RETURN loop_date;
         END IF;
         
         SET loop_date = DATE_ADD(loop_date, INTERVAL 1 DAY);
-    END WHILE;
+    END WHILE lookForClass;
     
     RETURN NULL;
 END$$
