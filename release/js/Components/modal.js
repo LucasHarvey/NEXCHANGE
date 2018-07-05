@@ -28,6 +28,8 @@ function Modal(title, content, confirmButton, cancelButton, cancelText) {
     if (!document.getElementById("MODALWRAPPER")) {
         Modal.generateWrapper();
     }
+    
+    document.getElementById("MODALWRAPPER").onclick = null;
 }
 
 Modal.prototype.show = function() {
