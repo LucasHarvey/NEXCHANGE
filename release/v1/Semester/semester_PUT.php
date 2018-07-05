@@ -55,11 +55,6 @@ if($marchBreakEnd != null && $semesterEnd != null){
     if(strtotime($marchBreakEnd) > strtotime($semesterEnd))
         echoError($conn, 400, "MarchBreakEndNotValid");
 }
-
-if($marchBreakEnd != null){
-    if(strtotime($marchBreakEnd) > strtotime($semesterEnd))
-        echoError($conn, 400, "MarchBreakEndNotValid");
-}
     
 if(!database_start_transaction($conn)){
 	echoError($conn, 500, "DatabaseUpdateError", "Could not start transaction.");
