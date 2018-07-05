@@ -97,8 +97,8 @@ app.addSemester = {
         
         var newSemesterStart = document.getElementById("newSemesterStart").value;
         var newSemesterEnd = document.getElementById("newSemesterEnd").value;
-        var newMarchBreakStart = "";
-        var newMarchBreakEnd = "";
+        var newMarchBreakStart = document.getElementById("newMarchBreakStart").value;
+        var newMarchBreakEnd = document.getElementById("newMarchBreakEnd").value;
         
         if(newSemesterStart != ""){
             newSemesterStart = new Date(newSemesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
@@ -122,19 +122,20 @@ app.addSemester = {
             return;
         }
         
-        if(newSemesterStart != "" && newSemesterEnd != "")
-        if(newSemesterEnd <= newSemesterStart){
-            new Modal("Error", MessageCode("SemesterDatesNotValid"), null, {
-                text: "Okay"
-            }).show();
-            return;
+        if(newSemesterStart != "" && newSemesterEnd != ""){
+            if(newSemesterEnd <= newSemesterStart){
+                new Modal("Error", MessageCode("SemesterDatesNotValid"), null, {
+                    text: "Okay"
+                }).show();
+                return;
+            }
         }
         
         var newMarchBreakEnabled = document.getElementById("newHideFields");
 
         if(newMarchBreakEnabled.checked){
             
-            if(document.getElementById("newMarchBreakStart").value != ""){
+            if(newMarchBreakStart != ""){
                 newMarchBreakStart = new Date(document.getElementById("newMarchBreakStart").value.replace(/-/g, '\/').replace(/T.+/, ''));
             } else {
                 new Modal("Error", MessageCode("MissingArgumentMarchBreakStart"), null, {
@@ -143,7 +144,7 @@ app.addSemester = {
                 return;
             }
 
-            if(document.getElementById("newMarchBreakEnd").value != ""){
+            if(newMarchBreakEnd != ""){
                 newMarchBreakEnd = new Date(document.getElementById("newMarchBreakEnd").value.replace(/-/g, '\/').replace(/T.+/, ''));
             } else {
                 new Modal("Error", MessageCode("MissingArgumentMarchBreakEnd"), null, {
@@ -168,6 +169,20 @@ app.addSemester = {
             
             if(newSemesterEnd == ""){
                 new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
+                text: "Okay"
+                }).show();
+                return;
+            }
+            
+            if(newMarchBreakStart < newSemesterStart){
+                new Modal("Error", MessageCode("MarchBreakStartNotValid"), null, {
+                text: "Okay"
+                }).show();
+                return;
+            }
+            
+            if(newMarchBreakEnd > newSemesterEnd){
+                new Modal("Error", MessageCode("MarchBreakEndNotValid"), null, {
                 text: "Okay"
                 }).show();
                 return;

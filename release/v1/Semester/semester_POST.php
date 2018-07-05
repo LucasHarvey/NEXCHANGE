@@ -76,6 +76,16 @@ if($coursesForSemester == null && $semesterExists == null){
         echoError($conn, 400, "MissingArgumentMarchBreakEnd");
     }
     
+    if($newMarchBreakStart != null){
+        if(strtotime($newMarchBreakStart) < strtotime($newSemesterStart))
+            echoError($conn, 400, "MarchBreakStartNotValid");
+    }
+    
+    if($newMarchBreakEnd != null){
+        if(strtotime($newMarchBreakEnd) > strtotime($newSemesterEnd))
+            echoError($conn, 400, "MarchBreakEndNotValid");
+    }
+    
     $insertTypes = "ssssss";
     $insertVals = array($semesterCode, $newSemesterStart, $newSemesterEnd, $newMarchBreakStart, $newMarchBreakEnd, $created);
         
@@ -87,9 +97,16 @@ if($coursesForSemester == null && $semesterExists == null){
 }
 
 function isNewSemester($conn, $semesterCode, $seasons){
-    $latestSemesterCode = database_get_row($conn, "SELECT semester_code FROM semesters ORDER BY created DESC LIMIT 1", "", array())["semester_code"];
-    if($latestSemesterCode == null)
+    $existingSemesters = database_get_all($conn, "SELECT semester_code FROM semesters ORDER BY created DESC", "", array());
+    if(count($existingSemesters) == 0)
         return true;
+        
+    foreach($existingSemesters as $existingSemester){
+        if($existingSemester["semester_code"] == $semesterCode)
+            return true;
+    }
+    
+    $latestSemesterCode = $existingSemesters[0]["semester_code"];
     
     $latestSeason = $latestSemesterCode[0];
     $latestYear = substr($latestSemesterCode, 1);

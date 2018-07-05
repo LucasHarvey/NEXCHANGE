@@ -49,20 +49,37 @@ app.editSemester = {
         var semesterCode = app.editSemester.validateSemester(season,year);
         if(!semesterCode) return;
         
-        var oldSemesterStart = null;
-        var oldSemesterEnd = null;
         var oldMarchBreakStart = null;
         var oldMarchBreakEnd = null;
         
         if(this.originalDates !== undefined){
-            if(this.originalDates.semesterStart)
-            oldSemesterStart = new Date(this.originalDates.semesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
-            if(this.originalDates.semesterEnd)
-                oldSemesterEnd = new Date(this.originalDates.semesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
+            if(this.originalDates.semesterStart){
+                var oldSemesterStart = new Date(this.originalDates.semesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
+            } else {
+                new Modal("Error", MessageCode("SemesterUpdateFailedDNE"), null, {
+                text: "Okay"
+                }).show();
+                return;
+            }
+
+            if(this.originalDates.semesterEnd){
+                var oldSemesterEnd = new Date(this.originalDates.semesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
+            } else {
+                new Modal("Error", MessageCode("SemesterUpdateFailedDNE"), null, {
+                text: "Okay"
+                }).show();
+                return;
+            }
+ 
             if(this.originalDates.marchBreakStart)
                 oldMarchBreakStart = new Date(this.originalDates.marchBreakStart.replace(/-/g, '\/').replace(/T.+/, ''));
             if(this.originalDates.marchBreakEnd)
                 oldMarchBreakEnd = new Date(this.originalDates.marchBreakEnd.replace(/-/g, '\/').replace(/T.+/, ''));
+        } else {
+            new Modal("Error", MessageCode("SemesterUpdateFailedDNE"), null, {
+                text: "Okay"
+            }).show();
+            return;
         }
         
         var semesterStart = document.getElementById("semesterStart").value;
@@ -70,21 +87,28 @@ app.editSemester = {
         var marchBreakStart = null;
         var marchBreakEnd = null;
         
-        if(semesterStart == "") semesterStart = null;
-        if(semesterEnd == "") semesterEnd = null;
+        if(semesterStart == ""){
+            new Modal("Error", MessageCode("MissingArgumentSemesterStart"), null, {
+                text: "Okay"
+            }).show();
+            return;
+        }
         
-        if(semesterStart != null)
-            semesterStart = new Date(semesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
-        if(semesterEnd != null)
-            semesterEnd = new Date(semesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
+        if(semesterEnd == ""){
+            new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
+                text: "Okay"
+            }).show();
+            return;
+        }
+        
+        semesterStart = new Date(semesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
+        semesterEnd = new Date(semesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
             
-        if(semesterStart != null && semesterEnd != null){
-            if(semesterEnd <= semesterStart){
-                new Modal("Error", MessageCode("SemesterDatesNotValid"), null, {
-                    text: "Okay"
-                }).show();
-                return;
-            }
+        if(semesterEnd <= semesterStart){
+            new Modal("Error", MessageCode("SemesterDatesNotValid"), null, {
+                text: "Okay"
+            }).show();
+            return;
         }
         
         var marchBreakEnabled = document.getElementById("hideFields");
@@ -114,6 +138,21 @@ app.editSemester = {
                 }).show();
                 return;
             }
+            
+            if(marchBreakStart < semesterStart){
+                new Modal("Error", MessageCode("MarchBreakStartNotValid"), null, {
+                text: "Okay"
+                }).show();
+                return;
+            }
+            
+            if(marchBreakEnd > semesterEnd){
+                new Modal("Error", MessageCode("MarchBreakEndNotValid"), null, {
+                text: "Okay"
+                }).show();
+                return;
+            }
+            
         }
         
         var changes = {
@@ -125,42 +164,20 @@ app.editSemester = {
         
         // SEMESTER START VALIDATION
         
-        if(semesterStart != null){
-            if(oldSemesterStart == null){
-                changes.semesterStart = app.dateFormatting.parseSubmissionDate(semesterStart);
-            } else {
-                if (semesterStart.getFullYear() - oldSemesterStart.getFullYear() != 0 ||
-                semesterStart.getMonth() - oldSemesterStart.getMonth() != 0 ||
-                semesterStart.getDate() - oldSemesterStart.getDate() != 0){
-                    changes.semesterStart = app.dateFormatting.parseSubmissionDate(semesterStart);
-                }
-            }
-        } else {
-            new Modal("Error", MessageCode("MissingArgumentSemesterStart"), null, {
-                text: "Okay"
-            }).show();
-            return;
+        if (semesterStart.getFullYear() - oldSemesterStart.getFullYear() != 0 ||
+            semesterStart.getMonth() - oldSemesterStart.getMonth() != 0 ||
+            semesterStart.getDate() - oldSemesterStart.getDate() != 0){
+            changes.semesterStart = app.dateFormatting.parseSubmissionDate(semesterStart);
         }
-        
+            
         // SEMESTER END VALIDATION
-        
-        if(semesterEnd != null){
-            if(oldSemesterEnd == null){
-                changes.semesterEnd = app.dateFormatting.parseSubmissionDate(semesterEnd);
-            } else {
-                if (semesterEnd.getFullYear() - oldSemesterEnd.getFullYear() != 0 ||
-                semesterEnd.getMonth() - oldSemesterEnd.getMonth() != 0 ||
-                semesterEnd.getDate() - oldSemesterEnd.getDate() != 0){
-                    changes.semesterEnd = app.dateFormatting.parseSubmissionDate(semesterEnd);
-                }
-            }
-        } else {
-            new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
-                text: "Okay"
-            }).show();
-            return;
+    
+        if (semesterEnd.getFullYear() - oldSemesterEnd.getFullYear() != 0 ||
+        semesterEnd.getMonth() - oldSemesterEnd.getMonth() != 0 ||
+        semesterEnd.getDate() - oldSemesterEnd.getDate() != 0){
+            changes.semesterEnd = app.dateFormatting.parseSubmissionDate(semesterEnd);
         }
-        
+            
         // MARCH BREAK START VALIDATION
         
         if(marchBreakStart != null){

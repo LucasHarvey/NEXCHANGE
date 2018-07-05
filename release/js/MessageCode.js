@@ -44,9 +44,9 @@ function MessageCode(code){
         UserDownloadNotesDenied: "You have not been granted rights to download notes for this course.",
         UserAlreadyRegisteredInCourse: "This user is already signed up to be a notetaker or a student in this course.",
         SemesterUpdated: "The dates have been updated successfully.",
-        SemesterUpdateFailedDNE: "The semester dates could not be updated because the semester has not been created yet. To create the semester, use the module above.",
-        SemesterFetchFailedDNE: "The semester dates could not be loaded because the semester has not been created yet. To create the semester, use the module above.",
-        SemesterExists: "The semester already exists. To add new courses, leave the semester dates empty. To change the semester dates, use the module below.",
+        SemesterUpdateFailedDNE: "The semester dates could not be updated because the semester has not been created yet. To create the semester, use the module above and upload new courses.",
+        SemesterFetchFailedDNE: "The semester dates could not be loaded because the semester has not been created yet. To create the semester, use the module above and upload new courses.",
+        SemesterExists: "The semester already exists. To upload more courses, leave the semester dates empty. To change the semester dates, use the module below.",
         SemesterOutdated: "There already exists a more recent semester.",
     
         MissingArgument: "An argument is missing from the request. Make sure all fields were entered properly.",
@@ -92,6 +92,8 @@ function MessageCode(code){
         SemesterNotValid: "The semester you entered is not valid.",
         SemesterDatesNotValid: "The semester end date must be after the start date.",
         MarchBreakNotValid: "The March break end date must be after the start date.",
+        MarchBreakStartNotValid: "The March break cannot start before the semester starts.",
+        MarchBreakEndNotValid: "The March break cannot end after the semester ends.",
         // Settings error codes
         MissingArgumentEmail: "Email was left empty.",
         EmailNotValid: "The email address is not valid.",

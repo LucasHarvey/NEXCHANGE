@@ -58,7 +58,7 @@ if(getUserPrivilege() != "ADMIN"){
         <aside class="aside1"></aside>
         <div class="main">
 
-            <h1>Add Semester</h1>
+            <h1>Upload Courses</h1>
 
             <div class="userform-wrapper">
                 <form id="addSemester" class="userform">
@@ -121,7 +121,7 @@ if(getUserPrivilege() != "ADMIN"){
                     </div>
                     
                     <div class="userfield">
-                        <input class="button" type="submit" id="submit" value="Upload Semester Courses/Dates">
+                        <input class="button" type="submit" id="submit" value="Upload Courses/Dates">
                     </div>
                     
                 </form>
