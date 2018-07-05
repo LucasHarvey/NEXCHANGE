@@ -65,11 +65,11 @@ app.addSemester = {
         app.addSemester.reset();
         
         new Modal("Courses Added", MessageCode("CoursesCreated") + "<br>" + data.payload.output, {
-                    callback: function(){
+            callback: function(){
                         window.location.reload();
-                    },
-                    text: "Okay"
-                }, false).show();
+                }, 
+                text: "Okay"
+            }, false).show();
     },
     
     submitSemesterFailure: function(data){
