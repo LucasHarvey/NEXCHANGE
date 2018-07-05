@@ -1,37 +1,8 @@
 <?php
-$conn = database_connect();
-
-$userId = getUserFromToken();
-
-// Verify that the user is an admin
-if(getUserPrivilege() != "ADMIN"){
-    echoError($conn, 403, "AuthorizationFailed");
-}
-
-requiredParams($conn, $_POST, array("semesterCode", "password"));
-
-$password = $_POST["password"];
-
-$password = base64_decode($password);
-$user = database_get_row($conn, "SELECT passwordhash FROM users WHERE id=?", "s", $userId);
-if(!password_verify($password, $user["passwordhash"])){
-    echoError($conn, 401, "AuthenticationFailed");
-}
 
 if(empty($_FILES['file'])){
     echoError($conn, 400, "NoFilesUploaded");
 }
-$semesterCode = $_POST["semesterCode"];
-
-$season = ["I", "W", "S", "F"];
-
-if(!in_array($semesterCode[0], $season) || strlen($semesterCode) != 5)
-    echoError($conn, 400, "SemesterNotValid");
-
-$year = substr($semesterCode, 1);
-
-if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
-    echoError($conn, 400, "SemesterNotValid");
 
 $allowed = ['csv'];
 $MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
