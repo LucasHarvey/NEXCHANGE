@@ -22,7 +22,6 @@ function MessageCode(code){
         StudentNotFound: "Student was not found.",
         NoChangesToMake: "No changes were made. Make sure you modified a field.",
         KeyNotFound: "Malformed request body.",
-        SemesterSettingsUpdated: "The semester settings have been updated successfully.",
     
         UserUpdated: "Your profile has been updated successfully.",
         PasswordUpdateFailure: 'Your password could not be updated. Please change it in the "My Profile" page.',
@@ -43,7 +42,7 @@ function MessageCode(code){
         UserCreateNotesDenied: "You have not been granted rights to upload notes for this course.",
         UserDownloadNotesDenied: "You have not been granted rights to download notes for this course.",
         UserAlreadyRegisteredInCourse: "This user is already signed up to be a notetaker or a student in this course.",
-        SemesterUpdated: "The dates have been updated successfully.",
+        SemesterSettingsUpdated: "The semester settings have been updated successfully.",
         SemesterUpdateFailedDNE: "The semester dates could not be updated because the semester has not been created yet. To create the semester, use the module above and upload new courses.",
         SemesterFetchFailedDNE: "The semester dates could not be loaded because the semester has not been created yet. To create the semester, use the module above and upload new courses.",
         SemesterExists: "The semester already exists. To upload more courses, leave the semester dates empty. To change the semester dates, use the module below.",
