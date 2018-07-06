@@ -9,6 +9,8 @@ if(getUserPrivilege() != "ADMIN"){
 requiredParams($conn, $_JSON, array("semesterCode"));
 
 $semesterCode = $_JSON["semesterCode"];
+if($semesterCode == "")
+	echoError($conn, 400, "MissingArgumentSemesterCode");
 
 $semesterStart = null;
 $semesterEnd = null;
