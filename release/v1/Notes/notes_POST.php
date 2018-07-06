@@ -36,6 +36,8 @@ if(strlen($description > 500))
 	
 if($date == "")
 	echoError($conn, 400, "MissingArgumentTakenOn");
+if(strlen($date) > 10)
+	echoError($conn, 400, "DateNotValid");
 if(strtotime($date) > time())
 	echoError($conn, 400, "DateNotValid");
 
