@@ -38,6 +38,8 @@ if(strlen($description > 0)){
 	
 if($date == "")
 	echoError($conn, 400, "MissingArgumentTakenOn");
+if(strtotime($date) > time())
+	echoError($conn, 400, "DateNotValid");
 
 $noteTypes = "ssssss";
 $created = date('Y-m-d H:i:s');
