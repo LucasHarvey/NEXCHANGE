@@ -60,9 +60,13 @@ if($coursesForSemester == null && $semesterExists == null){
     
     if($newSemesterStart == null)
         echoError($conn, 400, "MissingArgumentSemesterStart");
+    if(strlen($newSemesterStart) > 10)
+        echoError($conn, 400, "SemesterStartNotValid");
     
     if($newSemesterEnd == null)
         echoError($conn, 400, "MissingArgumentSemesterEnd");
+    if(strlen($newSemesterEnd) > 10)
+        echoError($conn, 400, "SemesterEndNotValid");
            
     // Semester end must be after semester start
     if(strtotime($newSemesterEnd) <= strtotime($newSemesterStart))
@@ -71,7 +75,11 @@ if($coursesForSemester == null && $semesterExists == null){
     if($newMarchBreakStart != null && $newMarchBreakEnd != null){
         // March break end must be after march break start
         if(strtotime($newMarchBreakEnd) <= strtotime($newMarchBreakStart))
-        echoError($conn, 400, "MarchBreakNotValid");
+            echoError($conn, 400, "MarchBreakNotValid");
+        if(strlen($newMarchBreakStart) > 10)
+            echoError($conn, 400, "MarchBreakStartFormatNotValid");
+        if(strlen($newMarchBreakEnd) > 10)
+            echoError($conn, 400, "MarchBreakEndFormatNotValid");
     }
 
     // If march break end is present, march break start must be present
