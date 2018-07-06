@@ -4,7 +4,7 @@ $conn = database_connect();
 
 $user_id = getUserFromToken();
 if($user_id == "")
-    echoError($conn, 400, "MissingArgumentUserId");
+    echoError($conn, 403, "AuthorizationFailed");
     
 $userIsNotAdmin = getUserPrivilege() != "ADMIN";
 
