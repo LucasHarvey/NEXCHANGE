@@ -12,6 +12,16 @@ $semesterCode = $_JSON["semesterCode"];
 if($semesterCode == "")
 	echoError($conn, 400, "MissingArgumentSemesterCode");
 
+$seasons = ["I", "W", "S", "F"];
+
+if(!in_array($semesterCode[0], $seasons) || strlen($semesterCode) != 5)
+    echoError($conn, 400, "SemesterNotValid");
+
+$year = substr($semesterCode, 1);
+
+if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
+    echoError($conn, 400, "SemesterNotValid");
+    
 $semesterStart = null;
 $semesterEnd = null;
 $marchBreakStart = null;
@@ -25,16 +35,6 @@ if(array_key_exists("marchBreakStart", $_JSON))
     $marchBreakStart = $_JSON["marchBreakStart"];
 if(array_key_exists("marchBreakEnd", $_JSON))
     $marchBreakEnd = $_JSON["marchBreakEnd"];
-
-$season = ["I", "W", "S", "F"];
-
-if(!in_array($semesterCode[0], $season) || strlen($semesterCode) != 5)
-    echoError($conn, 400, "SemesterNotValid");
-
-$year = substr($semesterCode, 1);
-
-if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
-    echoError($conn, 400, "SemesterNotValid");
 
 if($semesterStart != null && $semesterEnd != null){
     // Semester end must be after semester start
