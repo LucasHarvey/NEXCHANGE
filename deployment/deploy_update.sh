@@ -25,6 +25,7 @@ chown -R apache:apache *
 restorecon -R *
 chcon -R -t httpd_sys_rw_content_t v1/CoursesCSV
 chcon -R -t httpd_sys_rw_content_t v1/Files
+chcon -R -t httpd_sys_rw_content_t v1/Admin
 
 echo "Part 5 -- Updating passwords";
 echo "Manual update required. See change_passwords.sh";
