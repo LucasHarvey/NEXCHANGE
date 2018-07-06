@@ -1,5 +1,4 @@
 <?php
-$PASSWORD_LENGTH = 9;
 
 $conn = database_connect();
 
@@ -7,6 +6,13 @@ $user_id = getUserFromToken();
 
 requiredParams($conn, $_JSON, array("currentPassword"));
 $currentPassword = $_JSON["currentPassword"];
+
+//TODO: base 64 decode
+if($currentPassword == "")
+    echoError($conn, 403, "MissingArgumentPassword");
+if(strlen($password) < $GLOBALS['PASSWORD_LENGTH'])
+    echoError($conn, 403, "PasswordTooSmall");
+
 
 $user = database_get_row($conn, "SELECT passwordhash FROM users where id=?", "s", $user_id);
 if(!password_verify($currentPassword, $user['passwordhash'])){
@@ -36,7 +42,7 @@ $insertValues = array();
 foreach($changes as $key => $value){
     if($key == "passwordhash"){
         $pass = base64_decode(substr($value, 6));
-        if(strlen($pass) < $PASSWORD_LENGTH){
+        if(strlen($pass) < $GLOBALS['PASSWORD_LENGTH']){
             echoError($conn, 400, "PasswordTooSmall");
         }
         $value = password_hash($pass, PASSWORD_BCRYPT);
@@ -60,6 +66,9 @@ echoSuccess($conn, array(
 ));
 
 function validateEmail($email){
+    if($email == ""){
+        echoError($conn, 400, "MissingArgumentEmail");
+    }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echoError($conn, 400, "EmailNotValid");
     }
