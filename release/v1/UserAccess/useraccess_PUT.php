@@ -18,7 +18,7 @@ if($courseId == "")
     echoError($conn, 400, "MissingArgumentCourseId");
     
 if(!is_bool($notifications))
-    echoError($conn, 400, "NotificationValidNotValid");
+    echoError($conn, 400, "NotificationNotValid");
 
 $selectVals = array($courseId, $user_id);
 if(!database_start_transaction($conn, true)){

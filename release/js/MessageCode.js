@@ -94,7 +94,7 @@ function MessageCode(code){
         MarchBreakNotValid: "The March break end date must be after the start date.",
         MarchBreakStartNotValid: "The March break cannot start before the semester starts.",
         MarchBreakEndNotValid: "The March break cannot end after the semester ends.",
-        NotificationValidNotValid: "Notifications can only be set to on or off.",
+        NotificationNotValid: "Notifications can only be set to on or off.",
         FirstNameNotValid: "The first name is too long: maximum 40 characters.",
         LastNameNotValid: "The last name is too long: maximum 60 characters.",
         // Settings error codes
