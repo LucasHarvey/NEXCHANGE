@@ -15,7 +15,7 @@ $expires = $_JSON["expiryDate"];
 
 if($student_id == "")
     echoError($conn, 400, "MissingArgumentStudentId");
-validateId($student_id);
+validateId($conn, $student_id);
 
 if(empty($courses_id))
     echoError($conn, 400, "MissingArgumentCourse");
@@ -74,7 +74,7 @@ echoSuccess($conn, array(
     "role" => $role
 ), 201);
 
-function validateId($userId){
+function validateId($conn, $userId){
     if(strlen($userId) != 7 || !is_numeric($userId)){
         echoError($conn, 400, "UserIdNotValid");
     }

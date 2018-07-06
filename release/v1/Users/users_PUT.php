@@ -48,7 +48,7 @@ foreach($changes as $key => $value){
         }
         $value = password_hash($pass, PASSWORD_BCRYPT);
     }elseif($key == "email"){
-        validateEmail($value);
+        validateEmail($conn, $value);
     }
     $insertTypes = $insertTypes."s";
     array_push($insertValues, $value);
@@ -66,13 +66,15 @@ echoSuccess($conn, array(
     "userId" => $user_id
 ));
 
-function validateEmail($email){
+function validateEmail($conn, $email){
     if($email == ""){
         echoError($conn, 400, "MissingArgumentEmail");
     }
+    
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echoError($conn, 400, "EmailNotValid");
     }
+    
     if(strlen($email) > 255){
         echoError($conn, 400, "EmailTooLong");
     }

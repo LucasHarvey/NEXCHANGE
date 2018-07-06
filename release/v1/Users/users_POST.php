@@ -30,9 +30,9 @@ if(strlen($first_name) > 60)
 if($email == "")
     echoError($conn, 400, "MissingArgumentEmail");
 
-validateEmail($email);
-validateId($student_id);
-validateName($first_name . ' ' . $last_name);
+validateEmail($conn, $email);
+validateId($conn, $student_id);
+validateName($conn, $first_name . ' ' . $last_name);
 
 $userExists = database_get_row($conn, "SELECT id FROM users WHERE login_id=?", "s", $student_id);
 if($userExists != null){
@@ -74,7 +74,7 @@ function generateRandomPassword() {
     return implode($pass); //turn the array into a string
 }
 
-function validateEmail($email){
+function validateEmail($conn, $email){
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echoError($conn, 400, "EmailNotValid");
     }
@@ -84,14 +84,14 @@ function validateEmail($email){
     return;
 }
 
-function validateId($userId){
+function validateId($conn, $userId){
     if(strlen($userId) != 7 || !is_numeric($userId)){
         echoError($conn, 400, "UserIdNotValid");
     }
     return;
 }
 
-function validateName($name){
+function validateName($conn, $name){
     if(preg_match("[0-9]", $name) === 1){
         echoError($conn, 400, "UserNameNotValid");
     }

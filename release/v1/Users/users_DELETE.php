@@ -23,7 +23,7 @@ if(!password_verify($password, $user["passwordhash"])){
 
 if($student_id == "")
     echoError($conn, 400, "MissingArgumentStudentId");
-validateId($student_id);
+validateId($conn, $student_id);
 
 $userExists = database_get_row($conn, "SELECT id FROM users WHERE login_id=?", "s", $student_id);
 if($userExists == null){
@@ -38,7 +38,7 @@ echoSuccess($conn, array(
     "studentId" => $student_id
 ));
 
-function validateId($userId){
+function validateId($conn, $userId){
     if(strlen($userId) != 7 || !is_numeric($userId)){
         echoError($conn, 400, "UserIdNotValid");
     }
