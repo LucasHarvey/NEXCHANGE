@@ -1,3 +1,4 @@
+#!/bin/bash
 echo "Part 1 -- Cleaning New Files";
 cd ../release;
 cp login.html index.html
@@ -24,3 +25,6 @@ chown -R apache:apache *
 restorecon -R *
 chcon -R -t httpd_sys_rw_content_t v1/CoursesCSV
 chcon -R -t httpd_sys_rw_content_t v1/Files
+
+echo "Part 5 -- Updating passwords";
+echo "Manual update required. See change_passwords.sh";
