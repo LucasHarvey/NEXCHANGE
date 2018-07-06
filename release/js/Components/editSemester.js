@@ -285,11 +285,10 @@ app.editSemester = {
     
     getDefaultSeason: function() {
         let month = new Date().getMonth();
-        let today = new Date().getDate();
-        if (month >= 11 || (month == 0 && today < 15)) return 1; //intersession
-        if (month >= 0 && month < 5) return 2; //winter
-        if (month >= 5 && month < 8) return 3; //summer
-        return 1; //fall
+        if (month >= 10) return 1; //intersession
+        if (month >= 0 && month < 3) return 2; //winter
+        if (month >= 3 && month < 7) return 3; //summer
+        return 0; //fall
     },
     
     validateSemester: function(season, year){
