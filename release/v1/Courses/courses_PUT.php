@@ -44,6 +44,10 @@ $insertValues = array();
 
 // Prepare the insert query
 foreach($changes as $key => $value){
+    if($value == ""){
+        echoError($conn, 400, "MissingArgument".ucfirst($key));
+    }
+    
     $insertTypes = $insertTypes . "s";
     array_push($insertValues, $value);
     array_push($colNames, $key . "=?");
