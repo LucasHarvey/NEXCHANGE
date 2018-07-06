@@ -85,6 +85,10 @@ function authenticate($conn, $creds){
     $studentId = $creds[0];
     $password = $creds[1];
     
+    if(strlen($password) < $GLOBALS['PASSWORD_LENGTH']){
+        echoError($conn, 401, "PasswordTooSmall");
+    }
+    
     $user = database_get_row($conn, "SELECT passwordhash FROM users WHERE login_id=?", "s", $studentId);
     
     if($user != null){
