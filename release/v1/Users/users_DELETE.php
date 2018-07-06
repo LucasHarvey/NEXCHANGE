@@ -14,13 +14,13 @@ requiredParams($conn, $_GET, array("studentId", "password"));
 
 $student_id = $_GET["studentId"];
 $password = $_GET["password"];
+$password = base64_decode($password);
 
 if($password == "")
     echoError($conn, 401, "MissingArgumentPassword");
 if(strlen($password) < $GLOBALS['PASSWORD_LENGTH'])
     echoError($conn, 401, "PasswordTooSmall");
 
-$password = base64_decode($password);
 $user = database_get_row($conn, "SELECT passwordhash FROM users WHERE id=?", "s", $userId);
 if(!password_verify($password, $user["passwordhash"])){
     echoError($conn, 401, "AuthenticationFailed", "UsersDelete");
@@ -28,8 +28,7 @@ if(!password_verify($password, $user["passwordhash"])){
 
 if($student_id == "")
     echoError($conn, 400, "MissingArgumentStudentId");
-if(!ctype_digit($student_id))
-    echoError($conn, 400, "UserIdNotValid");
+validateId($student_id);
 
 $userExists = database_get_row($conn, "SELECT id FROM users WHERE login_id=?", "s", $student_id);
 if($userExists == null){
@@ -43,5 +42,12 @@ echoSuccess($conn, array(
     "userId" => $userExists["id"],
     "studentId" => $student_id
 ));
+
+function validateId($userId){
+    if(strlen($userId) != 7 || !is_numeric($userId)){
+        echoError($conn, 400, "UserIdNotValid");
+    }
+    return;
+}
 
 ?>
