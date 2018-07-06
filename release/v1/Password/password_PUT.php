@@ -1,4 +1,6 @@
 <?php
+$PASSWORD_LENGTH = 9;
+
 $conn = database_connect();
 
 $headers = apache_request_headers();
@@ -18,6 +20,9 @@ $password = $creds[1];
 $user = database_get_row($conn, "SELECT id FROM users WHERE passresetcode=? AND privilege='USER' AND DATE_ADD(passresetcreated, INTERVAL 15 MINUTE) > NOW()", "s", $code);
 
 if($user != null){
+    if(strlen($password) < $PASSWORD_LENGTH){
+        echoError($conn, 400, "PasswordTooSmall");
+    }
     $value = password_hash($password, PASSWORD_BCRYPT);
     $insertParams = array($value, $user["id"], $code);
 
