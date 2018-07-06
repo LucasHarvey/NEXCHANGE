@@ -6,6 +6,12 @@ requiredParams($conn, $_JSON, array("studentId", "email"));
 $studentId = $_JSON["studentId"];
 $email = $_JSON["email"];
 
+if($studentId == "")
+    echoError($conn, 400, "MissingArgumentStudentId");
+    
+if($email == "")
+    echoError($conn, 400, "MissingArgumentEmail");
+
 $select = "SELECT id,email FROM users WHERE login_id = ? AND email = ? AND privilege = 'USER' LIMIT 1";
 
 $user = database_get_row($conn, $select, "ss", array($studentId, $email));
