@@ -12,11 +12,6 @@ if(getUserPrivilege() != "ADMIN"){
     die();
 }
 
-if (!isset($_GET['xsrfToken'])) {
-    http_response_code(400);
-    die();
-}
-
 // validate filename input
 if (!isset($_GET['type'])) {
     http_response_code(400);
