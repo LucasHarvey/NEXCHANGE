@@ -22,7 +22,7 @@ $description = $_POST['description'];
 $date = $_POST['takenOn'];
 
 if($course_id == "")
-	echoError($conn, 400, "MissingArgumentCourseId");
+	echoError($conn, 400, "MissingArgumentCourse");
 if(strlen($course_id) > 36)
 	echoError($conn, 400, "CourseIdNotValid");
 	
@@ -31,10 +31,8 @@ if($noteName == "")
 if(strlen($noteName) > 60)
 	echoError($conn, 400, "NoteNameNotValid");
 	
-if(strlen($description > 0)){
-	if(strlen($description > 500))
-		echoError($conn, 400, "DescriptionNotValid");
-}
+if(strlen($description > 500))
+	echoError($conn, 400, "DescriptionNotValid");
 	
 if($date == "")
 	echoError($conn, 400, "MissingArgumentTakenOn");
