@@ -11,6 +11,8 @@ if(getUserPrivilege() != "ADMIN"){
 requiredParams($conn, $_POST, array("semesterCode", "password", "newSemesterStart", "newSemesterEnd", "newMarchBreakStart", "newMarchBreakEnd"));
 
 $password = $_POST["password"];
+if($password == "")
+    echoError($conn, 401, "MissingArgumentPassword");
 
 $password = base64_decode($password);
 $user = database_get_row($conn, "SELECT passwordhash FROM users WHERE id=?", "s", $userId);
@@ -19,6 +21,8 @@ if(!password_verify($password, $user["passwordhash"])){
 }
 
 $semesterCode = $_POST["semesterCode"];
+if($semesterCode == "")
+	echoError($conn, 400, "MissingArgumentSemesterCode");
 
 $created = date('Y-m-d H:i:s');
 
