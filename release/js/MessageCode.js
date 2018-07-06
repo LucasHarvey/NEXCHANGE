@@ -105,6 +105,7 @@ function MessageCode(code){
         // Settings error codes
         MissingArgumentEmail: "Email was left empty.",
         EmailNotValid: "The email address is not valid.",
+        EmailTooLong: "The email address is too long: maximum 255 characters.",
         SectionNotValid: "The section entered is not valid.",
         NoChangesEmail: "Please enter a new email address.",
         MissingArgumentsPasswords: "Please fill out fields to change password.",

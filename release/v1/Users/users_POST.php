@@ -78,6 +78,9 @@ function validateEmail($email){
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echoError($conn, 400, "EmailNotValid");
     }
+    if(strlen($email) > 255){
+        echoError($conn, 400, "EmailTooLong");
+    }
     return;
 }
 
