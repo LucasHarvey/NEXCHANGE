@@ -27,6 +27,16 @@ if(!password_verify($password, $user["passwordhash"])){
 $semesterCode = $_POST["semesterCode"];
 if($semesterCode == "")
 	echoError($conn, 400, "MissingArgumentSemesterCode");
+	
+$seasons = ["I", "W", "S", "F"];
+
+if(!in_array($semesterCode[0], $seasons) || strlen($semesterCode) != 5)
+    echoError($conn, 400, "SemesterNotValid");
+
+$year = substr($semesterCode, 1);
+
+if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
+    echoError($conn, 400, "SemesterNotValid");
 
 $created = date('Y-m-d H:i:s');
 
@@ -39,16 +49,6 @@ if($newSemesterStart == "") $newSemesterStart = null;
 if($newSemesterEnd == "") $newSemesterEnd = null;
 if($newMarchBreakStart == "") $newMarchBreakStart = null;
 if($newMarchBreakEnd == "") $newMarchBreakEnd = null;
-    
-$seasons = ["I", "W", "S", "F"];
-
-if(!in_array($semesterCode[0], $seasons) || strlen($semesterCode) != 5)
-    echoError($conn, 400, "SemesterNotValid");
-
-$year = substr($semesterCode, 1);
-
-if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
-    echoError($conn, 400, "SemesterNotValid");
     
 $coursesForSemester = database_get_row($conn, "SELECT id FROM courses WHERE semester=? LIMIT 1", "s", $semesterCode);
 $semesterExists = database_get_row($conn, "SELECT semester_code FROM semesters WHERE semester_code=? LIMIT 1", "s", $semesterCode);
