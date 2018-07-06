@@ -12,6 +12,12 @@ requiredParams($conn, $_GET, array("courseId", "password"));
 $course_id = $_GET["courseId"];
 $password = $_GET["password"];
 
+if($course_id == "")
+    echoError($conn, 400, "MissingArgumentCourseId");
+    
+if($password == "")
+    echoError($conn, 400, "MissingArgumentPassword");
+
 $password = base64_decode($password);
 $user = database_get_row($conn, "SELECT passwordhash FROM users WHERE id=?", "s", $userId);
 if(!password_verify($password, $user["passwordhash"])){

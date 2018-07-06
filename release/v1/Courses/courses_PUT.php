@@ -11,6 +11,9 @@ if(getUserPrivilege() != "ADMIN"){
 requiredParams($conn, $_JSON, array("courseId"));
 $course_id = $_JSON["courseId"];
 
+if($course_id == "")
+    echoError($conn, 400, "MissingArgumentCourseId");
+
 // Check that the note exists
 if(!database_contains($conn, "courses", $course_id)){
     echoError($conn, 404, "CourseNotFound");
