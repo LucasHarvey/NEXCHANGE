@@ -16,11 +16,6 @@ $student_id = $_GET["studentId"];
 $password = $_GET["password"];
 $password = base64_decode($password);
 
-if($password == "")
-    echoError($conn, 401, "MissingArgumentPassword");
-if(strlen($password) < $GLOBALS['PASSWORD_LENGTH'])
-    echoError($conn, 401, "PasswordTooSmall");
-
 $user = database_get_row($conn, "SELECT passwordhash FROM users WHERE id=?", "s", $userId);
 if(!password_verify($password, $user["passwordhash"])){
     echoError($conn, 401, "AuthenticationFailed", "UsersDelete");
