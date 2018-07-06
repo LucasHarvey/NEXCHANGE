@@ -54,6 +54,8 @@ if(in_array("description", array_keys($changes))){
 if(in_array("taken_on", array_keys($changes))){
     if($changes["taken_on"] == "")
         echoError($conn, 400, "MissingArgumentTakenOn");
+    if(strlen($changes["taken_on"]) > 10)
+        echoError($conn, 400, "DateNotValid");
     if(strtotime($changes["taken_on"]) > time())
 	    echoError($conn, 400, "DateNotValid");
 }
