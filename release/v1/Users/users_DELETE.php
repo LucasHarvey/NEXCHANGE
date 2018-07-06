@@ -3,6 +3,9 @@
 $conn = database_connect();
 
 $userId = getUserFromToken();
+if($user_id == null)
+    echoError($conn, 403, "AuthorizationFailed");
+    
 if(getUserPrivilege() != "ADMIN"){
     echoError($conn, 403, "AuthorizationFailed");
 }
@@ -23,6 +26,10 @@ if(!password_verify($password, $user["passwordhash"])){
     echoError($conn, 401, "AuthenticationFailed", "UsersDelete");
 }
 
+if($student_id == "")
+    echoError($conn, 400, "MissingArgumentStudentId");
+if(!ctype_digit($student_id))
+    echoError($conn, 400, "UserIdNotValid");
 
 $userExists = database_get_row($conn, "SELECT id FROM users WHERE login_id=?", "s", $student_id);
 if($userExists == null){
