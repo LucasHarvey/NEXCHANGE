@@ -8,18 +8,36 @@ $user_id = getUserFromToken();
 if($user_id == null)
     echoError($conn, 403, "AuthorizationFailed");
     
-if(getUserPrivilege() == "ADMIN"){
+if(getUserPrivilege() == "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
-}
 
-if(empty($_FILES['file'])){
+
+if(empty($_FILES['file']))
     echoError($conn, 400, "NoFilesUploaded");
-}
+
 
 $course_id = $_POST["courseId"];
 $noteName = $_POST['noteName'];
 $description = $_POST['description'];
 $date = $_POST['takenOn'];
+
+if($course_id == "")
+	echoError($conn, 400, "MissingArgumentCourseId");
+if(strlen($course_id) > 36)
+	echoError($conn, 400, "CourseIdNotValid");
+	
+if($noteName == "")
+	echoError($conn, 400, "MissingArgumentNoteName");
+if(strlen($noteName) > 60)
+	echoError($conn, 400, "NoteNameNotValid");
+	
+if(strlen($description > 0)){
+	if(strlen($description > 500))
+		echoError($conn, 400, "DescriptionNotValid");
+}
+	
+if($date == "")
+	echoError($conn, 400, "MissingArgumentTakenOn");
 
 $noteTypes = "ssssss";
 $created = date('Y-m-d H:i:s');

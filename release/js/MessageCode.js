@@ -83,6 +83,7 @@ function MessageCode(code){
         NoteNameNotValid: "Note name is too long: maximum 60 characters.",
         DescriptionNotValid: "Description is too long: maximum 500 characters.",
         DateNotValid: "The selected date is not valid.",
+        CourseIdNotValid: "The course ID is not valid.",
         MissingArgumentExpiryDate: "Please select an expiry date.",
         UserIdNotValid: "User ID must be exactly 7 digits.",
         UserNameNotValid: "The student name is not valid.",
