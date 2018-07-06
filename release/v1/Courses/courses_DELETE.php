@@ -3,9 +3,12 @@
 $conn = database_connect();
 
 $userId = getUserFromToken();
-if(getUserPrivilege() != "ADMIN"){
+if($userId == "")
     echoError($conn, 403, "AuthorizationFailed");
-}
+
+if(getUserPrivilege() != "ADMIN")
+    echoError($conn, 403, "AuthorizationFailed");
+
 
 requiredParams($conn, $_GET, array("courseId", "password"));
 
