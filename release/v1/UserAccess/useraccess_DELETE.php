@@ -10,6 +10,11 @@ requiredParams($conn, $_GET, array("userId", "courseId"));
 $user_id = $_GET["userId"];
 $course_id = $_GET["courseId"];
 
+if($user_id == "")
+    echoError($conn, 400, "MissingArgumentUserId");
+if($course_id == "")
+    echoError($conn, 400, "MissingArgumentCourseId");
+
 if(!database_contains($conn, "users", $user_id)){
     echoError($conn, 404, "UserNotFound");
 }
