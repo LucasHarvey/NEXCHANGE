@@ -94,6 +94,7 @@ function MessageCode(code){
         MarchBreakNotValid: "The March break end date must be after the start date.",
         MarchBreakStartNotValid: "The March break cannot start before the semester starts.",
         MarchBreakEndNotValid: "The March break cannot end after the semester ends.",
+        NotificationValidNotValid: "Notifications can only be set to on or off.",
         // Settings error codes
         MissingArgumentEmail: "Email was left empty.",
         EmailNotValid: "The email address is not valid.",

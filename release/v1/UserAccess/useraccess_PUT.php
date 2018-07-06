@@ -7,10 +7,18 @@ allowing a user to modify their own access. Only allowed to modify if they want 
 $conn = database_connect();
 
 $user_id = getUserFromToken();
+if($user_id == null)
+    echoError($conn, 403, "AuthorizationFailed");
 
 requiredParams($conn, $_JSON, array("courseId", "notifications"));
 $courseId = $_JSON["courseId"];
 $notifications = $_JSON['notifications'];
+
+if($courseId == "")
+    echoError($conn, 400, "MissingArgumentCourseId");
+    
+if(!is_bool($notifications))
+    echoError($conn, 400, "NotificationValidNotValid");
 
 $selectVals = array($courseId, $user_id);
 if(!database_start_transaction($conn, true)){
