@@ -2,17 +2,17 @@
 
 $conn = database_connect();
 
-requiredParams($conn, $_POST, array("noteId"));
-$noteId = $_POST["noteId"];
-if($noteId == "")
-    echoError($conn, 400, "MissingArgumentNoteId");
-
 $user_id = getUserFromToken();
 if($user_id == null)
     echoError($conn, 403, "AuthorizationFailed");
     
 if(getUserPrivilege() == "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
+
+requiredParams($conn, $_POST, array("noteId"));
+$noteId = $_POST["noteId"];
+if($noteId == "")
+    echoError($conn, 400, "MissingArgumentNoteId");
 
 // Check that the note exists
 if(!database_contains($conn, "notes", $noteId)){
