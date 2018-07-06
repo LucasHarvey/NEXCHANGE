@@ -8,9 +8,11 @@ $email = $_JSON["email"];
 
 if($studentId == "")
     echoError($conn, 400, "MissingArgumentStudentId");
+validateId($studentId);
     
 if($email == "")
     echoError($conn, 400, "MissingArgumentEmail");
+validateEmail($email);
 
 $select = "SELECT id,email FROM users WHERE login_id = ? AND email = ? AND privilege = 'USER' LIMIT 1";
 
@@ -31,5 +33,19 @@ include_once("./_EMAIL_TASKS/reset_password_task.php");
 reset_password_email($conn, $user['id'], $user['email'], $token);
 
 echoSuccess($conn, array("messageCode" => "PasswordResetRequested"));
+
+function validateId($userId){
+    if(strlen($userId) != 7 || !is_numeric($userId)){
+        echoError($conn, 400, "UserIdNotValid");
+    }
+    return;
+}
+
+function validateEmail($email){
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echoError($conn, 400, "EmailNotValid");
+    }
+    return;
+}
 
 ?>

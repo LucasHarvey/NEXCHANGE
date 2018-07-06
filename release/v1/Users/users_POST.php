@@ -62,7 +62,7 @@ echoSuccess($conn, array(
 function generateRandomPassword() {
     $PASSWORD_LENGTH = 9;
     //IF CHANGING PASSWORD LENGTH, CHANGE IN:
-    //users_PUT.php, users.js, settings.js
+    //_globals.php ($GLOBALS['PASSWORD_LENGTH']), users.js, settings.js
 
     $alphabet = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890][!@#$_-+=';
     $pass = array();
@@ -87,6 +87,7 @@ function validateId($userId){
     }
     return;
 }
+
 function validateName($name){
     if(preg_match("[0-9]", $name) === 1){
         echoError($conn, 400, "UserNameNotValid");
