@@ -22,17 +22,18 @@ if(empty($courses_id))
     
 if($role == "")
     echoError($conn, 400, "MissingArgumentRole");
-
-if($expires == "")
-    echoError($conn, 400, "MissingArgumentExpiryDate");
-if(strtotime($expires) < time())
-    echoError($conn, 400, "PastSemester");
-
 // Verify that the role is valid
 $ROLES = array("STUDENT", "NOTETAKER");
 if (!in_array($role, $ROLES)){
     echoError($conn, 404, "RoleNotFound");
 }
+
+if($expires == "")
+    echoError($conn, 400, "MissingArgumentExpiryDate");
+if(strlen($expires) > 10)
+    echoError($conn, 400, "ExpiryDateNotValid");
+if(strtotime($expires) < time())
+    echoError($conn, 400, "PastSemester");
 
 $user = database_get_row($conn, "SELECT * FROM users WHERE login_id=?", "s", $student_id);
 if($user == null){
