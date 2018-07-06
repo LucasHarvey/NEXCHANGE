@@ -5,7 +5,6 @@ $conn = database_connect();
 if(getUserPrivilege() != "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
 
-
 if(array_key_exists("section", $_GET) && !empty($_GET['section']) && !is_numeric($_GET['section']))
     echoError($conn, 400, "SectionNotValid");
 
