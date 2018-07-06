@@ -21,6 +21,11 @@ function modified_authorized($conn){
     $decTokenPieces = decodeToken($token);
     
     // Get the xsrf token from the GET request
+    
+    if (!isset($_GET['xsrfToken'])) {
+        http_response_code(400);
+        die();
+    }
 
     $xsrf = $_GET["xsrfToken"];
     
