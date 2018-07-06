@@ -27,14 +27,42 @@ $semesterEnd = null;
 $marchBreakStart = null;
 $marchBreakEnd = null;
 
-if(array_key_exists("semesterStart", $_JSON))
+if(array_key_exists("semesterStart", $_JSON)){
     $semesterStart = $_JSON["semesterStart"];
-if(array_key_exists("semesterEnd", $_JSON))
+    if($semesterStart == "")
+        echoError($conn, 400, "MissingArgumentSemesterStart");
+}
+
+if(array_key_exists("semesterEnd", $_JSON)){
     $semesterEnd = $_JSON["semesterEnd"];
+    if($semesterEnd == "")
+        echoError($conn, 400, "MissingArgumentSemesterEnd");
+}
+
 if(array_key_exists("marchBreakStart", $_JSON))
     $marchBreakStart = $_JSON["marchBreakStart"];
 if(array_key_exists("marchBreakEnd", $_JSON))
     $marchBreakEnd = $_JSON["marchBreakEnd"];
+    
+if($semesterStart != null){
+    if(strlen($semesterStart) > 10)
+        echoError($conn, 400, "SemesterStartNotValid");
+}
+
+if($semesterEnd != null){
+    if(strlen($semesterEnd) > 10)
+        echoError($conn, 400, "SemesterEndNotValid");
+}
+
+if($marchBreakStart != null){
+    if(strlen($marchBreakStart) > 10)
+        echoError($conn, 400, "MarchBreakStartFormatNotValid");
+}
+
+if($marchBreakEnd != null){
+    if(strlen($marchBreakEnd) > 10)
+        echoError($conn, 400, "MarchBreakEndFormatNotValid");
+}
 
 if($semesterStart != null && $semesterEnd != null){
     // Semester end must be after semester start
@@ -46,6 +74,7 @@ if($marchBreakStart != null && $marchBreakEnd != null){
     // March break end must be after march break start
     if(strtotime($marchBreakEnd) <= strtotime($marchBreakStart))
         echoError($conn, 400, "MarchBreakNotValid");
+        
 }
 
 if($marchBreakStart != null && $semesterStart != null){
