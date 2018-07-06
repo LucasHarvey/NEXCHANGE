@@ -7,12 +7,13 @@ $user_id = getUserFromToken();
 requiredParams($conn, $_JSON, array("currentPassword"));
 $currentPassword = $_JSON["currentPassword"];
 
+
 //TODO: base 64 decode
 if($currentPassword == "")
     echoError($conn, 403, "MissingArgumentPassword");
-if(strlen($password) < $GLOBALS['PASSWORD_LENGTH'])
-    echoError($conn, 403, "PasswordTooSmall");
 
+if(strlen($currentPassword) < $GLOBALS['PASSWORD_LENGTH'])
+    echoError($conn, 403, "PasswordTooSmall");
 
 $user = database_get_row($conn, "SELECT passwordhash FROM users where id=?", "s", $user_id);
 if(!password_verify($currentPassword, $user['passwordhash'])){
