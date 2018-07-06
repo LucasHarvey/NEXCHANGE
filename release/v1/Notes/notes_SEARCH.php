@@ -2,9 +2,9 @@
 
 $conn = database_connect();
 
-if(getUserPrivilege() != "ADMIN"){
+if(getUserPrivilege() != "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
-}
+
 
 $baseQuery = "SELECT n.id, n.user_id as 'author_id', n.course_id, n.created, n.name, n.description, n.taken_on, nf.download_count, nf.distinct_downloads, nf.extension, nf.size, ".
                 "concat(u.first_name, concat(' ', u.last_name)) as 'user_name', c.course_name, c.course_number, c.section FROM notes n ".

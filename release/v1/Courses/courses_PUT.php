@@ -4,9 +4,8 @@ $PASSWORD_LENGTH = 9;
 $conn = database_connect();
 
 // Verify that the user is an admin
-if(getUserPrivilege() != "ADMIN"){
+if(getUserPrivilege() != "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
-}
 
 requiredParams($conn, $_JSON, array("courseId"));
 $course_id = $_JSON["courseId"];

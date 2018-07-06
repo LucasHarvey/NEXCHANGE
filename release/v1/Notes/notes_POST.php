@@ -5,6 +5,9 @@ $conn = database_connect();
 requiredParams($conn, $_POST, array("noteName", "courseId", "takenOn"));
 
 $user_id = getUserFromToken();
+if($user_id == null)
+    echoError($conn, 403, "AuthorizationFailed");
+    
 if(getUserPrivilege() == "ADMIN"){
     echoError($conn, 403, "AuthorizationFailed");
 }

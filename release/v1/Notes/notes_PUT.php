@@ -6,9 +6,12 @@ requiredParams($conn, $_POST, array("noteId"));
 $noteId = $_POST["noteId"];
 
 $user_id = getUserFromToken();
-if(getUserPrivilege() == "ADMIN"){
+if($user_id == null)
     echoError($conn, 403, "AuthorizationFailed");
-}
+    
+if(getUserPrivilege() == "ADMIN")
+    echoError($conn, 403, "AuthorizationFailed");
+
 
 // Check that the note exists
 if(!database_contains($conn, "notes", $noteId)){

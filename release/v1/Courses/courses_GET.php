@@ -2,13 +2,13 @@
 
 $conn = database_connect();
 
-if(getUserPrivilege() != "ADMIN"){
+if(getUserPrivilege() != "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
-}
 
-if(array_key_exists("section", $_GET) && !empty($_GET['section']) && !is_numeric($_GET['section'])){
+
+if(array_key_exists("section", $_GET) && !empty($_GET['section']) && !is_numeric($_GET['section']))
     echoError($conn, 400, "SectionNotValid");
-}
+
 $offset =  array_key_exists("page", $_GET) ? $_GET['page'] : 0;
 
 $allowedProps = array("teacherFullName", "courseName", "courseNumber", "section", "semester", "courseId", "id", "page", "section");

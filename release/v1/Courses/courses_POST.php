@@ -3,9 +3,8 @@
 if(getUserPrivilege() != "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
 
-if(empty($_FILES['file'])){
+if(empty($_FILES['file']))
     echoError($conn, 400, "NoFilesUploaded");
-}
 
 $allowed = ['csv'];
 $MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
