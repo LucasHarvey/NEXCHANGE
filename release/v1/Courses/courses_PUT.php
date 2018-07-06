@@ -1,5 +1,4 @@
 <?php
-$PASSWORD_LENGTH = 9;
 
 $conn = database_connect();
 
