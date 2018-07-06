@@ -9,7 +9,6 @@ if($userId == "")
 if(getUserPrivilege() != "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
 
-
 requiredParams($conn, $_GET, array("courseId", "password"));
 
 $course_id = $_GET["courseId"];

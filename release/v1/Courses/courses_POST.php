@@ -1,5 +1,8 @@
 <?php
 
+if(getUserPrivilege() != "ADMIN")
+    echoError($conn, 403, "AuthorizationFailed");
+
 if(empty($_FILES['file'])){
     echoError($conn, 400, "NoFilesUploaded");
 }
