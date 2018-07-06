@@ -14,9 +14,23 @@ $last_name = $_JSON["lastName"];
 $email = $_JSON['email'];
 $password = generateRandomPassword();
 
-if(!empty($email)){
-    validateEmail($email);
-}
+if($student_id == "")
+    echoError($conn, 400, "MissingArgumentStudentId");
+    
+if($first_name == "")
+    echoError($conn, 400, "MissingArgumentFirstName");
+if(strlen($first_name) > 40)
+    echoError($conn, 400, "FirstNameNotValid");
+
+if($last_name == "")
+    echoError($conn, 400, "MissingArgumentLastName");
+if(strlen($first_name) > 60)
+    echoError($conn, 400, "LastNameNotValid");
+    
+if($email == "")
+    echoError($conn, 400, "MissingArgumentEmail");
+
+validateEmail($email);
 validateId($student_id);
 validateName($first_name . ' ' . $last_name);
 
