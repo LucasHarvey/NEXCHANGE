@@ -220,6 +220,10 @@ BEGIN
     
     SELECT semester_code INTO semesterCode FROM semesters WHERE NOW() BETWEEN semester_start AND semester_end ORDER BY created DESC LIMIT 1;
     
+    IF semesterCode = NULL THEN 
+        SIGNAL SQLSTATE '22004' SET MESSAGE_TEXT = "The semester cannot be null.";
+    END IF;
+    
     /*Constants: 
         Get the date of the last note, 
         Get the all days of classes
@@ -229,14 +233,6 @@ BEGIN
     
     SELECT semester_start INTO semesterStart FROM semesters WHERE semester_code=semesterCode;
     SELECT semester_end INTO semesterEnd FROM semesters WHERE semester_code=semesterCode;
-    
-    IF semester_start = NULL THEN 
-        SIGNAL SQLSTATE '22004' SET MESSAGE_TEXT = "The semester start date cannot be null.";
-    END IF;
-    
-    IF semester_end = NULL THEN 
-        SIGNAL SQLSTATE '22004' SET MESSAGE_TEXT = "The semester end date cannot be null.";
-    END IF;
     
     SELECT march_break_start INTO marchBreakStart FROM semesters WHERE semester_code=semesterCode;
     SELECT march_break_end INTO marchBreakEnd FROM semesters WHERE semester_code=semesterCode;
