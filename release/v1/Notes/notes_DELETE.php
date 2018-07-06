@@ -3,6 +3,9 @@
 $conn = database_connect();
 
 $user_id = getUserFromToken();
+if($user_id == "")
+    echoError($conn, 400, "MissingArgumentUserId");
+    
 $userIsNotAdmin = getUserPrivilege() != "ADMIN";
 
 $whereClause = "";
@@ -12,6 +15,8 @@ if($userIsNotAdmin){
 
 requiredParams($conn, $_GET, array("id"));
 $noteId = $_GET["id"];
+if($noteId == "")
+    echoError($conn, 400, "MissingArgumentNoteId");
 
 if(!database_contains($conn, "notes", $noteId)){
     echoError($conn, 404, "NoteNotFound");
