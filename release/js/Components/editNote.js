@@ -207,13 +207,13 @@ app.editNote = {
                 
                 Resources.Notes.DELETE(app.editNote.noteId, function(response) {
                     app.store("editNoteNoteId", null);
-                    new Modal("Delete Note", MessageCode(response.payload.messageCode), null, {
+                    new Modal("Delete Note", MessageCode(response.payload.messageCode), {
                         text: "Okay",
                         callback: function() {
                             location.assign("./home");
                             this.hide();
                         }
-                    }).show();
+                    }, false).show();
                 }, function(response){
                     // Failure Callback
                     deleteButton.disabled = false;
