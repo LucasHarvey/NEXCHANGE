@@ -57,6 +57,13 @@ app.password = {
             });
             return false;
         }
+        
+        if(newPassword.length < 9 || newPasswordConfirmation.length < 9){
+            app.handleFailure({
+                messageCode: "PasswordTooSmall"
+            });
+            return;
+        }
 
         // Check if the new password matches the new password confirmation
         if (newPassword != newPasswordConfirmation) {
@@ -75,6 +82,8 @@ app.password = {
         }
         return true;
     },
+    
+    
     verifyUserPass: function(password){
         return password && (password.length >= 9);
     },

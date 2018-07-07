@@ -114,7 +114,6 @@ app.settings = {
         return true;
     },
 
-    //CHANGE IN PASSWORD.JS TOO.
     validatePassword: function() {
         let newPassword = document.getElementById('password').value;
         let newPasswordConfirmation = document.getElementById('passwordConfirmation').value;
