@@ -211,7 +211,7 @@ app.afterStartup.push(function editCourseAfterStartup() {
         app.editCourse.courseId = courseId;
         Resources.Courses.GET(courseId, app.editCourse.courseSuccess)
     } else {
-        window.location = "./signup";
+        location.assign("./signup");
     }
 });
 
