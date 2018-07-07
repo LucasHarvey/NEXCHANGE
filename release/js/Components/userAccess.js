@@ -18,6 +18,9 @@ app.useraccess = {
             courseContainer.removeChild(courseContainer.firstChild);
         }
         
+        // postCourseSearch.js must be included
+        app.postCourseSearch.updateCourseContainerLabel();
+        
         // Clear the search results
         document.getElementById('resultsTray').style.display = 'none';
         
