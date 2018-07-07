@@ -1,4 +1,5 @@
 <?php
+$conn = database_connect();
 requiredParams($conn, $_JSON, array("message"));
 $message = $_JSON['message'];
 

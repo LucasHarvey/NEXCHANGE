@@ -1,5 +1,5 @@
 <?php
-
+$NO_AUTH_CHECKS = true;
 include_once "_generics.php";
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
