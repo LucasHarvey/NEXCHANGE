@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,datePolyFillStart,Modal,getExtension */
+/* global Resources,MessageCode,datePolyFillStart,Modal,getExtension,location */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -44,10 +44,12 @@ app.postNotes = {
     getCoursesSuccess: function(response) {
         let courses = response.payload.courses;
         if (courses.length == 0) {
-            app.handleFailure({
-                messageCode: "UserNoCoursesAccessible",
-                status: 403
-            });
+            new Modal("Error", MessageCode("UserNoCoursesAccessible"), {
+                text: "Okay",
+                callback: function(){
+                    location.assign("./home");
+                }
+            }, false).show();
             return;
         }
         var courseSelected = app.getStore("uploadNotesCourseId");
@@ -63,10 +65,12 @@ app.postNotes = {
         }
         let options = coursePicker.children;
         if(options.length == 0){
-            app.handleFailure({
-                messageCode: "UserNoCoursesAccessible",
-                status: 403
-            });
+            new Modal("Error", MessageCode("UserNoCoursesAccessible"), {
+                text: "Okay",
+                callback: function(){
+                    location.assign("./home");
+                }
+            }, false).show();
             return;
         }
         for(var i = 0; i < options.length; i++){
