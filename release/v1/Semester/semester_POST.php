@@ -11,14 +11,26 @@ if(getUserPrivilege() != "ADMIN"){
 requiredParams($conn, $_POST, array("semesterCode", "password", "newSemesterStart", "newSemesterEnd", "newMarchBreakStart", "newMarchBreakEnd"));
 
 $password = $_POST["password"];
-
 $password = base64_decode($password);
+
 $user = database_get_row($conn, "SELECT passwordhash FROM users WHERE id=?", "s", $userId);
 if(!password_verify($password, $user["passwordhash"])){
     echoError($conn, 401, "AuthenticationFailed");
 }
 
 $semesterCode = $_POST["semesterCode"];
+if($semesterCode == "")
+	echoError($conn, 400, "MissingArgumentSemesterCode");
+	
+$seasons = ["I", "W", "S", "F"];
+
+if(!in_array($semesterCode[0], $seasons) || strlen($semesterCode) != 5)
+    echoError($conn, 400, "SemesterNotValid");
+
+$year = substr($semesterCode, 1);
+
+if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
+    echoError($conn, 400, "SemesterNotValid");
 
 $created = date('Y-m-d H:i:s');
 
@@ -32,16 +44,6 @@ if($newSemesterEnd == "") $newSemesterEnd = null;
 if($newMarchBreakStart == "") $newMarchBreakStart = null;
 if($newMarchBreakEnd == "") $newMarchBreakEnd = null;
     
-$seasons = ["I", "W", "S", "F"];
-
-if(!in_array($semesterCode[0], $seasons) || strlen($semesterCode) != 5)
-    echoError($conn, 400, "SemesterNotValid");
-
-$year = substr($semesterCode, 1);
-
-if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
-    echoError($conn, 400, "SemesterNotValid");
-    
 $coursesForSemester = database_get_row($conn, "SELECT id FROM courses WHERE semester=? LIMIT 1", "s", $semesterCode);
 $semesterExists = database_get_row($conn, "SELECT semester_code FROM semesters WHERE semester_code=? LIMIT 1", "s", $semesterCode);
 
@@ -52,9 +54,13 @@ if($coursesForSemester == null && $semesterExists == null){
     
     if($newSemesterStart == null)
         echoError($conn, 400, "MissingArgumentSemesterStart");
+    if(strlen($newSemesterStart) > 10)
+        echoError($conn, 400, "SemesterStartNotValid");
     
     if($newSemesterEnd == null)
         echoError($conn, 400, "MissingArgumentSemesterEnd");
+    if(strlen($newSemesterEnd) > 10)
+        echoError($conn, 400, "SemesterEndNotValid");
            
     // Semester end must be after semester start
     if(strtotime($newSemesterEnd) <= strtotime($newSemesterStart))
@@ -63,7 +69,11 @@ if($coursesForSemester == null && $semesterExists == null){
     if($newMarchBreakStart != null && $newMarchBreakEnd != null){
         // March break end must be after march break start
         if(strtotime($newMarchBreakEnd) <= strtotime($newMarchBreakStart))
-        echoError($conn, 400, "MarchBreakNotValid");
+            echoError($conn, 400, "MarchBreakNotValid");
+        if(strlen($newMarchBreakStart) > 10)
+            echoError($conn, 400, "MarchBreakStartFormatNotValid");
+        if(strlen($newMarchBreakEnd) > 10)
+            echoError($conn, 400, "MarchBreakEndFormatNotValid");
     }
 
     // If march break end is present, march break start must be present

@@ -1,15 +1,16 @@
 <?php
-$PASSWORD_LENGTH = 9;
 
 $conn = database_connect();
 
 // Verify that the user is an admin
-if(getUserPrivilege() != "ADMIN"){
+if(getUserPrivilege() != "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
-}
 
 requiredParams($conn, $_JSON, array("courseId"));
 $course_id = $_JSON["courseId"];
+
+if($course_id == "")
+    echoError($conn, 400, "MissingArgumentCourseId");
 
 // Check that the note exists
 if(!database_contains($conn, "courses", $course_id)){
@@ -41,6 +42,10 @@ $insertValues = array();
 
 // Prepare the insert query
 foreach($changes as $key => $value){
+    if($value == ""){
+        echoError($conn, 400, "MissingArgument".ucfirst($key));
+    }
+    
     $insertTypes = $insertTypes . "s";
     array_push($insertValues, $value);
     array_push($colNames, $key . "=?");

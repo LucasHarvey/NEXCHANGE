@@ -2,6 +2,8 @@
 $conn = database_connect();
 
 $user_id = getUserFromToken();
+if($user_id == null)
+    echoError($conn, 403, "AuthorizationFailed");
 
 if(array_key_exists("id", $_GET)){
     $note = getNoteById($conn, $_GET['id']);
