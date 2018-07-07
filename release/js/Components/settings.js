@@ -125,6 +125,13 @@ app.settings = {
             });
             return false;
         }
+        
+        if(newPassword.length < 9 || newPasswordConfirmation.length < 9){
+            app.handleFailure({
+                messageCode: "PasswordTooSmall"
+            });
+            return;
+        }
 
         // Check if the new password matches the new password confirmation
         if (newPassword != newPasswordConfirmation) {
@@ -164,6 +171,13 @@ app.settings = {
         if (!currentPassword) {
             app.handleFailure({
                 messageCode: "MissingArgumentCurrentPassword"
+            });
+            return;
+        }
+        
+        if(currentPassword.length < 9){
+            app.handleFailure({
+                messageCode: "PasswordTooSmall"
             });
             return;
         }
