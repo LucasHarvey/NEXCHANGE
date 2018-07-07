@@ -7,10 +7,10 @@ $user_id = getUserFromToken();
 requiredParams($conn, $_JSON, array("currentPassword"));
 $currentPassword = $_JSON["currentPassword"];
 
-
-//TODO: base 64 decode
 if($currentPassword == "")
     echoError($conn, 403, "MissingArgumentPassword");
+    
+$currentPassword = base64_decode(substr($currentPassword, 6));
 
 if(strlen($currentPassword) < $GLOBALS['PASSWORD_LENGTH'])
     echoError($conn, 403, "PasswordTooSmall");
