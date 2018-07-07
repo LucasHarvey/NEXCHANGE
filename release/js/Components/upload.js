@@ -59,11 +59,22 @@ app.postNotes = {
                 course.innerText = courses[i].courseName + " " + courses[i].courseNumber;
                 course.value = courses[i].id;
                 coursePicker.appendChild(course);
-                if (courseSelected && courses[i].id === courseSelected) {
-                    coursePicker.selectedIndex = i;
-                }
             }
         }
+        let options = coursePicker.children;
+        if(options.length == 0){
+            app.handleFailure({
+                messageCode: "UserNoCoursesAccessible",
+                status: 403
+            });
+            return;
+        }
+        for(var i = 0; i < options.length; i++){
+            if (courseSelected && options[i].value === courseSelected) {
+                coursePicker.selectedIndex = i;
+            } 
+        }
+
     },
 
     uploadNotesSuccess: function(response) {
