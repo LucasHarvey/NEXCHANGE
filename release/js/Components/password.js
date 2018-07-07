@@ -52,32 +52,26 @@ app.password = {
         let newPasswordConfirmation = document.getElementById('passwordConfirmation').value;
         // Check if the user submitted a new password and confirmed it
         if (!newPassword || !newPasswordConfirmation) {
-            app.handleFailure({
-                messageCode: "MissingArgumentsPasswords"
-            });
+            new Modal("Error", MessageCode("MissingArgumentsPasswords"), null, {
+                text: "Okay"
+            }).show();
+
             return false;
-        }
-        
-        if(newPassword.length < 9 || newPasswordConfirmation.length < 9){
-            app.handleFailure({
-                messageCode: "PasswordTooSmall"
-            });
-            return;
         }
 
         // Check if the new password matches the new password confirmation
         if (newPassword != newPasswordConfirmation) {
-            app.handleFailure({
-                messageCode: "PasswordsNoMatch"
-            });
 
+            new Modal("Error", MessageCode("PasswordsNoMatch"), null, {
+                text: "Okay"
+            }).show();
             return false;
         }
         
         if(!app.password.verifyUserPass(newPassword)){
-            app.handleFailure({
-                messageCode: "PasswordTooSmall"
-            });
+            new Modal("Error", MessageCode("PasswordTooSmall"), null, {
+                text: "Okay"
+            }).show();
             return false;
         }
         return true;
