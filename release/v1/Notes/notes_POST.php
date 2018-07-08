@@ -15,7 +15,6 @@ if(getUserPrivilege() == "ADMIN")
 if(empty($_FILES['file']))
     echoError($conn, 400, "NoFilesUploaded");
 
-
 $course_id = $_POST["courseId"];
 $noteName = $_POST['noteName'];
 $description = $_POST['description'];
