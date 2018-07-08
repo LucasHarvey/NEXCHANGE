@@ -142,14 +142,17 @@ app.notes = {
             articleSection.appendChild(extensionP);
         }
 
-        let authorP = generatePTag("Notes taken by", noteData.user_name || "Anonymous", true);
+        let authorP = generatePTag("Notes taken by", noteData.user_name || "Deleted User", true);
         articleSection.appendChild(authorP);
         
         if(noteData.section && noteData.course_name && noteData.course_number){
             var section = noteData.section.sectionify(true);
             let courseP = generatePTag("Notes taken for", noteData.course_name + " ("+noteData.course_number + " : " + section[1] +")", true);
             articleSection.appendChild(courseP);
-        } 
+        } else {
+            let courseP = generatePTag("Notes taken for", "Deleted Course", true);
+            articleSection.appendChild(courseP);
+        }
         
         let dateP = generatePTag("Notes taken on", new Date(noteData.taken_on.replace(/-/g, '\/')).toPrettyDate(), true);
         articleSection.appendChild(dateP);
