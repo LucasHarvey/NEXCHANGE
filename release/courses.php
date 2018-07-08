@@ -5,21 +5,21 @@
     <title>My Courses | NEXCHANGE</title>
     <link rel="shortcut icon" type="image/png" href="./img/favicon.png"/>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="css/style.css?v=4">
+    <link rel="stylesheet" type="text/css" href="css/style.css?v=5">
     <script src="js/Polyfills/flexibility.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#002b80"/>
 
-    <script async type="text/javascript" src="js/MessageCode.js?v=4"></script>
-    <script async type="text/javascript" src="js/Resources.js?v=4"></script>
-    <script async type="text/javascript" src="js/app.js?v=4"></script>
-    <script async type="text/javascript" src="js/navbar.js?v=4"></script>
-    <script async type="text/javascript" src="js/Components/modal.js?v=4"></script>
-    <script async type="text/javascript" src="js/Components/user.js?v=4"></script>
+    <script async type="text/javascript" src="js/MessageCode.js?v=5"></script>
+    <script async type="text/javascript" src="js/Resources.js?v=5"></script>
+    <script async type="text/javascript" src="js/app.js?v=5"></script>
+    <script async type="text/javascript" src="js/navbar.js?v=5"></script>
+    <script async type="text/javascript" src="js/Components/modal.js?v=5"></script>
+    <script async type="text/javascript" src="js/Components/user.js?v=5"></script>
 
-    <script async type="text/javascript" src="js/Components/courses.js?v=4"></script>
-    <script async type="text/javascript" src="js/Components/dateFormatting.js?v=4"></script>
+    <script async type="text/javascript" src="js/Components/courses.js?v=5"></script>
+    <script async type="text/javascript" src="js/Components/dateFormatting.js?v=5"></script>
 </head>
 
 <body>
