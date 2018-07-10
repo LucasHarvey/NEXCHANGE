@@ -59,7 +59,7 @@ app.manage = {
         
         for (var i = 0; i < users.length; i++) {
             let user = users[i];
-            let article = this._generateArticle();
+            let article = this._generateArticle(3);
             article.article.id = "UA_A_" + user.id;
             article.header.innerText = user.firstName + " " + user.lastName;
             
@@ -79,13 +79,22 @@ app.manage = {
                 article.section.children[1].removeChild(article.button);
             }
             
-            article.button2.innerHTML = "Delete Account";
-            article.button2.className = "warning";
+            article.button2.innerHTML = "Grant User Access";
             article.button2.id = "UA" + i + "_" + user.id;
             article.button2.dataset.studentId = user.studentId;
             article.button2.onclick = function() {
                 var studentId = this.dataset.studentId;
-                var button2 = this;
+                app.store("userAccessLoginId", studentId); //Prepopulate id field in user access
+                location.assign("./userAccess");
+            };
+            
+            article.button3.innerHTML = "Delete Account";
+            article.button3.className = "warning";
+            article.button3.id = "UA" + i + "_" + user.id;
+            article.button3.dataset.studentId = user.studentId;
+            article.button3.onclick = function() {
+                var studentId = this.dataset.studentId;
+                var button3 = this;
                 new Modal("Delete Account",
                     "Are you sure you want to delete the user account for Student ID: " + studentId + " ?" +
                     "<br>This <b>CANNOT</b> be undone." +
@@ -93,7 +102,7 @@ app.manage = {
                         text: "Yes, DELETE Account",
                         callback: function() {
                             this.confirmButton.disabled = true;
-                            app.manage._deleteAccount.call(this, studentId, button2);
+                            app.manage._deleteAccount.call(this, studentId, button3);
                         }
                     }
                 ).show();
@@ -614,7 +623,7 @@ app.manage = {
         let id = this.id;
         let xsrf = app.getCookie("xsrfToken");
         
-        let url = "./v1/Admin/download.php?type=" + id.slice(15, id.length) + "&xsrfToken=" + xsrf;
+        let url = "./v1/downloadStats.php?type=" + id.slice(15, id.length) + "&xsrfToken=" + xsrf;
         var newWin = window.open(url, '_blank');  
         
         this.disabled = false;

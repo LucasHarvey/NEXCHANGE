@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal */
+/* global Resources,MessageCode,Modal,datePolyFillStart */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -305,6 +305,8 @@ app.startup.push(function addSemesterStartup() {
     document.getElementById("newHideFields").addEventListener("change", app.addSemester.toggleMarchBreak);
     
     document.getElementById('addSemester').addEventListener('submit', app.addSemester.submitSemester);
+    
+    datePolyFillStart();
     
     document.getElementById("year").value = new Date().getFullYear();
     document.getElementById("season").selectedIndex = app.addSemester.getDefaultSeason();
