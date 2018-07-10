@@ -8,11 +8,11 @@ SELECT COUNT(*) AS count_students FROM (SELECT COUNT(*) AS count FROM user_acces
 SELECT COUNT(*) AS count_admins FROM users GROUP BY privilege HAVING privilege="ADMIN";
 
 /*Login frequency of admins*/
-SELECT count(*) AS login_count, (COUNT(*)
+SELECT count(*) AS admin_login_count, (COUNT(*)
         / (SELECT COUNT(*) AS total 
             FROM log_user_logins lu INNER JOIN users u ON lu.user_id=u.id
             GROUP BY u.privilege HAVING u.privilege="ADMIN")
-        ) * 100 AS percent, 
+        ) * 100 AS percent_of_total_admin_logins, 
         DATE_ADD(login_at, INTERVAL(1-DAYOFWEEK(login_at)) DAY) AS start_of_week,
         DATE_ADD(login_at, INTERVAL(7-DAYOFWEEK(login_at)) DAY) AS end_of_week
     FROM log_user_logins lu INNER JOIN users u ON lu.user_id=u.id
@@ -20,12 +20,12 @@ SELECT count(*) AS login_count, (COUNT(*)
     GROUP BY week(login_at);
 
 /*Login frequency of USERS*/
-SELECT count(*) AS login_count, 
+SELECT count(*) AS user_login_count, 
         (COUNT(*)
         / (SELECT COUNT(*) AS total 
             FROM log_user_logins lu INNER JOIN users u ON lu.user_id=u.id
             GROUP BY u.privilege HAVING u.privilege="USER")
-        ) * 100 AS percent, 
+        ) * 100 AS percent_of_total_user_logins, 
         DATE_ADD(login_at, INTERVAL(1-DAYOFWEEK(login_at)) DAY) AS start_of_week,
         DATE_ADD(login_at, INTERVAL(7-DAYOFWEEK(login_at)) DAY) AS end_of_week
     FROM log_user_logins lu INNER JOIN users u ON lu.user_id=u.id
@@ -37,7 +37,7 @@ SELECT count(*) AS student_total_login,
         (COUNT(*) / (SELECT COUNT(*) AS totalStudents
             FROM log_user_logins lu
             WHERE lu.user_id IN (SELECT user_id FROM user_access WHERE role="STUDENT"))
-        ) * 100 AS percent_of_total_students, 
+        ) * 100 AS percent_of_total_student_logins, 
         (COUNT(*) / (SELECT COUNT(*) AS totalUsers
             FROM log_user_logins lu INNER JOIN users u ON lu.user_id=u.id
             WHERE privilege="USER")
@@ -52,7 +52,7 @@ SELECT count(*) AS notetaker_total_login,
         (COUNT(*) / (SELECT COUNT(*) AS totalNotetakers
             FROM log_user_logins lu
             WHERE lu.user_id IN (SELECT user_id FROM user_access WHERE role="NOTETAKER"))
-        ) * 100 AS percent_of_total_notetakers, 
+        ) * 100 AS percent_of_total_notetaker_logins, 
         (COUNT(*) / (SELECT COUNT(*) AS totalUsers
             FROM log_user_logins lu INNER JOIN users u ON lu.user_id=u.id
             WHERE privilege="USER")
