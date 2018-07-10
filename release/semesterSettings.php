@@ -34,6 +34,7 @@ if(getUserPrivilege() != "ADMIN"){
     <script async type="text/javascript" src="js/Components/addSemester.js?v=5"></script>
     <script async type="text/javascript" src="js/Components/editSemester.js?v=5"></script>
     
+    <script async type="text/javascript" src="js/Polyfills/DatePolyfill.js"></script>
     <script async type="text/javascript" src="js/Components/dateFormatting.js?v=5"></script>
 
 </head>
