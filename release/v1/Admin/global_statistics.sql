@@ -84,28 +84,28 @@ SELECT COUNT(*) AS notetaker_logins_within_1_hour_of_reminder,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln INNER JOIN log_user_logins lu ON ln.user_id = lu.user_id
-    WHERE notification_code=2 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) < 1
+    WHERE notification_code=2 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) <= 1
     GROUP BY week(sent_at);
     
 SELECT COUNT(*) AS notetaker_logins_within_6_hour_of_reminder,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln INNER JOIN log_user_logins lu ON ln.user_id = lu.user_id
-    WHERE notification_code=2 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) < 6
+    WHERE notification_code=2 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) BETWEEN 2 AND 6
     GROUP BY week(sent_at);
     
 SELECT COUNT(*) AS notetaker_logins_within_12_hour_of_reminder,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln INNER JOIN log_user_logins lu ON ln.user_id = lu.user_id
-    WHERE notification_code=2 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) < 12
+    WHERE notification_code=2 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) BETWEEN 7 AND 12
     GROUP BY week(sent_at);
 
 SELECT COUNT(*) AS notetaker_logins_within_24_hour_of_reminder,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln INNER JOIN log_user_logins lu ON ln.user_id = lu.user_id
-    WHERE notification_code=2 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) < 24
+    WHERE notification_code=2 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) BETWEEN 13 AND 24
     GROUP BY week(sent_at);
     
 
@@ -114,28 +114,28 @@ SELECT COUNT(*) AS student_logins_within_1_hour_of_notification,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln INNER JOIN log_user_logins lu ON ln.user_id = lu.user_id
-    WHERE notification_code=11 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) < 1
+    WHERE notification_code=11 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) <= 1
     GROUP BY week(sent_at);
     
 SELECT COUNT(*) AS student_logins_within_6_hour_of_notification,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln INNER JOIN log_user_logins lu ON ln.user_id = lu.user_id
-    WHERE notification_code=11 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) < 6
+    WHERE notification_code=11 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) BETWEEN 2 AND 6
     GROUP BY week(sent_at);
     
 SELECT COUNT(*) AS student_logins_within_12_hour_of_notification,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln INNER JOIN log_user_logins lu ON ln.user_id = lu.user_id
-    WHERE notification_code=11 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) < 12
+    WHERE notification_code=11 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) BETWEEN 7 AND 12
     GROUP BY week(sent_at);
 
 SELECT COUNT(*) AS student_logins_within_24_hour_of_notification,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln INNER JOIN log_user_logins lu ON ln.user_id = lu.user_id
-    WHERE notification_code=11 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) < 24
+    WHERE notification_code=11 AND HOUR(TIMEDIFF(ln.sent_at, lu.login_at)) BETWEEN 13 AND 24
     GROUP BY week(sent_at);
     
 /*NOTETAKER: X notetakers Posting notes within X hours of being reminded*/
@@ -146,7 +146,7 @@ SELECT COUNT(*) AS notetakers_posting_within_1_hour_of_reminder,
     WHERE notification_code=2 AND 
         (SELECT count(*) FROM notes n 
             WHERE n.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, created)) < 1
+                AND HOUR(TIMEDIFF(ln.sent_at, created)) <= 1
             GROUP BY n.user_id) >= 1
     GROUP BY week(sent_at);
             
@@ -157,7 +157,7 @@ SELECT COUNT(*) AS notetakers_posting_within_6_hours_of_reminder,
     WHERE notification_code=2 AND 
         (SELECT count(*) FROM notes n 
             WHERE n.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, created)) < 6
+                AND HOUR(TIMEDIFF(ln.sent_at, created)) BETWEEN 2 AND 6
             GROUP BY n.user_id) >= 1
     GROUP BY week(sent_at);
             
@@ -168,7 +168,7 @@ SELECT COUNT(*) AS notetakers_posting_within_12_hours_of_reminder,
     WHERE notification_code=2 AND 
         (SELECT count(*) FROM notes n 
             WHERE n.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, created)) < 12
+                AND HOUR(TIMEDIFF(ln.sent_at, created)) BETWEEN 7 AND 12
             GROUP BY n.user_id) >= 1
     GROUP BY week(sent_at);
             
@@ -179,7 +179,7 @@ SELECT COUNT(*) AS notetakers_posting_within_24_hours_of_reminder,
     WHERE notification_code=2 AND 
         (SELECT count(*) FROM notes n 
             WHERE n.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, created)) < 24
+                AND HOUR(TIMEDIFF(ln.sent_at, created)) BETWEEN 13 AND 24
             GROUP BY n.user_id) >= 1
     GROUP BY week(sent_at);
     
@@ -190,7 +190,7 @@ SELECT COUNT(*) AS notetakers_posting_within_48_hours_of_reminder,
     WHERE notification_code=2 AND 
         (SELECT count(*) FROM notes n 
             WHERE n.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, created)) < 48
+                AND HOUR(TIMEDIFF(ln.sent_at, created)) BETWEEN 25 AND 48
             GROUP BY n.user_id) >= 1
     GROUP BY week(sent_at);
     
@@ -201,7 +201,7 @@ SELECT COUNT(*) AS notetakers_posting_within_1_week_of_reminder,
     WHERE notification_code=2 AND 
         (SELECT count(*) FROM notes n 
             WHERE n.user_id=ln.user_id 
-                AND DATEDIFF(ln.sent_at, created) <= 7
+                AND DATEDIFF(ln.sent_at, created) BETWEEN 3 AND 7
             GROUP BY n.user_id) >= 1
     GROUP BY week(sent_at);
     
@@ -213,7 +213,7 @@ SELECT COUNT(*) AS student_download_within_1_hour_of_notification,
     WHERE notification_code=11 AND 
         (SELECT count(*) FROM notefile_downloads nfd
             WHERE nfd.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) < 1
+                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) <= 1
             GROUP BY nfd.user_id) >= 1
     GROUP BY week(sent_at);
     
@@ -224,7 +224,7 @@ SELECT COUNT(*) AS student_download_within_6_hours_of_notification,
     WHERE notification_code=11 AND 
         (SELECT count(*) FROM notefile_downloads nfd
             WHERE nfd.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) < 6
+                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) BETWEEN 2 AND 6
             GROUP BY nfd.user_id) >= 1
     GROUP BY week(sent_at);
     
@@ -235,7 +235,7 @@ SELECT COUNT(*) AS student_download_within_12_hours_of_notification,
     WHERE notification_code=11 AND 
         (SELECT count(*) FROM notefile_downloads nfd
             WHERE nfd.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) < 12
+                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) BETWEEN 7 AND 12
             GROUP BY nfd.user_id) >= 1
     GROUP BY week(sent_at);
     
@@ -246,7 +246,7 @@ SELECT COUNT(*) AS student_download_within_24_hours_of_notification,
     WHERE notification_code=11 AND 
         (SELECT count(*) FROM notefile_downloads nfd
             WHERE nfd.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) < 24
+                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) BETWEEN 13 AND 24
             GROUP BY nfd.user_id) >= 1
     GROUP BY week(sent_at);
     
@@ -258,7 +258,7 @@ SELECT COUNT(*) AS student_download_within_48_hours_of_notification,
     WHERE notification_code=11 AND 
         (SELECT count(*) FROM notefile_downloads nfd
             WHERE nfd.user_id=ln.user_id 
-                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) < 48
+                AND HOUR(TIMEDIFF(ln.sent_at, nfd.downloaded_at)) BETWEEN 25 AND 48
             GROUP BY nfd.user_id) >= 1
     GROUP BY week(sent_at);
 
@@ -269,6 +269,6 @@ SELECT COUNT(*) AS student_download_within_1_week_of_notification,
     WHERE notification_code=11 AND 
         (SELECT count(*) FROM notefile_downloads nfd
             WHERE nfd.user_id=ln.user_id 
-                AND DATEDIFF(ln.sent_at, nfd.downloaded_at) <= 7
+                AND DATEDIFF(ln.sent_at, nfd.downloaded_at) BETWEEN 3 AND 7
             GROUP BY nfd.user_id) >= 1
     GROUP BY week(sent_at);
