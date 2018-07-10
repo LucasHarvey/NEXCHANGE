@@ -20,11 +20,11 @@ SELECT login_id, first_name, last_name, email, created,
     ) as ua ON u.id = ua.user_id
     
     LEFT JOIN (
-        SELECT lu.user_id, COUNT(*)/ROUND(DATEDIFF(curdate(), 
+        SELECT lu.user_id, ROUND(COUNT(*)/ROUND(DATEDIFF(curdate(), 
                                     (SELECT created FROM user_access ua 
                                         WHERE ua.user_id = lu.user_id 
                                         ORDER BY created ASC LIMIT 1)
-                                )/7, 0) AS logins_per_week
+                                )/7, 0), 2) AS logins_per_week
         FROM log_user_logins lu
         GROUP BY lu.user_id
     ) as logins ON u.id=logins.user_id
