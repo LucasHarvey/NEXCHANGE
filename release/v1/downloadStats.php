@@ -28,7 +28,7 @@ $date = date('Y-m-d');
 $storage_name = "./Statistics/".$statType."_statistics_".$date.".csv";
 $file_name = $statType."_statistics_".$date.".csv";
 
-exec("mysql nexchange -uroot --password= < ./Admin/".$statType."_statistics.sql | sed 's/\t/,/g' > ".$storage_name." 2>&1", $output, $result);
+exec("mysql nexchange -uroot --password=THE_PASSWORD < ./Admin/".$statType."_statistics.sql | sed 's/\t/,/g' > ".$storage_name." 2>&1", $output, $result);
 
 if(!file_exists($storage_name)){
     http_response_code(500);
