@@ -139,7 +139,7 @@ SELECT COUNT(*) AS student_logins_within_24_hour_of_notification,
     GROUP BY week(sent_at);
     
 /*NOTETAKER: X notetakers Posting notes within X hours of being reminded*/
-SELECT COUNT(*) AS notetakers_posting_within_1_hours_of_reminder,
+SELECT COUNT(*) AS notetakers_posting_within_1_hour_of_reminder,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln
@@ -206,7 +206,7 @@ SELECT COUNT(*) AS notetakers_posting_within_1_week_of_reminder,
     GROUP BY week(sent_at);
     
 /*Notes downloaded after x hours of being notified*/
-SELECT COUNT(*) AS student_download_within_1_hours_of_notification,
+SELECT COUNT(*) AS student_download_within_1_hour_of_notification,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent ln
