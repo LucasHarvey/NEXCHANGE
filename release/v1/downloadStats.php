@@ -24,9 +24,12 @@ if($statType != "global" && $statType != "user"){
     die();
 }
 
-exec("mysql nexchange -uroot --password=THE_PASSWORD < ./Admin/".$statType."_statistics.sql | sed 's/\t/,/g' > ./Admin/".$statType."_statistics.csv 2>&1", $output, $result);
+$date = date('Y-m-d');
+$storage_name = "./Admin/".$statType."_statistics_".$date.".csv";
+$file_name = $statType."_statistics_".$date.".csv";
 
-$storage_name = "./Admin/".$statType."_statistics.csv";
+exec("mysql nexchange -uroot --password=THE_PASSWORD < ./Admin/".$statType."_statistics.sql | sed 's/\t/,/g' > ".$storage_name." 2>&1", $output, $result);
+
 if(!file_exists($storage_name)){
     http_response_code(500);
     die();
@@ -38,7 +41,7 @@ header('Expires: 0');
 header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 header('Cache-Control: private', false); // required for certain browsers
 header('Content-Type: text/csv');
-header('Content-Disposition: inline; filename="'.$statType.'_statistics.csv"');
+header('Content-Disposition: inline; filename='.$file_name);
 header('Content-Transfer-Encoding: binary');
 header('Content-Length: '.filesize($storage_name));
 
