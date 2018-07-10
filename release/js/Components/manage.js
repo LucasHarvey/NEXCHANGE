@@ -614,7 +614,7 @@ app.manage = {
         let id = this.id;
         let xsrf = app.getCookie("xsrfToken");
         
-        let url = "./v1/Admin/downloadStats.php?type=" + id.slice(15, id.length) + "&xsrfToken=" + xsrf;
+        let url = "./v1/downloadStats.php?type=" + id.slice(15, id.length) + "&xsrfToken=" + xsrf;
         var newWin = window.open(url, '_blank');  
         
         this.disabled = false;

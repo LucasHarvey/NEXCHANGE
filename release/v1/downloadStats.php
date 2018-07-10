@@ -24,7 +24,7 @@ if($statType != "global" && $statType != "user"){
     die();
 }
 
-exec("mysql nexchange -uroot --password=THE_PASSWORD < ./Admin/".$statType."_statistics.sql | sed 's/\t/,/g' > ./Admin/".$statType."_statistics.csv 2>&1", $output, $result);
+exec("mysql nexchange -uroot --password= < ./Admin/".$statType."_statistics.sql | sed 's/\t/,/g' > ./Admin/".$statType."_statistics.csv 2>&1", $output, $result);
 
 $storage_name = "./Admin/".$statType."_statistics.csv";
 if(!file_exists($storage_name)){
