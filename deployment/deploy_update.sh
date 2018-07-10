@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Part 1 -- Cleaning New Files";
 cd ../release;
-cp login.html index.html
+cp login.php index.php
 sed -i -e 's/getenv("IP")/"localhost"/g' v1/_database.php
 sed -i -e 's/getenv("C9_USER")/"root"/g' v1/_database.php
 sed -i -e 's/$password = "";/$password = "THE_PASSWORD";/g' v1/_database.php
