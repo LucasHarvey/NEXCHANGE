@@ -102,6 +102,12 @@ app.postNotes = {
         fileUserField.insertBefore(newFileSelector, fileLabel);
         
         app.postNotes.updateFileLabel();
+        
+        // Empty the form
+        document.getElementById('noteName').value = "";
+        document.getElementById('description').value = "";
+        document.getElementById('date').value = new Date().toDateInputValue();
+        app.postNotes.updateCharacterLimit();
 
         app.postNotes.uploadInProgress = false;
         
