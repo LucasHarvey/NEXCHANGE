@@ -15,7 +15,7 @@ cp -r /var/www/html/v1/Files /home/nexuser/_BACKUP/
 rm -rf /var/www/html/*
 
 echo "Part 3 -- Moving New Files";
-cp * /var/www/html
+cp -r * /var/www/html
 cp -r /home/nexuser/_BACKUP/CoursesCSV /var/www/html/v1
 cp -r /home/nexuser/_BACKUP/Files /var/www/html/v1
 
