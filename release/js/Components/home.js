@@ -193,7 +193,7 @@ app.home = {
         dateP.innerHTML = "Notes taken on: <span>" + new Date(noteData.taken_on.replace(/-/g, '\/')).toPrettyDate() + "</span>";
         articleSection.appendChild(dateP);
 
-        if (noteData.hasOwnProperty("lastDownloaded")) {
+        if (noteData.role == "STUDENT") {
             article.className = noteData.lastDownloaded == null ? "newnote" : ""; //Show a halo on the new undownloaded note
             let dateDownloaded = noteData.lastDownloaded == null ? "Never" : new Date(noteData.lastDownloaded.replace(/-/g, '\/')).toPrettyDate(true);
             let dateDP = document.createElement("P");
@@ -223,7 +223,7 @@ app.home = {
         return article;
     },
 
-    _generateEmptyArticle: function(courseName) {
+    _generateEmptyArticle: function(courseName, role) {
         let article = document.createElement("ARTICLE");
 
         let articleHeader = document.createElement("HEADER");
@@ -234,7 +234,11 @@ app.home = {
         article.appendChild(articleSection);
 
         let descriptionP = document.createElement("P");
-        descriptionP.innerText = "There are no new notes for " + courseName + ".";
+        if(role == "NOTETAKER"){
+            descriptionP.innerText = "There are no uploaded notes for " + courseName + " that have not been downloaded.";
+        } else {
+          descriptionP.innerText = "There are no new notes for " + courseName + ".";  
+        }
         articleSection.appendChild(descriptionP);
 
         return article;
@@ -258,8 +262,9 @@ app.home = {
             var courseName = noteContainers[x].children[0].children[0].children[0].innerText;
             var id = noteContainers[x].id.split("course_")[1];
             var nc = document.getElementById("notes_" + id);
+            var role = document.getElementById("upload_" + id) ? "NOTETAKER" : "STUDENT";
             if (nc.children.length == 0) {
-                var emptyArticle = app.home._generateEmptyArticle(courseName);
+                var emptyArticle = app.home._generateEmptyArticle(courseName, role);
                 nc.appendChild(emptyArticle);
             }
         }
