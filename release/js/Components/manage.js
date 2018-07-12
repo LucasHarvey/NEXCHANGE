@@ -282,7 +282,7 @@ app.manage = {
             article.header.innerText = role + " - " + ua.firstName + " " + ua.lastName;
             var section =  ua.courseSection.sectionify(true);
             
-            article.description.appendChild(generatePTag("Course", ua.courseNumber + " (" + ua.courseName + ")"));
+            article.description.appendChild(generatePTag("Course", ua.courseName + " (" + ua.courseNumber + ")"));
             article.description.appendChild(generatePTag(section[0], section[1]));
             article.description.appendChild(generatePTag("Role", role));
             if(ua.role=="NOTETAKER") article.description.appendChild(generatePTag("Author of", ua.notesAuthored + " note".pluralize(ua.notesAuthored) + " (for this class)"));
