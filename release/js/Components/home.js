@@ -320,6 +320,19 @@ app.home = {
         } 
         if(article){
             article.className = ""; //Show a halo on the new undownloaded note
+            if(document.getElementById("hideDownloaded").checked == true){
+                //remove note from view
+                var nc = article.parentElement;
+                nc.removeChild(article);
+
+                if(nc.children.length == 0){
+                    var courseId = nc.id.split("notes_")[1];
+                    var courseName = document.getElementById("course_" + courseId).children[0].children[0].children[0].innerText;
+                    var role = document.getElementById("upload_" + courseId) ? "NOTETAKER" : "STUDENT";
+                    var emptyArticle = app.home._generateEmptyArticle(courseName, role);
+                    nc.appendChild(emptyArticle);
+                }
+            }
         }
         
         let downloadDate = document.getElementById(id.slice(0, -4) + "_downloadDate");
