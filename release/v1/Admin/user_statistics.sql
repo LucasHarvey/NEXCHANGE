@@ -7,7 +7,12 @@ SELECT login_id, first_name, last_name, email, created,
     IF(LOCATE("STUDENT", ua.roles) > 0, 
         CONCAT(CONCAT(
             IFNULL(st_downs.totalDownloads, 0), " / "),
-            IFNULL(st_avail.availableNotes, 0)
+            
+            IFNULL(
+                (SELECT COUNT(*) as ST_availableNotes FROM user_access ua INNER JOIN notes n ON n.course_id=ua.course_id
+                WHERE ua.user_id=u.id AND n.user_id != u.id
+                GROUP BY ua.user_id)
+            , 0)
     ), "N/A") as ST_downloads
     
     FROM users u 
@@ -47,11 +52,5 @@ SELECT login_id, first_name, last_name, email, created,
         FROM notefile_downloads nfd
         GROUP BY user_id
     ) as st_downs ON u.id=st_downs.user_id
-    
-    LEFT JOIN (
-        SELECT ua.user_id, COUNT(*) as availableNotes
-        FROM user_access ua INNER JOIN notes n ON n.course_id=ua.course_id
-        GROUP BY ua.user_id
-    ) as st_avail ON u.id=st_avail.user_id
     
     WHERE privilege = "USER";
