@@ -48,9 +48,10 @@ SELECT login_id, first_name, last_name, email, created,
     ) as nt_notes ON u.id=nt_notes.user_id
     
     LEFT JOIN (
-        SELECT user_id, COUNT(DISTINCT notefile_id) as totalDownloads
+        SELECT nfd.user_id, COUNT(DISTINCT notefile_id) as totalDownloads
         FROM notefile_downloads nfd
-        GROUP BY user_id
+        WHERE nfd.user_id != (SELECT n.user_id FROM notes n INNER JOIN notefiles nf ON n.id=nf.note_id WHERE nf.id=nfd.notefile_id)
+        GROUP BY nfd.user_id
     ) as st_downs ON u.id=st_downs.user_id
     
     WHERE privilege = "USER";
