@@ -17,36 +17,38 @@ app.editSemester = {
         }
     },
     
-    submitDatesSuccess: function(response) {
+    editSemesterSuccess: function(response) {
         // Enable the form
-        document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
-        document.getElementById("submitDates").disabled = false;
+        document.getElementById("semesterData").addEventListener('submit', app.semesterController.submitSemester);
+        document.getElementById("submit").disabled = false;
         
         new Modal("Semester Dates Updated", MessageCode(response.payload.messageCode), {
             text: "Okay",
             callback: function() {
-                window.location.reload();
+                app.editSemester.updateFields();
+                this.hide();
             }
         }, false).show();
         
     },
     
-    submitDatesFailure: function(response){
+    editSemesterFailure: function(response){
         // Enable the form
-        document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
-        document.getElementById("submitDates").disabled = false;
+        document.getElementById("semesterData").addEventListener('submit', app.semesterController.submitSemester);
+        document.getElementById("submit").disabled = false;
         
         app.handleFailure(response);
         
     },
     
-    submitDates: function(event){
-        event.preventDefault();
-    
-        var year = document.getElementById("semesterYear").value;
-        var season = document.getElementById("semesterSeason").value;
+    editSemester: function(){
         
-        var semesterCode = app.editSemester.validateSemester(season,year);
+        var seasonSelector = document.getElementById("editSeason");
+        var yearInput = document.getElementById("editYear");
+        var season = seasonSelector.value;
+        var year = yearInput.value;
+        
+        var semesterCode = app.semesterController.validateSemester(seasonSelector, yearInput, season, year);
         if(!semesterCode) return;
         
         var oldMarchBreakStart = null;
@@ -216,10 +218,10 @@ app.editSemester = {
         
         if(changes.semesterStart !== undefined || changes.semesterEnd !== undefined || changes.marchBreakStart !== undefined || changes.marchBreakEnd !== undefined){
             // Disable the form
-            document.getElementById('semesterDates').removeEventListener('submit', app.editSemester.submitDates);
-            document.getElementById("submitDates").disabled = true;
+            document.getElementById("semesterData").removeEventListener('submit', app.semesterController.submitSemester);
+            document.getElementById("submit").disabled = true;
             
-            Resources.Semester.PUT(semesterCode, changes.semesterStart, changes.semesterEnd, changes.marchBreakStart, changes.marchBreakEnd, app.editSemester.submitDatesSuccess, app.editSemester.submitDatesFailure);
+            Resources.Semester.PUT(semesterCode, changes.semesterStart, changes.semesterEnd, changes.marchBreakStart, changes.marchBreakEnd, app.editSemester.editSemesterSuccess, app.editSemester.editSemesterFailure);
         } else {
             new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();
         }
@@ -228,8 +230,8 @@ app.editSemester = {
     populateDates: function(response){
         
         // Enable the form
-        document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
-        document.getElementById("submitDates").disabled = false;
+        document.getElementById("semesterData").addEventListener('submit', app.semesterController.submitSemester);
+        document.getElementById("submit").disabled = false;
         
         let data = response.payload;
         
@@ -259,8 +261,8 @@ app.editSemester = {
     getDatesFailure: function(response){
         
         // Enable the form
-        document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
-        document.getElementById("submitDates").disabled = false;
+        document.getElementById("semesterData").addEventListener('submit', app.semesterController.submitSemester);
+        document.getElementById("submit").disabled = false;
         
         app.editSemester.originalDates = undefined;
         
@@ -291,55 +293,21 @@ app.editSemester = {
         return 0; //fall
     },
     
-    validateSemester: function(season, year){
-        
-        let seasonSelector = document.getElementById("semesterSeason");
-        let yearInput = document.getElementById("semesterYear");
-        
-        if (!year) {
-            new Modal("Error", MessageCode("MissingArgumentYear"), null, {
-                text: "Okay"
-            }).show();
-            return false;
-        }
-
-        if (!season) {
-            new Modal("Error", MessageCode("MissingArgumentSeason"), null, {
-                text: "Okay"
-            }).show();
-            return false;
-        }
-
-        if (isNaN(year) || year % 1 != 0 || year<0) {
-            new Modal("Error", year + " is not a valid year.", null, {
-                text: "Okay"
-            }).show();
-            return false;
-        }
-
-        if (!app.dateFormatting.semesterFormatVerification(season, year)) {
-            new Modal("Error", seasonSelector.innerText + " " + year + " is not a valid semester.", null, {
-                text: "Okay"
-            }).show();
-            return false;
-        }
-        
-        return season + year;
-    },
-    
     updateFields: function(){
         // Disable the form
-        document.getElementById('semesterDates').removeEventListener('submit', app.editSemester.submitDates);
-        document.getElementById("submitDates").disabled = true;
-            
-        var year = document.getElementById("semesterYear").value;
-        var season = document.getElementById("semesterSeason").value;
+        document.getElementById("semesterData").removeEventListener('submit', app.semesterController.submitSemester);
+        document.getElementById("submit").disabled = true;
+          
+        var seasonSelector = document.getElementById("editSeason"); 
+        var yearInput = document.getElementById("editYear");
+        var season = seasonSelector.value;
+        var year = yearInput.value;
         
-        var semesterCode = app.editSemester.validateSemester(season,year);
+        var semesterCode = app.semesterController.validateSemester(seasonSelector, yearInput, season,year);
         if(!semesterCode){
             // Enable the form
-            document.getElementById('semesterDates').addEventListener('submit', app.editSemester.submitDates);
-            document.getElementById("submitDates").disabled = false;
+            document.getElementById("semesterData").addEventListener('submit', app.semesterController.submitSemester);
+            document.getElementById("submit").disabled = false;
             return;
         }
     
@@ -348,23 +316,16 @@ app.editSemester = {
 }
 
 app.startup.push(function semesterStartup() {
-    app.editSemester.submitDates = app.editSemester.submitDates.bind(app.editSemester);
+    app.editSemester.editSemester = app.editSemester.editSemester.bind(app.editSemester);
     
     document.getElementById("hideFields").addEventListener("change", app.editSemester.toggleMarchBreak);
-    document.getElementById("semesterDates").addEventListener("submit", app.editSemester.submitDates);
     
-    document.getElementById("semesterSeason").selectedIndex = app.editSemester.getDefaultSeason();
-    document.getElementById("semesterYear").value = new Date().getFullYear();
+    document.getElementById("editSeason").selectedIndex = app.editSemester.getDefaultSeason();
+    document.getElementById("editYear").value = new Date().getFullYear();
     
-    document.getElementById("semesterSeason").addEventListener("change", app.editSemester.updateFields);
-    document.getElementById("semesterYear").addEventListener("change", app.editSemester.updateFields);
+    document.getElementById("editSeason").addEventListener("change", app.editSemester.updateFields);
+    document.getElementById("editYear").addEventListener("change", app.editSemester.updateFields);
     
-});
-
-
-app.afterStartup.push(function semesterAfterStartup() {
-    //POPULATE THE FIELDS
-    app.editSemester.updateFields();
 });
 
 
