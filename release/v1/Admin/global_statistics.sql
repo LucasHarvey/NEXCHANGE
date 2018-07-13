@@ -68,7 +68,7 @@ SELECT COUNT(*) AS note_upload_notifications_per_week,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent 
-    WHERE notification_code=11 AND user_id NOT IN ("91fdefde-2593-11e8-b37c-b8ca3a9103cf")
+    WHERE notification_code=11 AND user_id NOT IN (SELECT id FROM users WHERE login_id LIKE 'Admin0%')
     GROUP BY week(sent_at);
    
 /*Notification of note reminder per week*/
@@ -76,7 +76,7 @@ SELECT COUNT(*) AS note_upload_reminders_per_week,
         DATE_ADD(sent_at, INTERVAL(1-DAYOFWEEK(sent_at)) DAY) AS start_of_week,
         DATE_ADD(sent_at, INTERVAL(7-DAYOFWEEK(sent_at)) DAY) AS end_of_week
     FROM log_notifications_sent 
-    WHERE notification_code=2 AND user_id NOT IN ("91fdefde-2593-11e8-b37c-b8ca3a9103cf")
+    WHERE notification_code=2 AND user_id NOT IN (SELECT id FROM users WHERE login_id LIKE 'Admin0%')
     GROUP BY week(sent_at);
 
 /*NOTETAKER: Login of user within x hours of note reminder sent*/
