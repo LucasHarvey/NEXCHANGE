@@ -13,24 +13,18 @@ requiredParams($conn, $_POST, array("semesterCode", "password", "newSemesterStar
 $password = $_POST["password"];
 $password = base64_decode($password);
 
-$user = database_get_row($conn, "SELECT passwordhash FROM users WHERE id=?", "s", $userId);
-if(!password_verify($password, $user["passwordhash"])){
-    echoError($conn, 401, "AuthenticationFailed");
-}
+include_once "./Semester/semester_conveniences.php";
+validatePassword($conn, $userId, $password);
 
 $semesterCode = $_POST["semesterCode"];
-if($semesterCode == "")
-	echoError($conn, 400, "MissingArgumentSemesterCode");
-	
 $seasons = ["I", "W", "S", "F"];
+validateSemester($conn, $semesterCode, $seasons);
+if(!isNewSemester($conn, $semesterCode, $seasons))
+    echoError($conn, 400, "SemesterOutdated");
 
-if(!in_array($semesterCode[0], $seasons) || strlen($semesterCode) != 5)
-    echoError($conn, 400, "SemesterNotValid");
-
-$year = substr($semesterCode, 1);
-
-if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
-    echoError($conn, 400, "SemesterNotValid");
+$allowed = ['csv'];
+$files = $_FILES['file'];
+validateFiles($conn, $files, $allowed, $GLOBALS['MAX_SINGLE_FILE_SIZE']);
 
 $created = date('Y-m-d H:i:s');
 
@@ -46,65 +40,59 @@ if($newMarchBreakEnd == "") $newMarchBreakEnd = null;
     
 $coursesForSemester = database_get_row($conn, "SELECT id FROM courses WHERE semester=? LIMIT 1", "s", $semesterCode);
 $semesterExists = database_get_row($conn, "SELECT semester_code FROM semesters WHERE semester_code=? LIMIT 1", "s", $semesterCode);
+    
+if($coursesForSemester != null || $semesterExists != null)
+    echoError($conn, 400, "SemesterExists");
+    
+if($newSemesterStart == null)
+    echoError($conn, 400, "MissingArgumentSemesterStart");
+if(strlen($newSemesterStart) > 10)
+    echoError($conn, 400, "SemesterStartNotValid");
 
-if(!isNewSemester($conn, $semesterCode, $seasons))
-    echoError($conn, 400, "SemesterOutdated");
-    
-if($coursesForSemester == null && $semesterExists == null){
-    
-    if($newSemesterStart == null)
-        echoError($conn, 400, "MissingArgumentSemesterStart");
-    if(strlen($newSemesterStart) > 10)
-        echoError($conn, 400, "SemesterStartNotValid");
-    
-    if($newSemesterEnd == null)
-        echoError($conn, 400, "MissingArgumentSemesterEnd");
-    if(strlen($newSemesterEnd) > 10)
-        echoError($conn, 400, "SemesterEndNotValid");
-           
-    // Semester end must be after semester start
-    if(strtotime($newSemesterEnd) <= strtotime($newSemesterStart))
-        echoError($conn, 400, "SemesterDatesNotValid");
-    
-    if($newMarchBreakStart != null && $newMarchBreakEnd != null){
-        // March break end must be after march break start
-        if(strtotime($newMarchBreakEnd) <= strtotime($newMarchBreakStart))
-            echoError($conn, 400, "MarchBreakNotValid");
-        if(strlen($newMarchBreakStart) > 10)
-            echoError($conn, 400, "MarchBreakStartFormatNotValid");
-        if(strlen($newMarchBreakEnd) > 10)
-            echoError($conn, 400, "MarchBreakEndFormatNotValid");
-    }
+if($newSemesterEnd == null)
+    echoError($conn, 400, "MissingArgumentSemesterEnd");
+if(strlen($newSemesterEnd) > 10)
+    echoError($conn, 400, "SemesterEndNotValid");
+       
+// Semester end must be after semester start
+if(strtotime($newSemesterEnd) <= strtotime($newSemesterStart))
+    echoError($conn, 400, "SemesterDatesNotValid");
 
-    // If march break end is present, march break start must be present
-    if($newMarchBreakEnd != null && $newMarchBreakStart == null){
-        echoError($conn, 400, "MissingArgumentMarchBreakStart");
-    }
-
-    // If march break start is present, march break end must be present
-    if($newMarchBreakStart != null && $newMarchBreakEnd == null){
-        echoError($conn, 400, "MissingArgumentMarchBreakEnd");
-    }
-    
-    if($newMarchBreakStart != null){
-        if(strtotime($newMarchBreakStart) < strtotime($newSemesterStart))
-            echoError($conn, 400, "MarchBreakStartNotValid");
-    }
-    
-    if($newMarchBreakEnd != null){
-        if(strtotime($newMarchBreakEnd) > strtotime($newSemesterEnd))
-            echoError($conn, 400, "MarchBreakEndNotValid");
-    }
-    
-    $insertTypes = "ssssss";
-    $insertVals = array($semesterCode, $newSemesterStart, $newSemesterEnd, $newMarchBreakStart, $newMarchBreakEnd, $created);
-        
-    // INSERT the semester into the DB
-    database_insert($conn, "INSERT INTO semesters (semester_code, semester_start, semester_end, march_break_start, march_break_end, created) VALUES (?,?,?,?,?,?)", $insertTypes, $insertVals);
-} else {
-    if($newSemesterStart != null || $newSemesterEnd != null || $newMarchBreakStart != null || $newMarchBreakEnd != null)
-        echoError($conn, 400, "SemesterExists");
+if($newMarchBreakStart != null && $newMarchBreakEnd != null){
+    // March break end must be after march break start
+    if(strtotime($newMarchBreakEnd) <= strtotime($newMarchBreakStart))
+        echoError($conn, 400, "MarchBreakNotValid");
+    if(strlen($newMarchBreakStart) > 10)
+        echoError($conn, 400, "MarchBreakStartFormatNotValid");
+    if(strlen($newMarchBreakEnd) > 10)
+        echoError($conn, 400, "MarchBreakEndFormatNotValid");
 }
+
+// If march break end is present, march break start must be present
+if($newMarchBreakEnd != null && $newMarchBreakStart == null){
+    echoError($conn, 400, "MissingArgumentMarchBreakStart");
+}
+
+// If march break start is present, march break end must be present
+if($newMarchBreakStart != null && $newMarchBreakEnd == null){
+    echoError($conn, 400, "MissingArgumentMarchBreakEnd");
+}
+
+if($newMarchBreakStart != null){
+    if(strtotime($newMarchBreakStart) < strtotime($newSemesterStart))
+        echoError($conn, 400, "MarchBreakStartNotValid");
+}
+
+if($newMarchBreakEnd != null){
+    if(strtotime($newMarchBreakEnd) > strtotime($newSemesterEnd))
+        echoError($conn, 400, "MarchBreakEndNotValid");
+}
+
+$insertTypes = "ssssss";
+$insertVals = array($semesterCode, $newSemesterStart, $newSemesterEnd, $newMarchBreakStart, $newMarchBreakEnd, $created);
+    
+// INSERT the semester into the DB
+database_insert($conn, "INSERT INTO semesters (semester_code, semester_start, semester_end, march_break_start, march_break_end, created) VALUES (?,?,?,?,?,?)", $insertTypes, $insertVals);
 
 function isNewSemester($conn, $semesterCode, $seasons){
     $existingSemesters = database_get_all($conn, "SELECT semester_code FROM semesters ORDER BY created DESC", "", array());

@@ -5,7 +5,6 @@ var app = app || {
 };
 
 app.addSemester = {
-    uploadInProgress: false,
     
     toggleMarchBreak: function(){
         let checkbox = document.getElementById("newHideFields");
@@ -18,24 +17,24 @@ app.addSemester = {
     },
 
     reset: function() {
-        app.addSemester.uploadInProgress = false;
+        app.semesterController.uploadInProgress = false;
 
         // Empty the course input fields: 
-        document.getElementById("file").value = "";
-        document.getElementById("season").selectedIndex = app.addSemester.getDefaultSeason();
-        document.getElementById("year").value = new Date().getFullYear();
+        document.getElementById("newFile").value = "";
+        document.getElementById("newSeason").selectedIndex = app.addSemester.getDefaultSeason();
+        document.getElementById("newYear").value = new Date().getFullYear();
         document.getElementById("newSemesterStart").value = "";
         document.getElementById("newSemesterEnd").value = "";
         document.getElementById("newMarchBreakStart").value = "";
         document.getElementById("newMarchBreakEnd").value = "";
         document.getElementById("newHideFields").checked = false;
-        
+        app.addSemester.toggleMarchBreak();
         app.addSemester.updateFileLabel();
     },
     
     updateFileLabel: function(){
-        var input = document.getElementById("file");
-        var label = document.getElementById("fileLabel");
+        var input = document.getElementById("newFile");
+        var label = document.getElementById("newFileLabel");
         
         if(!this.files || this.files.length == 0) {
             label.innerText = "Select File (.csv)";
@@ -57,40 +56,34 @@ app.addSemester = {
         
         // Enable the form
         document.getElementById('submit').disabled = false;
-        document.getElementById('addSemester').addEventListener('submit', app.addSemester.submitSemester);
-        app.addSemester.uploadInProgress = false;
+        document.getElementById("semesterData").addEventListener('submit', app.semesterController.submitSemester);
+        app.semesterController.uploadInProgress = false;
 
         // Empty the course input fields: 
         app.addSemester.reset();
         
-        new Modal("Courses Added", MessageCode("CoursesCreated") + "<br>" + data.payload.output, {
-            callback: function(){
-                        window.location.reload();
-                }, 
-                text: "Okay"
-            }, false).show();
+        new Modal("Courses Added", MessageCode("CoursesCreated") + "<br>" + data.payload.output, null, null, "Okay").show();
     },
     
     submitSemesterFailure: function(data){
         
         // Enable the form
         document.getElementById('submit').disabled = false;
-        document.getElementById('addSemester').addEventListener('submit', app.addSemester.submitSemester);
-        app.addSemester.uploadInProgress = false;
+        document.getElementById("semesterData").addEventListener('submit', app.semesterController.submitSemester);
+        app.semesterController.uploadInProgress = false;
         
         app.handleFailure(data);
     },
     
-    submitSemester: function(event) {
-        event.preventDefault();
-        if (this.uploadInProgress) {
+    submitSemester: function() {
+        if (app.semesterController.uploadInProgress) {
             console.warn("Courses are already being uploaded...");
             return;
         }
 
-        let file = document.getElementById('file').files;
+        let file = document.getElementById('newFile').files;
         if (file.length == 0) {
-            app.handleFailure({ messageCode: "NoFilesUploaded" });
+            app.handleFailure({ messageCode: "NoCourseFilesUploaded" });
             return;
         }
         
@@ -99,35 +92,28 @@ app.addSemester = {
         var newMarchBreakStart = document.getElementById("newMarchBreakStart").value;
         var newMarchBreakEnd = document.getElementById("newMarchBreakEnd").value;
         
-        if(newSemesterStart != ""){
-            newSemesterStart = new Date(newSemesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
-        }
-
-        if(newSemesterEnd != ""){
-            newSemesterEnd = new Date(newSemesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
-        }
-
-        if(newSemesterEnd != "" && newSemesterStart == ""){
+        if(newSemesterStart == ""){
             new Modal("Error", MessageCode("MissingArgumentSemesterStart"), null, {
                 text: "Okay"
             }).show();
             return;
         }
-            
-        if(newSemesterStart != "" && newSemesterEnd == ""){
+        
+        if(newSemesterEnd == ""){
             new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
                 text: "Okay"
             }).show();
             return;
         }
+            
+        newSemesterStart = new Date(newSemesterStart.replace(/-/g, '\/').replace(/T.+/, ''));
+        newSemesterEnd = new Date(newSemesterEnd.replace(/-/g, '\/').replace(/T.+/, ''));
         
-        if(newSemesterStart != "" && newSemesterEnd != ""){
-            if(newSemesterEnd <= newSemesterStart){
-                new Modal("Error", MessageCode("SemesterDatesNotValid"), null, {
-                    text: "Okay"
-                }).show();
-                return;
-            }
+        if(newSemesterEnd <= newSemesterStart){
+            new Modal("Error", MessageCode("SemesterDatesNotValid"), null, {
+                text: "Okay"
+            }).show();
+            return;
         }
         
         var newMarchBreakEnabled = document.getElementById("newHideFields");
@@ -159,20 +145,6 @@ app.addSemester = {
                 return;
             }
             
-            if(newSemesterStart == ""){
-                new Modal("Error", MessageCode("MissingArgumentSemesterStart"), null, {
-                text: "Okay"
-                }).show();
-                return;
-            }
-            
-            if(newSemesterEnd == ""){
-                new Modal("Error", MessageCode("MissingArgumentSemesterEnd"), null, {
-                text: "Okay"
-                }).show();
-                return;
-            }
-            
             if(newMarchBreakStart < newSemesterStart){
                 new Modal("Error", MessageCode("MarchBreakStartNotValid"), null, {
                 text: "Okay"
@@ -188,11 +160,8 @@ app.addSemester = {
             }
         }
         
-        if(newSemesterStart != "")
-            newSemesterStart = app.dateFormatting.parseSubmissionDate(newSemesterStart);
-            
-        if(newSemesterEnd != "")
-            newSemesterEnd = app.dateFormatting.parseSubmissionDate(newSemesterEnd);
+        newSemesterStart = app.dateFormatting.parseSubmissionDate(newSemesterStart);
+        newSemesterEnd = app.dateFormatting.parseSubmissionDate(newSemesterEnd);
             
         if(newMarchBreakStart != "")
             newMarchBreakStart = app.dateFormatting.parseSubmissionDate(newMarchBreakStart);
@@ -200,60 +169,25 @@ app.addSemester = {
         if(newMarchBreakEnd != "")
             newMarchBreakEnd = app.dateFormatting.parseSubmissionDate(newMarchBreakEnd);
 
-        let seasonSelector = document.getElementById("season");
+        let seasonSelector = document.getElementById("newSeason");
         var season = seasonSelector.value;
-        var year = document.getElementById("year").value;
+        let yearInput = document.getElementById("newYear");
+        var year = yearInput.value;
         
-        var semesterCode = app.editSemester.validateSemester(season,year);
+        var semesterCode = app.semesterController.validateSemester(seasonSelector, yearInput, season,year);
         if(!semesterCode) return;
         
         new Modal("Create Semester",
                     "Are you sure you want to upload the selected file?" +
                     "<br>This <b>CANNOT</b> be undone." +
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='addSemester_uploadSemesterPw'><p class='error'></p>", {
-                        text: "Yes, UPLOAD Courses",
+                        text: "Yes, CREATE Semester",
                         callback: function() {
                             this.confirmButton.disabled = true;
                             app.addSemester._uploadSemester.call(this, semesterCode, file, newSemesterStart, newSemesterEnd, newMarchBreakStart, newMarchBreakEnd);
                         }
                     }
                 ).show();
-    },
-    
-    validateSemester: function(season, year){
-        
-        let seasonSelector = document.getElementById("semesterSeason");
-        let yearInput = document.getElementById("semesterYear");
-        
-        if (!year) {
-            new Modal("Error", MessageCode("MissingArgumentYear"), null, {
-                text: "Okay"
-            }).show();
-            return false;
-        }
-
-        if (!season) {
-            new Modal("Error", MessageCode("MissingArgumentSeason"), null, {
-                text: "Okay"
-            }).show();
-            return false;
-        }
-
-        if (isNaN(year) || year % 1 != 0 || year<0) {
-            new Modal("Error", year + " is not a valid year.", null, {
-                text: "Okay"
-            }).show();
-            return false;
-        }
-
-        if (!app.dateFormatting.semesterFormatVerification(season, year)) {
-            new Modal("Error", seasonSelector.innerText + " " + year + " is not a valid semester.", null, {
-                text: "Okay"
-            }).show();
-            return false;
-        }
-        
-        return season + year;
     },
     
     _uploadSemester: function(semesterCode, file, newSemesterStart, newSemesterEnd, newMarchBreakStart, newMarchBreakEnd){
@@ -267,11 +201,11 @@ app.addSemester = {
             return;
         }
         
-        app.addSemester.uploadInProgress = true;
+        app.semesterController.uploadInProgress = true;
         
         //Disable the form
         document.getElementById('submit').disabled = true;
-        document.getElementById('addSemester').removeEventListener('submit', app.addSemester.submitSemester);
+        document.getElementById("semesterData").removeEventListener('submit', app.semesterController.submitSemester);
 
         Resources.Semester.POST(semesterCode, file, newSemesterStart, newSemesterEnd, newMarchBreakStart, newMarchBreakEnd, pass, function(response){
             //Success function
@@ -283,11 +217,11 @@ app.addSemester = {
                 
                 // Enable the form
                 document.getElementById('submit').disabled = false;
-                document.getElementById('addSemester').addEventListener('submit', app.addSemester.submitSemester);
+                document.getElementById("semesterData").addEventListener('submit', app.semesterController.submitSemester);
                 
                 that.confirmButton.disabled = false;
                 
-                app.addSemester.uploadInProgress = false;
+                app.semesterController.uploadInProgress = false;
                 
                 document.getElementById("addSemester_uploadSemesterPw").nextSibling.innerHTML = "Incorrect Password.";
                 return;
@@ -304,15 +238,13 @@ app.startup.push(function addSemesterStartup() {
     
     document.getElementById("newHideFields").addEventListener("change", app.addSemester.toggleMarchBreak);
     
-    document.getElementById('addSemester').addEventListener('submit', app.addSemester.submitSemester);
-    
     datePolyFillStart();
     
-    document.getElementById("year").value = new Date().getFullYear();
-    document.getElementById("season").selectedIndex = app.addSemester.getDefaultSeason();
+    document.getElementById("newYear").value = new Date().getFullYear();
+    document.getElementById("newSeason").selectedIndex = app.addSemester.getDefaultSeason();
     
     // Change the file label when files are added
-    document.getElementById("file").addEventListener("change", app.addSemester.updateFileLabel);
+    document.getElementById("newFile").addEventListener("change", app.addSemester.updateFileLabel);
     app.addSemester.updateFileLabel();
 });
 

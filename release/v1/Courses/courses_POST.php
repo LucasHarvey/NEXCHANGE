@@ -1,18 +1,34 @@
 <?php
 
+if(!is_resource($conn))
+    $conn = database_connect();
+
+if(!isset($userId))
+    $userId = getUserFromToken();
+
 if(getUserPrivilege() != "ADMIN")
     echoError($conn, 403, "AuthorizationFailed");
 
-if(empty($_FILES['file']))
-    echoError($conn, 400, "NoFilesUploaded");
+$password = $_POST["password"];
+$password = base64_decode($password);
+
+include_once "./Semester/semester_conveniences.php";
+validatePassword($conn, $userId, $password);
+
+$semesterCode = $_POST["semesterCode"];
+$seasons = ["I", "W", "S", "F"];
+if(!array_key_exists("newSemesterStart", $_POST)){
+    $semesterExists = database_get_row($conn, "SELECT semester_code FROM semesters WHERE semester_code=? LIMIT 1", "s", $semesterCode);
+    
+    if($semesterExists == null)
+        echoError($conn, 400, "AdditionalCoursesFailedDNE");
+}
+
+validateSemester($conn, $semesterCode, $seasons);
 
 $allowed = ['csv'];
-$MAX_SINGLE_FILE_SIZE = 2 * 1024 * 1024; //2 mb
-validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE);
-
-if(count($_FILES['file']['name']) != 1){
-	echoError($conn, 400, "OneFileAllowed");
-}
+$files = $_FILES['file'];
+validateFiles($conn, $files, $allowed, $GLOBALS['MAX_SINGLE_FILE_SIZE']);
 
 $file = $_FILES['file'];
 $tmp = $file['tmp_name'][0];
@@ -42,13 +58,13 @@ if($returnValue != 0){
     echoError($conn, 400, "ErrorParsingCourseFile", "O: ".implode(",", $output)." --R:".$returnValue);
 }
 
-$execCMD = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,teacher_fullname,course_name,course_number,section,semester' --local -uroot --password=THE_PASSWORD nexchange ".$fileOutCourses;
+$execCMD = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,teacher_fullname,course_name,course_number,section,semester' --local -uroot --password= nexchange ".$fileOutCourses;
 exec($execCMD, $output2, $returnValue2);
 if($returnValue2 != 0){
     echoError($conn, 500, "ErrorUploadingParsedCourseFile", "O: ".implode(",", $output2)." --R:".$returnValue2);
 }
 
-$execCMD2 = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,course_id, days_of_week, time_start, time_end' --local -uroot --password=THE_PASSWORD nexchange ".$fileOutTimes;
+$execCMD2 = "mysqlimport --ignore --fields-terminated-by=';' --columns='id,course_id, days_of_week, time_start, time_end' --local -uroot --password= nexchange ".$fileOutTimes;
 exec($execCMD2, $output3, $returnValue3);
 if($returnValue3 != 0){
     echoError($conn, 500, "ErrorUploadingParsedCourseFile", "Course Times. O: ".implode(",", $output3)." --R:".$returnValue3);
@@ -70,30 +86,13 @@ function getFileError($errorNo){
     }
 }
 
-function validateUploadedFiles($conn, $allowed, $MAX_SINGLE_FILE_SIZE){
-    foreach($_FILES["file"]["name"] as $key => $name){
-        if($_FILES['file']['error'][$key] == 0) {
-            $fileDotSeparated = explode('.', $name); //MUST be on 2 lines.
-            $ext = strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
-            if(!in_array($ext, $allowed)){
-            	echoError($conn, 409, "CourseExtensionUnauthorized");
-            }
-            
-            if($_FILES['file']['size'][$key] > $MAX_SINGLE_FILE_SIZE){
-                echoError($conn, 409, "FileIsTooBig");
-            }
-        }else{
-        	$err = getFileError($_FILES['file']['error'][$key]);
-        	echoError($conn, $err[0], $err[1]);
-        }
-    }
-}
-
 function getExtension($fileName){
 	$fileDotSeparated = explode('.', $fileName); //MUST be on 2 lines.
     $ext = strtolower(end($fileDotSeparated)); //MUST be on 2 lines.
     
     return ".".$ext;
 }
+
+
 
 ?>

@@ -236,6 +236,25 @@ let Resources = {
             return app.get(Resources.Courses, data, successCallback, failureCallback);
         },
         
+        POST: function(semesterCode, files, password, successCallback, failureCallback) {
+            var formData = new FormData();
+            formData.append("semesterCode", semesterCode);
+            for (var i = 0; i < files.length; i++) {
+                formData.append("file[]", files[i]);
+            }
+            formData.append("password", window.btoa(password));
+
+            let request = app._generateRequest(successCallback, failureCallback, {
+                disableAuthResult: true //Let failure handle it
+            });
+            request.open("POST", this.location);
+            request.setRequestHeader("x-csrftoken", app.getCookie("xsrfToken"));
+            // Enable the loading spinner 
+            document.body.classList.add("load");
+            request.send(formData);
+            return request;
+        },
+        
         PUT: function(courseId, teacherFullName, courseName, courseNumber, section, semester, successCallback, failureCallback){
             let data = {
                 courseId: courseId,
