@@ -6,7 +6,7 @@ SELECT login_id, first_name, last_name, email, created,
     IFNULL(nt_notes.notes_uploaded, "N/A") as NT_notes_uploaded,
     IF(LOCATE("STUDENT", ua.roles) > 0, 
         CONCAT(CONCAT(
-            IFNULL(st_downs.totalDownloads, 0), "/"), 
+            IFNULL(st_downs.totalDownloads, 0), " / "),
             IFNULL(st_avail.availableNotes, 0)
     ), "N/A") as ST_downloads
     
