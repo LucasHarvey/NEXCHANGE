@@ -66,9 +66,8 @@ let Resources = {
             return app.post(Resources.Users, data, successCallback, failureCallback);
         },
         PUT: function(email, password, currentPassword, successCallback, failureCallback) {
-            var data = {
-                currentPassword: currentPassword
-            };
+            var data = {};
+            data["currentPassword"] = "Basic " + window.btoa(currentPassword);
             if (email) data["email"] = email;
             if (password) data["password"] = "Basic " + window.btoa(password);
             return app.put(Resources.Users, data, successCallback, failureCallback, {

@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,datePolyFillStart,Modal,getExtension */
+/* global Resources,MessageCode,datePolyFillStart,Modal,getExtension,location */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -44,10 +44,12 @@ app.postNotes = {
     getCoursesSuccess: function(response) {
         let courses = response.payload.courses;
         if (courses.length == 0) {
-            app.handleFailure({
-                messageCode: "UserNoCoursesAccessible",
-                status: 403
-            });
+            new Modal("Error", MessageCode("UserNoCoursesAccessible"), {
+                text: "Okay",
+                callback: function(){
+                    location.assign("./home");
+                }
+            }, false).show();
             return;
         }
         var courseSelected = app.getStore("uploadNotesCourseId");
@@ -59,11 +61,24 @@ app.postNotes = {
                 course.innerText = courses[i].courseName + " " + courses[i].courseNumber;
                 course.value = courses[i].id;
                 coursePicker.appendChild(course);
-                if (courseSelected && courses[i].id === courseSelected) {
-                    coursePicker.selectedIndex = i;
-                }
             }
         }
+        let options = coursePicker.children;
+        if(options.length == 0){
+            new Modal("Error", MessageCode("UserNoCoursesAccessible"), {
+                text: "Okay",
+                callback: function(){
+                    location.assign("./home");
+                }
+            }, false).show();
+            return;
+        }
+        for(var i = 0; i < options.length; i++){
+            if (courseSelected && options[i].value === courseSelected) {
+                coursePicker.selectedIndex = i;
+            } 
+        }
+
     },
 
     uploadNotesSuccess: function(response) {
@@ -87,6 +102,12 @@ app.postNotes = {
         fileUserField.insertBefore(newFileSelector, fileLabel);
         
         app.postNotes.updateFileLabel();
+        
+        // Empty the form
+        document.getElementById('noteName').value = "";
+        document.getElementById('description').value = "";
+        document.getElementById('date').value = new Date().toDateInputValue();
+        app.postNotes.updateCharacterLimit();
 
         app.postNotes.uploadInProgress = false;
         

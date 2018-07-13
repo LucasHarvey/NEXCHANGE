@@ -69,12 +69,14 @@ app.postCourseSearch = {
                     repeatedCourses.push(resultsTable.rows[i].cells[0].innerText);
                     continue;
                 }
-                var course = document.createElement("SPAN");
+                
+                var course = document.createElement("DIV");
+                course.id = courseId;
+                
+                var courseDetails = document.createElement("SPAN");
                 var courseName = resultsTable.rows[i].cells[0].innerText;
                 var courseNumber = resultsTable.rows[i].cells[1].innerText;
-                var courseId = resultsTable.rows[i].id;
-                course.innerText = courseName + " - " + courseNumber;
-                course.id = courseId;
+                courseDetails.innerText = courseName + " (" + courseNumber + ")";
 
                 var removeButton = document.createElement("BUTTON");
                 removeButton.className = "removeButton";
@@ -82,8 +84,9 @@ app.postCourseSearch = {
                 removeButton.innerText = "X";
                 removeButton.onclick = app.postCourseSearch.removeCourse;
 
-                course.appendChild(removeButton);
                 courseContainer.appendChild(course);
+                course.appendChild(courseDetails);
+                course.appendChild(removeButton);
                 app.postCourseSearch.unhighlightRow(resultsTable.rows[i]);
             }
         }

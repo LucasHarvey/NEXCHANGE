@@ -52,21 +52,10 @@ function echoSuccess($conn, $successObj, $statusCode = 200){
     echo json_encode(array(
         'status' => $statusCode,
         'requestedAt' => $_SERVER['REQUEST_TIME'],
-        'payload' => toUTF8($successObj)
+        'payload' => $successObj
     ));
     http_response_code($statusCode);
     die();
-}
-
-function toUTF8($d) {
-    if (is_array($d)) {
-        foreach ($d as $k => $v) {
-            $d[$k] = toUTF8($v);
-        }
-    } else if (is_string ($d)) {
-        return utf8_encode($d);
-    }
-    return $d;
 }
 
 ?>

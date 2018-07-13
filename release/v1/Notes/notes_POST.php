@@ -5,18 +5,40 @@ $conn = database_connect();
 requiredParams($conn, $_POST, array("noteName", "courseId", "takenOn"));
 
 $user_id = getUserFromToken();
-if(getUserPrivilege() == "ADMIN"){
+if($user_id == null)
     echoError($conn, 403, "AuthorizationFailed");
-}
+    
+if(getUserPrivilege() == "ADMIN")
+    echoError($conn, 403, "AuthorizationFailed");
 
-if(empty($_FILES['file'])){
+
+if(empty($_FILES['file']))
     echoError($conn, 400, "NoFilesUploaded");
-}
 
 $course_id = $_POST["courseId"];
 $noteName = $_POST['noteName'];
 $description = $_POST['description'];
 $date = $_POST['takenOn'];
+
+if($course_id == "")
+	echoError($conn, 400, "MissingArgumentCourse");
+if(strlen($course_id) > 36)
+	echoError($conn, 400, "CourseIdNotValid");
+	
+if($noteName == "")
+	echoError($conn, 400, "MissingArgumentNoteName");
+if(strlen($noteName) > 60)
+	echoError($conn, 400, "NoteNameNotValid");
+	
+if(strlen($description > 500))
+	echoError($conn, 400, "DescriptionNotValid");
+	
+if($date == "")
+	echoError($conn, 400, "MissingArgumentTakenOn");
+if(strlen($date) > 10)
+	echoError($conn, 400, "DateNotValid");
+if(strtotime($date) > time())
+	echoError($conn, 400, "DateNotValid");
 
 $noteTypes = "ssssss";
 $created = date('Y-m-d H:i:s');

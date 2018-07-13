@@ -3,6 +3,8 @@
 $conn = database_connect();
 
 $user_id = getUserFromToken();
+if($user_id == null)
+    echoError($conn, 403, "AuthorizationFailed");
 
 if(getUserPrivilege() != "USER"){
     echoError($conn, 403, "AuthorizationFailed");

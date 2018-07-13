@@ -12,6 +12,12 @@ app.signup = {
         document.getElementById("submit").disabled = false;
         document.getElementById('userData').addEventListener('submit', app.signup.submitSignup);
         
+        // Clear the form
+        document.getElementById('email').value = "";
+        document.getElementById('firstName').value = "";
+        document.getElementById('lastName').value = "";
+        document.getElementById('studentId').value = "";
+        
         var modalContent = "User has been created successfully.\n<p><span>Login ID: </span>" + data.payload.loginId + "</p>";
         modalContent += "\n<p><span>Name: </span>" + data.payload.firstName + " " + data.payload.lastName + "</p>";
         modalContent += "\n<p><span>Temporary Password: </span>" + data.payload.password + "</p>";

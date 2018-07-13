@@ -44,6 +44,7 @@ app.user = {
                     }
                     if(!app.user.verifyUserPass(newPass)){
                         document.getElementById("modalErrorTray").innerHTML = "Password must be 9 characters or more.";
+                        document.getElementById("modalErrorTray").className = "error";
                         return;
                     }
                     

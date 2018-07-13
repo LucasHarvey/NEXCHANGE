@@ -9,30 +9,60 @@ if(getUserPrivilege() != "ADMIN"){
 requiredParams($conn, $_JSON, array("semesterCode"));
 
 $semesterCode = $_JSON["semesterCode"];
+if($semesterCode == "")
+	echoError($conn, 400, "MissingArgumentSemesterCode");
 
-$semesterStart = null;
-$semesterEnd = null;
-$marchBreakStart = null;
-$marchBreakEnd = null;
+$seasons = ["I", "W", "S", "F"];
 
-if(array_key_exists("semesterStart", $_JSON))
-    $semesterStart = $_JSON["semesterStart"];
-if(array_key_exists("semesterEnd", $_JSON))
-    $semesterEnd = $_JSON["semesterEnd"];
-if(array_key_exists("marchBreakStart", $_JSON))
-    $marchBreakStart = $_JSON["marchBreakStart"];
-if(array_key_exists("marchBreakEnd", $_JSON))
-    $marchBreakEnd = $_JSON["marchBreakEnd"];
-
-$season = ["I", "W", "S", "F"];
-
-if(!in_array($semesterCode[0], $season) || strlen($semesterCode) != 5)
+if(!in_array($semesterCode[0], $seasons) || strlen($semesterCode) != 5)
     echoError($conn, 400, "SemesterNotValid");
 
 $year = substr($semesterCode, 1);
 
 if(!ctype_digit($year) || intval($year)<2000 || intval($year)>9999)
     echoError($conn, 400, "SemesterNotValid");
+    
+$semesterStart = null;
+$semesterEnd = null;
+$marchBreakStart = null;
+$marchBreakEnd = null;
+
+if(array_key_exists("semesterStart", $_JSON)){
+    $semesterStart = $_JSON["semesterStart"];
+    if($semesterStart == "")
+        echoError($conn, 400, "MissingArgumentSemesterStart");
+}
+
+if(array_key_exists("semesterEnd", $_JSON)){
+    $semesterEnd = $_JSON["semesterEnd"];
+    if($semesterEnd == "")
+        echoError($conn, 400, "MissingArgumentSemesterEnd");
+}
+
+if(array_key_exists("marchBreakStart", $_JSON))
+    $marchBreakStart = $_JSON["marchBreakStart"];
+if(array_key_exists("marchBreakEnd", $_JSON))
+    $marchBreakEnd = $_JSON["marchBreakEnd"];
+    
+if($semesterStart != null){
+    if(strlen($semesterStart) > 10)
+        echoError($conn, 400, "SemesterStartNotValid");
+}
+
+if($semesterEnd != null){
+    if(strlen($semesterEnd) > 10)
+        echoError($conn, 400, "SemesterEndNotValid");
+}
+
+if($marchBreakStart != null){
+    if(strlen($marchBreakStart) > 10)
+        echoError($conn, 400, "MarchBreakStartFormatNotValid");
+}
+
+if($marchBreakEnd != null){
+    if(strlen($marchBreakEnd) > 10)
+        echoError($conn, 400, "MarchBreakEndFormatNotValid");
+}
 
 if($semesterStart != null && $semesterEnd != null){
     // Semester end must be after semester start
@@ -44,6 +74,7 @@ if($marchBreakStart != null && $marchBreakEnd != null){
     // March break end must be after march break start
     if(strtotime($marchBreakEnd) <= strtotime($marchBreakStart))
         echoError($conn, 400, "MarchBreakNotValid");
+        
 }
 
 if($marchBreakStart != null && $semesterStart != null){

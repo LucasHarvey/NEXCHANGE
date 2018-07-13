@@ -16,6 +16,7 @@ function database_connect(){
         if($dbh->connect_error){
             echoError(null, 500, "DatabaseConnectError", $dbh->connect_error);
         }
+        $dbh->set_charset("utf8");
         return $dbh;
     }catch(Exception $e){
         $error = $dbh->error;

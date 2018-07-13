@@ -2,13 +2,17 @@
 
 $conn = database_connect();
 
+$user_id = getUserFromToken();
+if($user_id == null)
+    echoError($conn, 403, "AuthorizationFailed");
+    
+if(getUserPrivilege() == "ADMIN")
+    echoError($conn, 403, "AuthorizationFailed");
+
 requiredParams($conn, $_POST, array("noteId"));
 $noteId = $_POST["noteId"];
-
-$user_id = getUserFromToken();
-if(getUserPrivilege() == "ADMIN"){
-    echoError($conn, 403, "AuthorizationFailed");
-}
+if($noteId == "")
+    echoError($conn, 400, "MissingArgumentNoteId");
 
 // Check that the note exists
 if(!database_contains($conn, "notes", $noteId)){
@@ -35,15 +39,25 @@ foreach($_POST as $key => $value ){
 }
 
 if(in_array("name", array_keys($changes))){
-    if($changes["name"] == ""){
+    if($changes["name"] == "")
         echoError($conn, 400, "MissingArgumentNoteName");
-    }
+    
+    if(strlen($changes["name"]) > 60)
+	    echoError($conn, 400, "NoteNameNotValid");
+}
+
+if(in_array("description", array_keys($changes))){
+    if(strlen($changes["description"]) > 500)
+	    echoError($conn, 400, "DescriptionNotValid");
 }
 
 if(in_array("taken_on", array_keys($changes))){
-    if($changes["taken_on"] == ""){
+    if($changes["taken_on"] == "")
         echoError($conn, 400, "MissingArgumentTakenOn");
-    }
+    if(strlen($changes["taken_on"]) > 10)
+        echoError($conn, 400, "DateNotValid");
+    if(strtotime($changes["taken_on"]) > time())
+	    echoError($conn, 400, "DateNotValid");
 }
 
 // Ensure that changes can be made

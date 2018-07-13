@@ -9,6 +9,8 @@ if(getUserPrivilege() != "ADMIN"){
 requiredParams($conn, $_GET, array("semesterCode"));
 
 $semesterCode = $_GET["semesterCode"];
+if($semesterCode == "")
+	echoError($conn, 400, "MissingArgumentSemesterCode");
 
 $seasons = ["I", "W", "S", "F"];
 

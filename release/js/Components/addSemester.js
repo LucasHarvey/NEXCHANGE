@@ -1,4 +1,4 @@
-/* global Resources,MessageCode,Modal */
+/* global Resources,MessageCode,Modal,datePolyFillStart */
 var app = app || {
     startup: [],
     afterStartup: []
@@ -47,10 +47,9 @@ app.addSemester = {
     
     getDefaultSeason: function() {
         let month = new Date().getMonth();
-        let today = new Date().getDate();
-        if (month >= 11) return 1; //intersession
-        if (month >= 0 && month < 5) return 2; //winter
-        if (month >= 5 && month < 8) return 3; //summer
+        if (month >= 10) return 1; //intersession
+        if (month >= 0 && month < 3) return 2; //winter
+        if (month >= 3 && month < 7) return 3; //summer
         return 0; //fall
     },
     
@@ -306,6 +305,8 @@ app.startup.push(function addSemesterStartup() {
     document.getElementById("newHideFields").addEventListener("change", app.addSemester.toggleMarchBreak);
     
     document.getElementById('addSemester').addEventListener('submit', app.addSemester.submitSemester);
+    
+    datePolyFillStart();
     
     document.getElementById("year").value = new Date().getFullYear();
     document.getElementById("season").selectedIndex = app.addSemester.getDefaultSeason();

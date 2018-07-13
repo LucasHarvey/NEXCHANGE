@@ -1,4 +1,7 @@
-SELECT login_id, first_name, last_name, email, created, ua.roles, ua.courses, logins.logins_per_week, 
+SELECT login_id, first_name, last_name, email, created, 
+    IFNULL(ua.roles, "N/A") as roles, 
+    IFNULL(ua.courses, "N/A") as courses, 
+    IFNULL(logins.logins_per_week, "N/A") as logins_per_week, 
     IFNULL(nt.rems_sent, "N/A") as NT_reminders_sent,
     IFNULL(nt_notes.notes_uploaded, "N/A") as NT_notes_uploaded,
     IF(LOCATE("STUDENT", ua.roles) > 0, 
@@ -9,19 +12,19 @@ SELECT login_id, first_name, last_name, email, created, ua.roles, ua.courses, lo
     
     FROM users u 
     
-    INNER JOIN (
+    LEFT JOIN (
         SELECT user_id, GROUP_CONCAT(DISTINCT role SEPARATOR ' and ') as roles,
                 GROUP_CONCAT(DISTINCT c.course_number SEPARATOR ';') as courses
         FROM user_access ua INNER JOIN courses c ON ua.course_id=c.id 
         GROUP BY user_id
     ) as ua ON u.id = ua.user_id
     
-    INNER JOIN (
-        SELECT lu.user_id, COUNT(*)/ROUND(DATEDIFF(curdate(), 
+    LEFT JOIN (
+        SELECT lu.user_id, ROUND(COUNT(*)/ROUND(DATEDIFF(curdate(), 
                                     (SELECT created FROM user_access ua 
                                         WHERE ua.user_id = lu.user_id 
                                         ORDER BY created ASC LIMIT 1)
-                                )/7, 0) AS logins_per_week
+                                )/7, 0), 2) AS logins_per_week
         FROM log_user_logins lu
         GROUP BY lu.user_id
     ) as logins ON u.id=logins.user_id

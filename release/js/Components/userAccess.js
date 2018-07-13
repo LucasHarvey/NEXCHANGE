@@ -18,6 +18,9 @@ app.useraccess = {
             courseContainer.removeChild(courseContainer.firstChild);
         }
         
+        // postCourseSearch.js must be included
+        app.postCourseSearch.updateCourseContainerLabel();
+        
         // Clear the search results
         document.getElementById('resultsTray').style.display = 'none';
         
@@ -55,6 +58,8 @@ app.useraccess = {
             }).show();
             return;
         }
+        
+        var modalTitle = courses.length > 0 ? "User Access Updated" : "User Access Exists";
 
         let role = response.payload.role == "NOTETAKER" ? "take notes" : "receive notes";
         let secondaryRole = response.payload.role == "NOTETAKER" ? "receive notes" : "take notes";
@@ -111,7 +116,7 @@ app.useraccess = {
             modalContent += "</ul>";
         }
 
-        new Modal("User Access Updated", modalContent, null, {
+        new Modal(modalTitle, modalContent, null, {
             text: "Okay"
         }).show();
         

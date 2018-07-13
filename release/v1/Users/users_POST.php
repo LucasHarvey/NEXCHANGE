@@ -14,11 +14,25 @@ $last_name = $_JSON["lastName"];
 $email = $_JSON['email'];
 $password = generateRandomPassword();
 
-if(!empty($email)){
-    validateEmail($email);
-}
-validateId($student_id);
-validateName($first_name . ' ' . $last_name);
+if($student_id == "")
+    echoError($conn, 400, "MissingArgumentStudentId");
+    
+if($first_name == "")
+    echoError($conn, 400, "MissingArgumentFirstName");
+if(strlen($first_name) > 40)
+    echoError($conn, 400, "FirstNameNotValid");
+
+if($last_name == "")
+    echoError($conn, 400, "MissingArgumentLastName");
+if(strlen($first_name) > 60)
+    echoError($conn, 400, "LastNameNotValid");
+    
+if($email == "")
+    echoError($conn, 400, "MissingArgumentEmail");
+
+validateEmail($conn, $email);
+validateId($conn, $student_id);
+validateName($conn, $first_name . ' ' . $last_name);
 
 $userExists = database_get_row($conn, "SELECT id FROM users WHERE login_id=?", "s", $student_id);
 if($userExists != null){
@@ -48,7 +62,7 @@ echoSuccess($conn, array(
 function generateRandomPassword() {
     $PASSWORD_LENGTH = 9;
     //IF CHANGING PASSWORD LENGTH, CHANGE IN:
-    //users_PUT.php, users.js, settings.js
+    //_globals.php ($GLOBALS['PASSWORD_LENGTH']), users.js, settings.js
 
     $alphabet = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ1234567890][!@#$_-+=';
     $pass = array();
@@ -60,20 +74,24 @@ function generateRandomPassword() {
     return implode($pass); //turn the array into a string
 }
 
-function validateEmail($email){
+function validateEmail($conn, $email){
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echoError($conn, 400, "EmailNotValid");
+    }
+    if(strlen($email) > 255){
+        echoError($conn, 400, "EmailTooLong");
     }
     return;
 }
 
-function validateId($userId){
+function validateId($conn, $userId){
     if(strlen($userId) != 7 || !is_numeric($userId)){
         echoError($conn, 400, "UserIdNotValid");
     }
     return;
 }
-function validateName($name){
+
+function validateName($conn, $name){
     if(preg_match("[0-9]", $name) === 1){
         echoError($conn, 400, "UserNameNotValid");
     }
