@@ -11,21 +11,27 @@ app.postCourseSearch = {
     
     prepopulateCourses: function(data) {
         let courseContainer = document.getElementById("courseContainer");
+        
         var course = document.createElement("p");
+        var courseId = data.payload.course.id;
+        
+        var course = document.createElement("DIV");
+        course.id = courseId;
+            
+        var courseDetails = document.createElement("SPAN");
         var courseName = data.payload.course.courseName;
         var courseNumber = data.payload.course.courseNumber;
-        var courseId = data.payload.course.id;
-        course.innerText = courseName + " - " + courseNumber;
-        course.id = courseId;
-    
+        courseDetails.innerText = courseName + " (" + courseNumber + ")";
+
         var removeButton = document.createElement("BUTTON");
         removeButton.className = "removeButton";
         removeButton.type = "button";
         removeButton.innerText = "X";
         removeButton.onclick = app.postCourseSearch.removeCourse;
-    
-        course.appendChild(removeButton);
+
         courseContainer.appendChild(course);
+        course.appendChild(courseDetails);
+        course.appendChild(removeButton);
         
         app.postCourseSearch.updateCourseContainerLabel();
     },
@@ -97,6 +103,7 @@ app.postCourseSearch = {
             }).show();
         }
         app.postCourseSearch.updateCourseContainerLabel();
+        app.postCourseSearch.updateAddButton();
     },
     
     generateRepeatedCourses: function(repeatedCourses){
@@ -124,8 +131,9 @@ app.postCourseSearch = {
     updateAddButton: function() {
         var selectedRows = 0;
         let addButton = document.getElementById('addCourses');
-        for (var i = 1; i < this.rows.length; i++) {
-            if (this.rows[i].highlighted == true) {
+        let table = document.getElementById("results");
+        for (var i = 1; i < table.rows.length; i++) {
+            if (table.rows[i].highlighted == true) {
                 selectedRows = selectedRows + 1;
             }
         }
