@@ -234,13 +234,17 @@ app.home = {
         article.appendChild(articleSection);
 
         let descriptionP = document.createElement("P");
-        if(role == "NOTETAKER"){
+        let checkboxField = document.getElementById("hideDownloadedField");
+        let checkbox = document.getElementById("hideDownloaded");
+        if(checkboxField.style.display == "flex" && checkbox.checked == true && role == "NOTETAKER"){
             descriptionP.innerText = "There are no uploaded notes for " + courseName + " that have not been downloaded.";
-        } else {
-          descriptionP.innerText = "There are no new notes for " + courseName + ".";  
-        }
+        } else if(role == "NOTETAKER"){
+            descriptionP.innerText = "There are no uploaded notes for " + courseName + "."; 
+        } else{
+            descriptionP.innerText = "There are no new notes for " + courseName + ".";
+        }   
+        
         articleSection.appendChild(descriptionP);
-
         return article;
     },
 
