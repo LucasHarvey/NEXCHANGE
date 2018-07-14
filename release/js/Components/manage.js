@@ -96,7 +96,7 @@ app.manage = {
                 var studentId = this.dataset.studentId;
                 var button3 = this;
                 new Modal("Delete Account",
-                    "Are you sure you want to delete the user account for Student ID: " + studentId + " ?" +
+                    "Are you sure you want to delete the user account with Student ID: " + studentId + " ?" +
                     "<br>This <b>CANNOT</b> be undone." +
                     "<br>Confirm Admin password: <input type='password' placeholder='Password' autocomplete='false' id='manage_deleteAccountPw'><p class='error'></p>", {
                         text: "Yes, DELETE Account",
