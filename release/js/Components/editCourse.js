@@ -173,7 +173,14 @@ app.editCourse = {
         // Format the semester correctly
         newFormattedSemester = newSeason + newYear;
         
-        var changes = {};
+        var changes = {
+            courseName: undefined,
+            courseNumber: undefined,
+            section: undefined,
+            teacherFullName: undefined,
+            semester: undefined
+        };
+        
         if (newCourseName != this.originalCourse.courseName)
             changes.courseName = newCourseName;
         if (newCourseNumber != this.originalCourse.courseNumber)
@@ -189,7 +196,7 @@ app.editCourse = {
         document.getElementById("submit").disabled = true;
         document.getElementById("editCourse").removeEventListener("submit", app.editCourse.submitCourseEdit);
 
-        if (changes != {}) {
+        if (changes.courseName !== undefined || changes.courseNumber !== undefined || changes.section !== undefined || changes.teacherFullName !== undefined || changes.semester !== undefined) {
             Resources.Courses.PUT(app.editCourse.courseId, changes.teacherFullName, changes.courseName, changes.courseNumber, changes.section, changes.semester, this.successCourseEdit, this.failureCourseEdit);
         } else {
             new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();

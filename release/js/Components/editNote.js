@@ -75,7 +75,7 @@ app.editNote = {
             name: undefined,
             desc: undefined,
             taken_on: undefined,
-            files: false
+            files: undefined
         };
         if (newName != this.originalNote.name)
             changes.name = newName;
@@ -96,7 +96,7 @@ app.editNote = {
                 changes.taken_on = dateToSubmit;
         }
         if(files.length>0){
-            changes.files = true;
+            changes.files = files;
             document.getElementById("barContainer").style.display = "block";
         }
         for(var i=0; i<files.length; i++){
@@ -109,7 +109,7 @@ app.editNote = {
             }
         }
 
-        if (changes.name != undefined || changes.desc != undefined || changes.taken_on != undefined || changes.files != false) {
+        if (changes.name !== undefined || changes.desc !== undefined || changes.taken_on !== undefined || changes.files !== undefined) {
             
             app.editNote.uploadInProgress = true;
         
@@ -117,7 +117,7 @@ app.editNote = {
             document.getElementById('noteData').removeEventListener('submit', app.editNote.submitNote);
             document.getElementById("submit").disabled = true;
             
-            Resources.NotesEdit.POST(this.noteId, changes.name, changes.desc, changes.taken_on, files, this.successEdit, this.failureEdit, function(event) {
+            Resources.NotesEdit.POST(this.noteId, changes.name, changes.desc, changes.taken_on, changes.files, this.successEdit, this.failureEdit, function(event) {
                 if (event.lengthComputable === true) {
                     let percent = Math.round((event.loaded / event.total) * 100);
                     app.editNote.setProgress(percent);

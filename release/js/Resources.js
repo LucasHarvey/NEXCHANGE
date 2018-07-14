@@ -3,6 +3,7 @@ let Resources = {
     Log: {
         location: "v1/uilog.php",
         POST: function(message, successCallback, failureCallback){
+            if(!message) return;
             let data = {message: message};
             return app.post(Resources.Log, data, successCallback, failureCallback);
         }
@@ -115,6 +116,7 @@ let Resources = {
             return app.post(Resources.UserAccess, data, successCallback, failureCallback);
         },
         PUT: function(notify, courseId, successCallback, failureCallback) {
+            if(!courseId) return;
             let data = {
                 courseId: courseId,
                 notifications: notify
@@ -122,6 +124,7 @@ let Resources = {
             return app.put(Resources.UserAccess, data, successCallback, failureCallback);
         },
         DELETE: function(userId, courseId, successCallback, failureCallback) {
+            if(!userId || !courseId) return;
             let data = {
                 userId: userId,
                 courseId: courseId
@@ -173,6 +176,7 @@ let Resources = {
             return request;
         },
         DELETE: function(id, successCallback, failureCallback) {
+            if(!id) return;
             let data = {
                 id: id
             };
@@ -192,7 +196,7 @@ let Resources = {
     NotesEdit: {
         location: "v1/notesedit.php",
         POST: function(noteId, name, description, takenOn, files, successCallback, failureCallback, progressCallback) {
-            if (!noteId || (!name && !description && !takenOn && !files)) return; //Nothing to change or no noteid
+            if (!noteId) return;
             var formData = new FormData();
             formData.append("noteId", noteId);
             if (name) formData.append("name", name);
@@ -256,6 +260,7 @@ let Resources = {
         },
         
         PUT: function(courseId, teacherFullName, courseName, courseNumber, section, semester, successCallback, failureCallback){
+            if(!courseId) return;
             let data = {
                 courseId: courseId,
                 teacherFullName: teacherFullName,
@@ -314,17 +319,13 @@ let Resources = {
             return request;
         },
         PUT: function(semesterCode, semesterStart, semesterEnd, marchBreakStart, marchBreakEnd, successCallback, failureCallback){
-            
+            if(!semesterCode) return;
             let data = {};
             data["semesterCode"] = semesterCode;
             if(semesterStart !== undefined) data["semesterStart"] = semesterStart;
             if(semesterEnd !== undefined) data["semesterEnd"] = semesterEnd;
             if(marchBreakStart !== undefined) data["marchBreakStart"] = marchBreakStart;
             if(marchBreakEnd !== undefined) data["marchBreakEnd"] = marchBreakEnd;
-            
-            if(data.semesterStart === undefined && data.semesterEnd === undefined && data.marchBreakStart === undefined && data.marchBreakEnd === undefined){
-                return;
-            }
 
             return app.put(Resources.Semester, data, successCallback, failureCallback);
         }
