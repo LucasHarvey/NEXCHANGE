@@ -200,6 +200,9 @@ app.editCourse = {
             Resources.Courses.PUT(app.editCourse.courseId, changes.teacherFullName, changes.courseName, changes.courseNumber, changes.section, changes.semester, this.successCourseEdit, this.failureCourseEdit);
         } else {
             new Modal("No Changes", MessageCode("NoChangesToMake"), null, null, "Okay").show();
+            // Enable the form
+            document.getElementById("submit").disabled = false;
+            document.getElementById("editCourse").addEventListener("submit", app.editCourse.submitCourseEdit);
         }
     }
 
