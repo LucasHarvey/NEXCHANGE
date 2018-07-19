@@ -124,7 +124,7 @@ if(getUserPrivilege() != "ADMIN"){
                             <input type="checkbox" id="newHideFields">
                         </div>
                         
-                        <div id="newMarchBreakFields" class="doWhat_create" style="display:none">
+                        <div id="newMarchBreakFields" style="display:none">
                             
                             <div class="userfield doWhat_create">
                                 <label for="marchBreakStart" class="semesterLabel">March Break Start: </label>
