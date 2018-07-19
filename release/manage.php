@@ -113,7 +113,7 @@ if(getUserPrivilege() != "ADMIN"){
                                     Summer
                                 </option>
                             </select>
-                            <input type="text" id="year"></input>
+                            <input type="text" id="year">
                         </div>
                     </div>
 
