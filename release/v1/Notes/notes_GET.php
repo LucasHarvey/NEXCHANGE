@@ -65,7 +65,7 @@ function getNotesForStudent($conn, $userId, $_sortMethod, $_sortDirection, $hide
                             "LEFT OUTER JOIN ( ".
                                     "SELECT notefile_id, user_id, MAX(downloaded_at) as lastDownloaded FROM notefile_downloads group by notefile_id, user_id ".
                                 ") as nfd ON nfd.notefile_id=nf.id AND nfd.user_id=ua.user_id ".
-                    "WHERE ua.user_id=? AND n.user_id IS NULL OR n.user_id != ua.user_id AND ua.role='STUDENT' AND ua.expires_on >= NOW()";
+                    "WHERE ua.user_id=? AND (n.user_id IS NULL OR n.user_id != ua.user_id) AND ua.role='STUDENT' AND ua.expires_on >= NOW()";
                     
     if($hideDownloaded){
         $selectQuery = $selectQuery . " AND nfd.lastDownloaded IS NULL";
