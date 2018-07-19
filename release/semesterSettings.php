@@ -124,14 +124,14 @@ if(getUserPrivilege() != "ADMIN"){
                             <input type="checkbox" id="newHideFields">
                         </div>
                         
-                        <div id="newMarchBreakFields" style="display:none">
+                        <div id="newMarchBreakFields" class="doWhat_create" style="display:none">
                             
-                            <div class="userfield">
+                            <div class="userfield doWhat_create">
                                 <label for="marchBreakStart" class="semesterLabel">March Break Start: </label>
                                 <input type="date" id="newMarchBreakStart">
                             </div>
                             
-                            <div class="userfield">
+                            <div class="userfield doWhat_create">
                                 <label for="marchBreakEnd" class="semesterLabel">March Break End: </label>
                                 <input type="date" id="newMarchBreakEnd">
                             </div>
@@ -179,12 +179,12 @@ if(getUserPrivilege() != "ADMIN"){
                         
                         <div id="marchBreakFields" style="display:none">
                             
-                            <div class="userfield">
+                            <div class="userfield doWhat_edit">
                                 <label for="marchBreakStart" class="semesterLabel">March Break Start: </label>
                                 <input type="date" id="marchBreakStart">
                             </div>
                             
-                            <div class="userfield">
+                            <div class="userfield doWhat_edit">
                                 <label for="marchBreakEnd" class="semesterLabel">March Break End: </label>
                                 <input type="date" id="marchBreakEnd">
                             </div>

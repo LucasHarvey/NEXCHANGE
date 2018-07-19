@@ -62,9 +62,11 @@ app.semesterController = {
                 
                 switch(options[i].value){
                     case "create": 
+                        app.addSemester.toggleMarchBreak();
                         document.getElementById("submit").value = "Create Semester";
                         break;
                     case "edit": 
+                        app.addSemester.toggleMarchBreak();
                         document.getElementById("submit").value = "Save Changes";
                         //POPULATE THE FIELDS
                         app.editSemester.updateFields();

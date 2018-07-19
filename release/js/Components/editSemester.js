@@ -326,6 +326,7 @@ app.startup.push(function semesterStartup() {
     document.getElementById("editSeason").addEventListener("change", app.editSemester.updateFields);
     document.getElementById("editYear").addEventListener("change", app.editSemester.updateFields);
     
+    app.editSemester.toggleMarchBreak();
 });
 
 
