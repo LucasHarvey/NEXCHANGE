@@ -246,5 +246,7 @@ app.startup.push(function addSemesterStartup() {
     // Change the file label when files are added
     document.getElementById("newFile").addEventListener("change", app.addSemester.updateFileLabel);
     app.addSemester.updateFileLabel();
+    
+    app.addSemester.toggleMarchBreak();
 });
 
