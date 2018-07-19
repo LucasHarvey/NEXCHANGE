@@ -11,7 +11,7 @@ SELECT login_id, first_name, last_name, email, u.created,
             IFNULL(
                 (SELECT COUNT(*) as ST_availableNotes 
                 FROM user_access ua INNER JOIN notes n ON n.course_id=ua.course_id
-                WHERE ua.user_id=u.id AND n.user_id != u.id
+                WHERE ua.user_id=u.id AND (n.user_id IS NULL OR n.user_id != u.id)
                 AND 1=(SELECT ua.created BETWEEN _s.semester_start AND _s.semester_end FROM semesters _s ORDER BY _s.created DESC LIMIT 1)
                 AND 1=(SELECT n.created BETWEEN _s.semester_start AND _s.semester_end FROM semesters _s ORDER BY _s.created DESC LIMIT 1)
                 GROUP BY ua.user_id)
