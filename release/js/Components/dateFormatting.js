@@ -54,7 +54,7 @@ app.dateFormatting = {
     
     formatExpiryDate: function(season, year) {
 
-        if (season == "I") return (parseInt(year) + 1) + "-" + 1 + "-" + 31;
+        if (season == "I") return year + "-" + 1 + "-" + 31;
 
 
         if (season == "W") return year + "-" + 5 + "-" + 31;
