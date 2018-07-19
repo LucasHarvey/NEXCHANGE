@@ -26,6 +26,7 @@ $allowed = ['csv'];
 $files = $_FILES['file'];
 validateFiles($conn, $files, $allowed, $GLOBALS['MAX_SINGLE_FILE_SIZE']);
 
+date_default_timezone_set($GLOBALS["NEXCHANGE_TIMEZONE"]);
 $created = date('Y-m-d H:i:s');
 
 $newSemesterStart = $_POST["newSemesterStart"];
