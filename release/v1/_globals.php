@@ -10,4 +10,5 @@ $GLOBALS['MAX_SINGLE_FILE_SIZE'] = 5 * 1024 * 1024; // 5 MB
 $GLOBALS['ALLOWED_FILE_EXTENSIONS'] = ['pdf','docx','doc','pptx','ppt','xlsx','csv','jpeg','jpg','png', 'txt', 'zip'];
 $GLOBALS['REL_FILES_PATH'] = "./Files/";
 $GLOBALS['PASSWORD_LENGTH'] = 9;
+$GLOBALS['NEXCHANGE_TIMEZONE'] = "America/Toronto";
 ?>

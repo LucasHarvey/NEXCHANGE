@@ -41,6 +41,7 @@ if(strtotime($date) > time())
 	echoError($conn, 400, "DateNotValid");
 
 $noteTypes = "ssssss";
+date_default_timezone_set($GLOBALS["NEXCHANGE_TIMEZONE"]);
 $created = date('Y-m-d H:i:s');
 $noteValues = array($user_id,$course_id,$created,$noteName,$description,$date);
 
