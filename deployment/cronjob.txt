@@ -1,0 +1,2 @@
+# 0 12 * * * /home/nexuser/nexchange_cronjobs/cronjob-reminders >> /home/nexuser/nexchange_logs/reminder_task.log 2>&1
+0 0 * * 0 /home/nexuser/nexchange_cronjobs/cronjob-backup >> /home/nexuser/nexchange_logs/backup_task.log 2>&1
